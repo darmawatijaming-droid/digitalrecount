@@ -1,0 +1,2326 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DigitalRecount — PjBL Recount Text (Supabase)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --primary:#7c3aed;--primary-light:#a855f7;--primary-lighter:#c084fc;--primary-soft:#ede9fe;
+  --grad:linear-gradient(135deg,#7c3aed 0%,#a855f7 50%,#c084fc 100%);
+  --grad-soft:linear-gradient(135deg,#ede9fe 0%,#f5f3ff 100%);
+  --bg:#f7f5ff;--bg-2:#fff;--card:#fff;--text:#1e1b4b;--text-muted:#6b7280;--border:#e9e5f5;
+  --shadow:0 4px 20px rgba(124,58,237,.08);--shadow-lg:0 10px 40px rgba(124,58,237,.15);
+  --success:#10b981;--warning:#f59e0b;--danger:#ef4444;--info:#3b82f6;
+  --radius:16px;--radius-sm:10px;
+  --sidebar-w:250px;
+}
+[data-theme="dark"]{
+  --primary:#a855f7;--primary-light:#c084fc;--primary-lighter:#ddd6fe;--primary-soft:#2d1b4e;
+  --grad:linear-gradient(135deg,#6d28d9 0%,#7c3aed 50%,#a855f7 100%);
+  --grad-soft:linear-gradient(135deg,#1e1147 0%,#2d1b4e 100%);
+  --bg:#0c0718;--bg-2:#150a2e;--card:#1a1033;--text:#f1f5f9;--text-muted:#a5a3c0;--border:#2d1b4e;
+  --shadow:0 4px 20px rgba(0,0,0,.4);--shadow-lg:0 10px 40px rgba(0,0,0,.5);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden}
+button,input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+a{color:var(--primary);text-decoration:none}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:var(--primary-light)}
+
+/* ============================================================
+   SIDEBAR (desktop only)
+============================================================ */
+.sidebar{
+  display:none;position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);
+  background:var(--bg-2);border-right:1px solid var(--border);z-index:150;
+  flex-direction:column;transition:transform .3s,background .3s,border-color .3s;
+}
+.sidebar-brand{
+  display:flex;align-items:center;gap:10px;padding:16px 18px;
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.sidebar-brand .brand-icon{
+  width:38px;height:38px;border-radius:11px;background:var(--grad);
+  display:grid;place-items:center;color:#fff;font-size:16px;
+  box-shadow:0 6px 16px rgba(124,58,237,.3);flex-shrink:0;
+}
+.sidebar-brand .brand-text{
+  font-weight:800;font-size:17px;letter-spacing:-.02em;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;cursor:pointer;
+}
+.sidebar-nav{
+  flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:3px;
+}
+.sidebar-nav::-webkit-scrollbar{width:6px}
+.sidebar-nav a{
+  display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:11px;
+  color:var(--text-muted);font-weight:500;font-size:14px;transition:all .2s;
+  white-space:nowrap;
+}
+.sidebar-nav a i{width:18px;text-align:center;font-size:15px}
+.sidebar-nav a:hover{background:var(--primary-soft);color:var(--primary)}
+.sidebar-nav a.active{background:var(--grad);color:#fff;box-shadow:0 4px 14px rgba(124,58,237,.3);font-weight:600}
+.sidebar-nav a.active i{color:#fff}
+.sidebar-section-label{
+  font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--text-muted);padding:12px 14px 6px;opacity:.7;
+}
+.sidebar-footer{
+  padding:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px;
+}
+.sidebar-footer-row{display:flex;gap:8px;align-items:center}
+.sidebar-footer-row .lang-toggle{flex:1}
+.sidebar-footer-row .icon-btn{width:36px;height:36px}
+
+/* Sidebar credit */
+.sidebar-credit{
+  padding:10px 12px;text-align:center;
+  background:var(--grad-soft);border-radius:12px;
+  border:1px solid var(--border);
+}
+.sidebar-credit .credit-label{
+  font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px;
+}
+.sidebar-credit .credit-name{
+  font-size:12.5px;font-weight:800;color:var(--primary);
+  line-height:1.3;margin-bottom:2px;
+}
+.sidebar-credit .credit-sub{
+  font-size:10.5px;color:var(--text-muted);line-height:1.4;
+}
+
+/* Layout wrapping */
+.main-wrap{margin-left:0;transition:margin-left .3s}
+@media(min-width:901px){
+  .sidebar{display:flex}
+  .main-wrap{margin-left:var(--sidebar-w)}
+}
+
+/* ============================================================
+   TOPBAR
+============================================================ */
+.topbar{position:sticky;top:0;z-index:100;background:var(--bg-2);border-bottom:1px solid var(--border);backdrop-filter:blur(10px)}
+.topbar-inner{max-width:1280px;margin:0 auto;padding:11px 16px;display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px;letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;flex-shrink:0}
+.brand-icon{width:36px;height:36px;border-radius:11px;background:var(--grad);display:grid;place-items:center;color:#fff;font-size:16px;box-shadow:0 6px 16px rgba(124,58,237,.3)}
+.desktop-nav{display:none}
+.topbar-actions{display:flex;align-items:center;gap:6px;margin-left:auto}
+.icon-btn{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:15px;color:var(--text-muted);background:var(--bg);border:1px solid var(--border);transition:all .2s;position:relative}
+.icon-btn:hover{color:var(--primary);border-color:var(--primary);transform:translateY(-2px)}
+.avatar-btn{width:38px;height:38px;border-radius:11px;background:var(--grad);color:#fff;display:grid;place-items:center;font-size:17px;font-weight:700;box-shadow:0 4px 14px rgba(124,58,237,.3);transition:transform .2s}
+.avatar-btn:hover{transform:scale(1.05)}
+.lang-toggle{display:flex;background:var(--bg);border:1px solid var(--border);border-radius:11px;overflow:hidden;height:38px}
+.lang-toggle button{padding:0 10px;font-size:12px;font-weight:700;color:var(--text-muted);transition:all .2s}
+.lang-toggle button.active{background:var(--grad);color:#fff}
+.lang-toggle button:not(.active):hover{background:var(--primary-soft);color:var(--primary)}
+/* Topbar lang-toggle: tampil di desktop juga (dipindah dari sidebar) */
+@media(min-width:901px){
+  .topbar .lang-toggle{display:flex}
+}
+@media(max-width:900px){
+  .topbar .brand{display:flex}
+}
+
+main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100vh - 62px);animation:fadeIn .4s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+.card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:20px;box-shadow:var(--shadow);transition:all .3s}
+.card:hover{box-shadow:var(--shadow-lg)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 20px;border-radius:12px;font-weight:600;font-size:13.5px;transition:all .2s;white-space:nowrap}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 6px 20px rgba(124,58,237,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(124,58,237,.4)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-sm{padding:7px 12px;font-size:12.5px;border-radius:9px}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:600}
+.badge-success{background:rgba(16,185,129,.15);color:var(--success)}
+.badge-warning{background:rgba(245,158,11,.15);color:var(--warning)}
+.badge-primary{background:var(--primary-soft);color:var(--primary)}
+.badge-muted{background:var(--bg);color:var(--text-muted);border:1px solid var(--border)}
+.badge-info{background:rgba(59,130,246,.15);color:var(--info)}
+.section-title{font-size:21px;font-weight:800;letter-spacing:-.02em;margin-bottom:5px}
+.section-sub{color:var(--text-muted);font-size:14px;margin-bottom:18px}
+.input,.textarea,.select{width:100%;padding:11px 15px;background:var(--bg);border:1.5px solid var(--border);border-radius:11px;font-size:14px;transition:all .2s;color:var(--text)}
+.input:focus,.textarea:focus,.select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(124,58,237,.12);background:var(--bg-2)}
+.textarea{min-height:120px;resize:vertical;line-height:1.7}
+.label{display:block;font-weight:600;font-size:12.5px;margin-bottom:6px;color:var(--text)}
+.field{margin-bottom:14px}
+.hint{font-size:11.5px;color:var(--text-muted);margin-top:4px}
+
+.tabs{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;margin-bottom:18px;border-bottom:1px solid var(--border)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:9px 14px;border-radius:9px 9px 0 0;font-weight:600;font-size:13px;color:var(--text-muted);transition:all .2s;white-space:nowrap;border-bottom:2.5px solid transparent;margin-bottom:-1px}
+.tab:hover{color:var(--primary);background:var(--primary-soft)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+
+.hero{background:var(--grad);border-radius:22px;padding:32px 26px;color:#fff;margin-bottom:22px;position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;background:rgba(255,255,255,.1)}
+.hero::before{width:280px;height:280px;top:-140px;right:-80px}
+.hero::after{width:180px;height:180px;bottom:-110px;right:180px}
+.hero-content{position:relative;z-index:1}
+.hero h1{font-size:28px;font-weight:800;margin-bottom:6px;letter-spacing:-.02em}
+.hero p{opacity:.95;font-size:14.5px;max-width:600px}
+.hero-actions{margin-top:18px;display:flex;gap:9px;flex-wrap:wrap}
+.hero-actions .btn-primary{background:#fff;color:var(--primary)}
+.hero-actions .btn-ghost{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.3)}
+.hero-actions .btn-ghost:hover{background:rgba(255,255,255,.25);border-color:#fff;color:#fff}
+
+.progress-wrap{display:grid;grid-template-columns:220px 1fr;gap:22px;margin-bottom:22px}
+.progress-ring{position:relative;width:180px;height:180px;margin:0 auto}
+.progress-ring svg{transform:rotate(-90deg)}
+.progress-ring-circle{transition:stroke-dashoffset .8s ease}
+.progress-ring-label{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.progress-ring-label .num{font-size:34px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.progress-ring-label .txt{font-size:11.5px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.step-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.step-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--grad);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.step-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--primary-light)}
+.step-card:hover::before{transform:scaleX(1)}
+.step-card.done{border-color:var(--success)}
+.step-card.done::before{background:var(--success);transform:scaleX(1)}
+.step-num{width:40px;height:40px;border-radius:11px;background:var(--grad-soft);color:var(--primary);display:grid;place-items:center;font-weight:800;font-size:15px;margin-bottom:10px}
+.step-card.done .step-num{background:var(--grad);color:#fff}
+.step-card h3{font-size:15px;font-weight:700;margin-bottom:3px}
+.step-card p{font-size:12.5px;color:var(--text-muted)}
+.step-status{position:absolute;top:14px;right:14px;font-size:17px}
+
+.lock-overlay{position:absolute;inset:0;background:rgba(30,27,75,.55);backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;border-radius:var(--radius);z-index:2;text-align:center;padding:20px;gap:6px}
+.lock-overlay i{font-size:34px;margin-bottom:4px;opacity:.95}
+.lock-overlay .lock-title{font-weight:700;font-size:14px}
+.lock-overlay .lock-sub{font-size:11.5px;opacity:.9;max-width:220px}
+.step-card.locked{cursor:not-allowed}
+.step-card.locked:hover{transform:none}
+
+.quiz-text{background:var(--grad-soft);padding:18px;border-radius:13px;line-height:1.9;font-size:14.5px;margin-bottom:16px;border-left:4px solid var(--primary)}
+.quiz-text em,.hl{color:var(--primary);font-style:normal;font-weight:600;background:rgba(124,58,237,.1);padding:1px 5px;border-radius:5px;cursor:pointer;transition:all .2s}
+.quiz-text em:hover,.hl:hover{background:var(--primary);color:#fff}
+.quiz-option{display:block;padding:13px 16px;background:var(--bg);border:1.5px solid var(--border);border-radius:11px;margin-bottom:9px;cursor:pointer;transition:all .2s;font-size:13.5px}
+.quiz-option:hover{border-color:var(--primary-light);background:var(--primary-soft)}
+.quiz-option.selected{border-color:var(--primary);background:var(--primary-soft);color:var(--primary);font-weight:600}
+.quiz-option.correct{border-color:var(--success);background:rgba(16,185,129,.1);color:var(--success);font-weight:600}
+.quiz-option.wrong{border-color:var(--danger);background:rgba(239,68,68,.1);color:var(--danger);font-weight:600}
+
+.tense-table{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:14px}
+.tense-table th,.tense-table td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+.tense-table th{background:var(--grad-soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);font-weight:700}
+.tense-table td:nth-child(2){font-family:'Courier New',monospace;font-weight:700;color:var(--primary);font-size:12.5px}
+.tense-table td:nth-child(3){font-style:italic;font-size:13px}
+.tense-alert{background:linear-gradient(135deg,#fef3c7,#fde68a);border-left:4px solid #f59e0b;padding:14px 16px;border-radius:10px;color:#78350f;font-size:13px;line-height:1.7;margin-top:12px}
+.tense-alert b{color:#92400e}
+
+.dd-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.dd-zone{background:var(--bg);border:2px dashed var(--border);border-radius:13px;padding:14px;min-height:170px;transition:all .2s}
+.dd-zone.drag-over{border-color:var(--primary);background:var(--primary-soft)}
+.dd-zone h4{font-size:13px;margin-bottom:10px;font-weight:700;display:flex;align-items:center;gap:7px}
+.dd-zone.regular h4{color:var(--info)}
+.dd-zone.irregular h4{color:var(--warning)}
+.dd-items{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.dd-item{padding:8px 14px;background:var(--card);border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;user-select:none}
+.dd-item:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow)}
+.dd-item.used{opacity:.3;pointer-events:none}
+.dd-item.dragging{opacity:.5;border-color:var(--primary)}
+.dd-chip{padding:7px 12px;background:var(--card);border:1.5px solid var(--border);border-radius:8px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:5px;margin:3px}
+.dd-chip.correct{border-color:var(--success);background:rgba(16,185,129,.1);color:var(--success)}
+
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:11px;top:6px;bottom:6px;width:2px;background:var(--grad)}
+.tl-item{position:relative;margin-bottom:18px;padding-left:8px}
+.tl-item::before{content:'';position:absolute;left:-22px;top:5px;width:16px;height:16px;border-radius:50%;background:var(--grad);border:3px solid var(--bg-2);box-shadow:0 0 0 2px var(--primary-light)}
+.tl-item h4{font-size:12.5px;font-weight:700;color:var(--primary);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+
+.storyboard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.sb-card{background:var(--bg);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;position:relative}
+.sb-thumb{height:120px;background:var(--grad-soft);display:grid;place-items:center;font-size:32px;overflow:hidden}
+.sb-thumb img{width:100%;height:100%;object-fit:cover}
+.sb-cap{padding:8px;font-size:12px}
+.sb-del{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:var(--danger);color:#fff;display:grid;place-items:center;font-size:11px;cursor:pointer;z-index:2}
+
+.audio-rec{display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border-radius:13px;border:1.5px solid var(--border)}
+.rec-btn{width:52px;height:52px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-size:20px;cursor:pointer;transition:all .2s;box-shadow:0 6px 16px rgba(124,58,237,.3)}
+.rec-btn.recording{background:var(--danger);animation:pulse 1.2s infinite}
+.rec-info{flex:1}
+.rec-info .title{font-weight:700;font-size:14px}
+.rec-info .sub{font-size:12px;color:var(--text-muted)}
+
+.chat-wrap{display:flex;flex-direction:column;height:500px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.chat-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--grad-soft)}
+.chat-head .avatar{width:38px;height:38px;border-radius:11px;background:var(--grad);color:#fff;display:grid;place-items:center;font-size:17px}
+.chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:82%;padding:11px 15px;border-radius:13px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.msg.user{align-self:flex-end;background:var(--grad);color:#fff;border-radius:13px 13px 3px 13px}
+.msg.ai{align-self:flex-start;background:var(--bg);border:1px solid var(--border);border-radius:13px 13px 13px 3px}
+.msg.sys{align-self:center;background:var(--primary-soft);color:var(--primary);font-size:12px;padding:6px 12px;border-radius:999px}
+.chat-input{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end}
+.chat-input textarea{flex:1;min-height:42px;max-height:120px;resize:none;padding:10px 14px}
+.chat-send{width:42px;height:42px;border-radius:11px;background:var(--grad);color:#fff;display:grid;place-items:center;flex-shrink:0}
+
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.badge-item{background:var(--card);border:1.5px solid var(--border);border-radius:13px;padding:14px 10px;text-align:center;transition:all .2s;position:relative;overflow:hidden}
+.badge-item.locked{opacity:.45;filter:grayscale(.85)}
+.badge-item.unlocked{border-color:var(--primary);box-shadow:0 4px 14px rgba(124,58,237,.15)}
+.badge-item.unlocked::before{content:'✓';position:absolute;top:6px;right:8px;width:18px;height:18px;background:var(--grad);color:#fff;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700}
+.badge-item.locked::after{content:'🔒';position:absolute;top:6px;right:8px;font-size:14px;opacity:.6}
+.badge-item.unlocked::after{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(168,85,247,.15) 0%,transparent 60%);pointer-events:none;animation:badgeGlow 3s ease-in-out infinite}
+@keyframes badgeGlow{0%,100%{opacity:.4}50%{opacity:1}}
+.badge-emoji{font-size:30px;margin-bottom:6px;display:block}
+.badge-name{font-size:12px;font-weight:700;margin-bottom:2px}
+.badge-desc{font-size:10.5px;color:var(--text-muted);line-height:1.4}
+.badge-progress{font-size:10px;color:var(--primary);font-weight:600;margin-top:4px}
+
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.story-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;transition:all .25s;display:flex;flex-direction:column;gap:10px}
+.story-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.story-card h4{font-size:15.5px;font-weight:700}
+.story-card .meta{font-size:11.5px;color:var(--text-muted);display:flex;gap:10px;flex-wrap:wrap}
+.story-card .excerpt{font-size:13px;color:var(--text-muted);line-height:1.7;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.story-card .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:8px;border-top:1px solid var(--border)}
+.react-btn{padding:5px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--border);font-size:12.5px;display:inline-flex;align-items:center;gap:5px;transition:all .2s}
+.react-btn:hover{border-color:var(--primary);background:var(--primary-soft)}
+.react-btn.active{background:var(--primary-soft);border-color:var(--primary);color:var(--primary);font-weight:600}
+
+.attach-zone{background:var(--bg);border:2px dashed var(--border);border-radius:13px;padding:18px;text-align:center;transition:all .2s;cursor:pointer}
+.attach-zone:hover,.attach-zone.drag-over{border-color:var(--primary);background:var(--primary-soft)}
+.attach-zone i{font-size:28px;color:var(--primary);margin-bottom:8px;display:block}
+.attach-list{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.attach-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:13px}
+.attach-item .icon{width:36px;height:36px;border-radius:9px;background:var(--grad-soft);color:var(--primary);display:grid;place-items:center;font-size:16px;flex-shrink:0}
+.attach-item .info{flex:1;min-width:0}
+.attach-item .name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.attach-item .size{font-size:11px;color:var(--text-muted)}
+.attach-item .del{color:var(--danger);cursor:pointer;padding:4px}
+
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden;transition:all .25s}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.stat-card::after{content:'';position:absolute;top:0;right:0;width:70px;height:70px;border-radius:50%;background:var(--grad-soft);transform:translate(30%,-30%)}
+.stat-card .icon{width:44px;height:44px;border-radius:12px;background:var(--grad);color:#fff;display:grid;place-items:center;font-size:20px;margin-bottom:12px;position:relative;z-index:1}
+.stat-card .num{font-size:26px;font-weight:800;letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;position:relative;z-index:1}
+.stat-card .lbl{font-size:12px;color:var(--text-muted);font-weight:600;position:relative;z-index:1}
+
+.student-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);transition:background .2s;cursor:pointer}
+.student-row:hover{background:var(--primary-soft)}
+.student-row:last-child{border-bottom:none}
+.student-row .avatar{width:40px;height:40px;border-radius:11px;background:var(--grad-soft);display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.student-row .info{flex:1;min-width:0}
+.student-row .name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.student-row .meta{font-size:11.5px;color:var(--text-muted)}
+.mini-progress{height:6px;background:var(--bg);border-radius:999px;overflow:hidden;width:80px;border:1px solid var(--border);flex-shrink:0}
+.mini-progress > div{height:100%;background:var(--grad);transition:width .4s}
+
+.dt-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
+.dt{width:100%;border-collapse:collapse;font-size:13px;background:var(--card)}
+.dt th,.dt td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+.dt th{background:var(--grad-soft);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);font-weight:700}
+.dt tr:hover td{background:var(--primary-soft)}
+.dt td.cell-wrap{white-space:normal;max-width:280px;font-size:12.5px;line-height:1.6}
+
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:200;display:grid;place-items:center;padding:16px;animation:fadeIn .25s}
+.modal{background:var(--card);border-radius:20px;max-width:600px;width:100%;max-height:90vh;overflow:auto;box-shadow:var(--shadow-lg);animation:slideUp .3s}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.modal-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;background:var(--card);z-index:1}
+.modal-head h3{font-size:16px;font-weight:700}
+.modal-body{padding:22px}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--text);color:var(--bg-2);padding:12px 22px;border-radius:999px;font-weight:600;font-size:13.5px;box-shadow:var(--shadow-lg);z-index:999;opacity:0;transition:all .3s;display:flex;align-items:center;gap:10px;max-width:92vw}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast i{color:var(--primary-lighter)}
+
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg-2);border-top:1px solid var(--border);padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:90;backdrop-filter:blur(10px)}
+.mobile-nav-items{display:flex;justify-content:space-around}
+.mobile-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;border-radius:10px;font-size:10px;font-weight:600;color:var(--text-muted);transition:all .2s}
+.mobile-nav a i{font-size:17px}
+.mobile-nav a.active{color:var(--primary);background:var(--primary-soft)}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.flex{display:flex}.between{justify-content:space-between}.center{align-items:center}
+.gap-2{gap:8px}.gap-3{gap:12px}.wrap{flex-wrap:wrap}
+.mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}.mb-4{margin-bottom:16px}.mb-5{margin-bottom:22px}
+.mt-3{margin-top:12px}.mt-4{margin-top:16px}
+.text-muted{color:var(--text-muted)}.text-sm{font-size:13px}.text-xs{font-size:11.5px}.text-center{text-align:center}
+.hidden{display:none!important}
+.empty{padding:50px 20px;text-align:center;color:var(--text-muted)}
+.empty i{font-size:42px;opacity:.3;margin-bottom:14px;display:block}
+.check-list{list-style:none;font-size:13px;line-height:2}
+.check-list li{display:flex;align-items:flex-start;gap:8px}
+.check-list li::before{content:'✓';color:var(--success);font-weight:700;flex-shrink:0}
+
+@media(max-width:900px){
+  .mobile-nav{display:block}
+  main{padding:18px 14px 105px}
+  .hero{padding:24px 20px}
+  .hero h1{font-size:22px}
+  .progress-wrap{grid-template-columns:1fr}
+  .grid-2,.grid-3,.dd-wrap{grid-template-columns:1fr}
+  .section-title{font-size:18px}
+  .card{padding:16px}
+  .lang-toggle button{padding:0 8px;font-size:11px}
+}
+@media(max-width:480px){
+  .brand{font-size:16px}
+  .brand-icon{width:32px;height:32px;font-size:14px}
+  .topbar-inner{padding:10px 12px}
+  .hero h1{font-size:20px}
+  .icon-btn,.avatar-btn{width:34px;height:34px;font-size:14px}
+  .lang-toggle{height:34px}
+}
+
+@media print{
+  .topbar,.mobile-nav,.sidebar,.hero-actions,.no-print,.toast,.tabs,.lang-toggle{display:none!important}
+  body{background:#fff;color:#000}
+  main{padding:0;max-width:100%}
+  .main-wrap{margin-left:0!important}
+  .card{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}
+  .print-header{display:block!important;text-align:center;margin-bottom:20px;border-bottom:2px solid #7c3aed;padding-bottom:14px}
+  .print-header h1{font-size:20px;color:#7c3aed}
+}
+.print-header{display:none}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SIDEBAR (desktop only)
+============================================================ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+    <span class="brand-text" onclick="Router.go('beranda')">DigitalRecount</span>
+  </div>
+  <nav class="sidebar-nav" id="sidebarNav"></nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-credit">
+      <div class="credit-label">Dikembangkan oleh</div>
+      <div class="credit-name">Darmawati, S.Pd., M.Pd.</div>
+      <div class="credit-sub">Guru SMPN 1 Anggeraja</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ============================================================
+     MAIN WRAP
+============================================================ -->
+<div class="main-wrap">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand" onclick="Router.go('beranda')">
+        <div class="brand-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+        <span>DigitalRecount</span>
+      </div>
+      <nav class="desktop-nav" id="desktopNav"></nav>
+      <div class="topbar-actions">
+        <div class="lang-toggle" id="langToggle">
+          <button onclick="I18n.set('id')" data-lang="id" class="active">🇮🇩</button>
+          <button onclick="I18n.set('en')" data-lang="en">🇬🇧</button>
+        </div>
+        <button class="icon-btn" onclick="Router.go('guru')" title="Dashboard Guru"><i class="fa-solid fa-chart-line"></i></button>
+        <button class="icon-btn" onclick="Router.go('ai')" title="AI Buddy"><i class="fa-solid fa-robot"></i></button>
+        <button class="icon-btn" onclick="Router.go('kelas')" title="Kelas"><i class="fa-solid fa-users"></i></button>
+        <button class="icon-btn" onclick="Theme.toggle()" id="themeBtn" title="Ganti Tema"><i class="fa-solid fa-moon"></i></button>
+        <button class="avatar-btn" onclick="Router.go('profil')" id="avatarBtn">👨‍🏫</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main"></main>
+</div>
+
+<nav class="mobile-nav">
+  <div class="mobile-nav-items" id="mobileNav"></div>
+</nav>
+
+<div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span></span></div>
+<div id="modalRoot"></div>
+
+<script>
+/* ============================================================
+   SAFE CLONE
+============================================================ */
+function safeClone(o){if(typeof structuredClone==='function'){try{return structuredClone(o)}catch(e){}}return JSON.parse(JSON.stringify(o))}
+
+/* ============================================================
+   ⭐ SUPABASE CONFIG — ISI DI SINI
+============================================================ */
+const SUPABASE_URL = 'https://mhtmaikxjxxdxddahanu.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_yCv6K1wPUbvrq1k4EJlUew_IO9f5kQF';
+
+let sb = null;
+if (SUPABASE_URL && SUPABASE_ANON_KEY && typeof supabase !== 'undefined') {
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+/* ============================================================
+   STATE DEFAULT — v3.0 (Supabase)
+============================================================ */
+const SK='recounthub_v3_supabase';
+const DEFAULT_USER={
+  id:'',profile:{name:'',nip:'',school:'',subject:'Bahasa Inggris',classes:'',avatar:'👨‍🏫',role:'teacher'},
+  progress:{temukan:false,bayangkan:false,lakukan:false,bagikan:false},
+  quiz:{answers:[],passed:false,score:0},
+  t1:{readingDone:false,videoWatched:false,grammarDone:false,ddScore:0,conjScore:0,reflection:'',experiences:['','','','',''],_videoNote:''},
+  t2:{timeline:{orientation:'',event1:'',event2:'',event3:'',reorientation:''},vocab:[],mindMap:{what:'',who:'',when:'',where:'',why:'',how:''},storyboard:[],brainstorm:''},
+  t3:{guided:{orientation:'',events:['','',''],reorientation:''},drafts:[],selfCheck:{past:false,order:false,structure:false}},
+  t4:{published:false,audio:'',audioDur:0,peerFeedback:[],reflection:{learned:'',challenge:'',improve:''},reactions:{clap:0,heart:0,fire:0,star:0},attachments:[]},
+  badges:[]
+};
+const DEFAULT_STATE={
+  theme:'light',lang:'id',classCode:'',
+  settings:{
+    aiProvider:'gemini',
+    aiModel:'gemini-3.5-flash-lite',
+    teacherPin:''
+  },
+  materials:{videoUrl:'https://www.youtube.com/embed/aqz-KE-bpKQ',videoTitle:'Video Discovery',readingText:''},
+  aiGenerated:{quizzes:[]},
+  activeUserId:'u1',users:{'u1':safeClone(DEFAULT_USER)}
+};
+DEFAULT_STATE.users.u1.id='u1';
+
+let State=load();
+function deepMerge(t,s){for(const k in s){if(Array.isArray(s[k]))t[k]=s[k];else if(s[k]&&typeof s[k]==='object')t[k]=deepMerge(t[k]||{},s[k]);else t[k]=s[k]}return t}
+function load(){try{const r=localStorage.getItem(SK);if(!r)return safeClone(DEFAULT_STATE);const d=JSON.parse(r);return deepMerge(safeClone(DEFAULT_STATE),d)}catch(e){return safeClone(DEFAULT_STATE)}}
+function save(){try{localStorage.setItem(SK,JSON.stringify(State));Supabase.queueSync()}catch(e){}}
+function U(){return State.users[State.activeUserId]}
+function setU(fn){fn(U());save()}
+
+/* ============================================================
+   I18N
+============================================================ */
+const I18n={
+  dict:{
+    id:{beranda:'Beranda',temukan:'Temukan',bayangkan:'Bayangkan',lakukan:'Lakukan',bagikan:'Bagikan',kamus:'Kamus',badges:'Badge',ai:'AI Buddy',kelas:'Kelas',profil:'Profil',guru:'Dashboard Guru',
+      start:'Mulai Proyek',continue:'Lanjutkan',open:'Buka',view:'Lihat',fill:'Isi',save:'Simpan',cancel:'Batal',delete:'Hapus',add:'Tambah',more:'Lainnya',
+      locked:'Terkunci',done:'Selesai',
+      total_students:'Total Siswa',avg_progress:'Rata-rata',published_works:'Dipublikasikan',total_badges:'Total Badge',
+      students:'Daftar Siswa',materials_mgmt:'Kelola Materi',reports:'Rekap Nilai',
+      greeting:'Hi',role_greeting:'Murid',welcome:'Selamat datang',
+      stage1:'Temukan',stage2:'Bayangkan',stage3:'Lakukan',stage4:'Bagikan',
+      section_stages:'Tahapan Proyek',section_tools:'Alat Bantu',section_account:'Akun'},
+    en:{beranda:'Home',temukan:'Discover',bayangkan:'Imagine',lakukan:'Do',bagikan:'Share',kamus:'Dictionary',badges:'Badges',ai:'AI Buddy',kelas:'Class',profil:'Profile',guru:'Dashboard',
+      start:'Start',continue:'Continue',open:'Open',view:'View',fill:'Fill',save:'Save',cancel:'Cancel',delete:'Delete',add:'Add',more:'More',
+      locked:'Locked',done:'Done',
+      total_students:'Total Students',avg_progress:'Average',published_works:'Published',total_badges:'Total Badges',
+      students:'Students',materials_mgmt:'Materials',reports:'Reports',
+      greeting:'Hi',role_greeting:'Student',welcome:'Welcome',
+      stage1:'Discover',stage2:'Imagine',stage3:'Do',stage4:'Share',
+      section_stages:'Project Stages',section_tools:'Tools',section_account:'Account'}
+  },
+  t(k){const d=this.dict[State.lang||'id'];return d[k]||this.dict.id[k]||k},
+  set(lang){State.lang=lang;save();this.applyButtons();render()},
+  applyButtons(){document.querySelectorAll('.lang-toggle button').forEach(b=>{b.classList.toggle('active',b.dataset.lang===State.lang)})}
+};
+function t(k){return I18n.t(k)}
+
+/* ============================================================
+   SUPABASE LAYER — Auto Sync
+============================================================ */
+const Supabase={
+  queue:null,
+  isReady(){ return !!sb; },
+  queueSync(){
+    if(!sb) return;
+    clearTimeout(this.queue);
+    this.queue = setTimeout(() => this.sync(), 1500);
+  },
+  async sync(){
+    if(!sb) return;
+    try{
+      const u = U();
+      const payload = {
+        id: u.id,
+        class_code: State.classCode || 'default',
+        profile_name: u.profile.name || '',
+        profile_role: u.profile.role || 'teacher',
+        profile_nip: u.profile.nip || '',
+        profile_school: u.profile.school || '',
+        profile_classes: u.profile.classes || '',
+        profile_avatar: u.profile.avatar || '',
+        progress: u.progress, quiz: u.quiz, t1: u.t1, t2: u.t2, t3: u.t3, t4: u.t4,
+        badges: u.badges,
+        updated_at: new Date().toISOString()
+      };
+      const { error } = await sb.from('users').upsert(payload, { onConflict: 'id' });
+      if(error) throw error;
+      console.log('[Supabase] Sync OK');
+    }catch(e){ console.warn('[Supabase] Sync error:', e.message); }
+  },
+  async test(){
+    if(!sb) return toast('Supabase belum di-setup','fa-triangle-exclamation');
+    try{
+      toast('Testing...','fa-spinner');
+      const { data, error } = await sb.from('users').select('id').limit(1);
+      if(error) throw error;
+      toast('✓ Supabase aktif','fa-check');
+    }catch(e){ toast('Error: '+e.message,'fa-xmark'); }
+  },
+  async fetchConfig(){
+    if(!sb) return null;
+    try{
+      const { data, error } = await sb.from('config').select('key,value');
+      if(error) throw error;
+      const cfg = {};
+      (data||[]).forEach(row => cfg[row.key] = row.value);
+      return cfg;
+    }catch(e){ console.warn('[Supabase] fetchConfig:', e.message); return null; }
+  },
+  async fetchMaterials(){
+    if(!sb) return null;
+    try{
+      const { data, error } = await sb.from('materials').select('*').eq('id','default').maybeSingle();
+      if(error && error.code !== 'PGRST116') throw error;
+      return data || null;
+    }catch(e){ console.warn('[Supabase] fetchMaterials:', e.message); return null; }
+  },
+  async saveMaterials(data){
+    if(!sb) return { ok:false, error:'Supabase belum siap' };
+    try{
+      const { error } = await sb.from('materials').upsert({
+        id: 'default',
+        reading_text: data.readingText || '',
+        quizzes: data.quizzes || [],
+        video_url: data.videoUrl || '',
+        video_title: data.videoTitle || '',
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'id' });
+      if(error) throw error;
+      return { ok:true };
+    }catch(e){ return { ok:false, error: e.message }; }
+  },
+  async fetchAllUsers(){
+    if(!sb) return [];
+    try{
+      const { data, error } = await sb.from('users').select('*').order('updated_at',{ascending:false});
+      if(error) throw error;
+      return (data||[]).map(row => ({
+        id: row.id,
+        profile: {name:row.profile_name,role:row.profile_role,nip:row.profile_nip,school:row.profile_school,classes:row.profile_classes,avatar:row.profile_avatar,subject:'Bahasa Inggris'},
+        progress: row.progress || {}, quiz: row.quiz || {},
+        t1: row.t1 || {}, t2: row.t2 || {}, t3: row.t3 || {}, t4: row.t4 || {},
+        badges: row.badges || [], updated_at: row.updated_at
+      }));
+    }catch(e){ console.warn('[Supabase] fetchAllUsers:', e.message); return []; }
+  },
+  async uploadFile(bucket, path, file){
+    if(!sb) return { ok:false, error: 'Supabase not ready' };
+    try{
+      const { data, error } = await sb.storage.from(bucket).upload(path, file, { upsert: true });
+      if(error) throw error;
+      const { data: urlData } = sb.storage.from(bucket).getPublicUrl(path);
+      return { ok:true, url: urlData.publicUrl };
+    }catch(e){ return { ok:false, error: e.message }; }
+  }
+};
+
+const Sheets = {
+  queueSync: () => Supabase.queueSync(),
+  sync: () => Supabase.sync(),
+  test: () => Supabase.test()
+};
+
+/* ============================================================
+   AI — LANGSUNG KE GEMINI/GROQ
+============================================================ */
+const AI={
+  async chat(prompt){
+    const s = State.settings;
+    const sys = `Kamu AI Writing Buddy untuk siswa Indonesia yang belajar Recount Text. ATURAN KETAT: 1) JANGAN tulis cerita utuh untuk siswa. 2) Beri saran, koreksi, contoh singkat. 3) Bantu siswa temukan kesalahannya sendiri. 4) Fokus Simple Past Tense, Regular/Irregular Verbs, struktur Orientation-Events-Reorientation. 5) Jawab Bahasa Indonesia yang ramah & singkat.`;
+    if(!s.aiKey) throw new Error('AI belum tersedia. Hubungi admin.');
+    if(s.aiProvider === 'gemini'){
+      const m = s.aiModel || 'gemini-3.5-flash-lite';
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${s.aiKey}`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],systemInstruction:{parts:[{text:sys}]}})
+      });
+      const j = await r.json();
+      if(j.error) throw new Error(j.error.message);
+      return j.candidates?.[0]?.content?.parts?.[0]?.text || '(kosong)';
+    }else{
+      const m = s.aiModel || 'openai/gpt-oss-120b';
+      const r = await fetch('https://api.groq.com/openai/v1/chat/completions',{
+        method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+s.aiKey},
+        body:JSON.stringify({model:m,messages:[{role:'system',content:sys},{role:'user',content:prompt}],temperature:.7})
+      });
+      const j = await r.json();
+      if(j.error) throw new Error(j.error.message);
+      return j.choices?.[0]?.message?.content || '(kosong)';
+    }
+  }
+};
+
+const AI_MODELS={
+  gemini:[
+    {id:'gemini-3.5-flash-lite',label:'Gemini 3.5 Flash-Lite',desc:'Cepat, gratis'},
+    {id:'gemini-3.5-flash',label:'Gemini 3.5 Flash',desc:'Stabil'},
+    {id:'gemini-3.8-flash',label:'Gemini 3.8 Flash',desc:'Flagship'},
+    {id:'gemini-2.5-flash',label:'Gemini 2.5 Flash',desc:'Legacy'}
+  ],
+  groq:[
+    {id:'openai/gpt-oss-120b',label:'GPT-OSS 120B',desc:'Reasoning'},
+    {id:'openai/gpt-oss-20b',label:'GPT-OSS 20B',desc:'Cepat'},
+    {id:'qwen/qwen3.8-27b',label:'Qwen 3.8 27B',desc:'Multimodal'},
+    {id:'llama-3.3-70b-versatile',label:'Llama 3.3 70B',desc:'Versatile'}
+  ]
+};
+function getModelsForProvider(provider){return AI_MODELS[provider]||AI_MODELS.gemini}
+
+/* ============================================================
+   THEME / TOAST / MODAL
+============================================================ */
+const Theme={
+  apply(){
+    document.documentElement.setAttribute('data-theme',State.theme);
+    const icon = State.theme==='dark'?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';
+    ['themeBtn','themeBtnSidebar'].forEach(id=>{
+      const b=document.getElementById(id);
+      if(b) b.innerHTML = icon;
+    });
+  },
+  toggle(){
+    State.theme = State.theme==='dark'?'light':'dark';
+    save(); this.apply();
+    toast(State.theme==='dark'?'Mode gelap 🌙':'Mode terang ☀️');
+  }
+};
+let toastTimer;
+function toast(msg,icon='fa-circle-check'){
+  const el=document.getElementById('toast');
+  el.querySelector('i').className='fa-solid '+icon;
+  el.querySelector('span').textContent=msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2600);
+}
+function openModal(title,body,footer=''){
+  document.getElementById('modalRoot').innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="modal-head"><h3>${title}</h3><button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div><div class="modal-body">${body}</div>${footer?`<div class="modal-foot">${footer}</div>`:''}</div></div>`;
+}
+function closeModal(){document.getElementById('modalRoot').innerHTML=''}
+
+/* ============================================================
+   TEACHER SESSION
+============================================================ */
+const TeacherSession={
+  _key:'recounthub_teacher_session_sb',
+  isActive(){
+    try{
+      const s = JSON.parse(sessionStorage.getItem(this._key)||'null');
+      if(!s) return false;
+      if(Date.now() - s.ts > 30*60*1000){ this.logout(); return false; }
+      return true;
+    }catch(e){ return false; }
+  },
+  login(){ sessionStorage.setItem(this._key, JSON.stringify({ts:Date.now()})); },
+  logout(){ sessionStorage.removeItem(this._key); },
+  refresh(){ if(this.isActive()) sessionStorage.setItem(this._key, JSON.stringify({ts:Date.now()})); }
+};
+
+function requireTeacherPin(callback){
+  if(!State.settings.teacherPin){
+    openModal('🔐 Set PIN Guru',`
+      <div class="section-sub">Buat PIN 4-6 digit untuk melindungi fitur Guru.</div>
+      <div class="field"><label class="label">PIN Baru</label><input class="input" type="password" id="setupPin1" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+      <div class="field"><label class="label">Konfirmasi PIN</label><input class="input" type="password" id="setupPin2" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+    `,`<button class="btn btn-ghost" onclick="closeModal()">${t('cancel')}</button><button class="btn btn-primary" onclick="doSetupPin()">${t('save')}</button>`);
+    return;
+  }
+  if(TeacherSession.isActive()){ TeacherSession.refresh(); callback(); return; }
+  openModal('🔐 PIN Guru',`
+    <div class="section-sub">Masukkan PIN guru.</div>
+    <input class="input" type="password" id="pinInput" inputmode="numeric" maxlength="6" placeholder="••••" autofocus onkeydown="if(event.key==='Enter')doVerifyPin()">
+  `,`<button class="btn btn-ghost" onclick="closeModal()">${t('cancel')}</button><button class="btn btn-primary" onclick="doVerifyPin()">Masuk</button>`);
+  setTimeout(()=>document.getElementById('pinInput')?.focus(),100);
+}
+function doSetupPin(){
+  const p1=document.getElementById('setupPin1').value.trim();
+  const p2=document.getElementById('setupPin2').value.trim();
+  if(p1.length<4||p1.length>6) return toast('PIN 4-6 digit','fa-triangle-exclamation');
+  if(p1!==p2) return toast('PIN tidak cocok','fa-triangle-exclamation');
+  State.settings.teacherPin = p1; save();
+  TeacherSession.login();
+  closeModal(); toast('✓ PIN tersimpan','fa-lock'); render();
+}
+function doVerifyPin(){
+  const pin = document.getElementById('pinInput').value.trim();
+  if(pin === State.settings.teacherPin){
+    TeacherSession.login();
+    closeModal(); toast('✓','fa-unlock'); render();
+  } else {
+    toast('PIN salah','fa-xmark');
+    document.getElementById('pinInput').value='';
+  }
+}
+function logoutTeacher(){ TeacherSession.logout(); toast('Logged out','fa-right-from-bracket'); render(); }
+function unlockTeacherConfig(){ requireTeacherPin(()=>{ render(); toast('✓ Panel terbuka','fa-unlock'); }); }
+
+/* ============================================================
+   HELPERS
+============================================================ */
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function uid(){return 'u'+Date.now()+Math.random().toString(36).slice(2,6)}
+function fmtDate(d=new Date()){return d.toLocaleDateString(State.lang==='en'?'en-US':'id-ID',{day:'numeric',month:'long',year:'numeric'})}
+function formatBytes(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';return (b/1048576).toFixed(2)+' MB'}
+function fileIcon(name){
+  const e=(name.split('.').pop()||'').toLowerCase();
+  if(e==='pdf') return 'fa-file-pdf';
+  if(['jpg','jpeg','png','gif','webp'].includes(e)) return 'fa-file-image';
+  if(['doc','docx'].includes(e)) return 'fa-file-word';
+  if(['xls','xlsx'].includes(e)) return 'fa-file-excel';
+  if(['ppt','pptx'].includes(e)) return 'fa-file-powerpoint';
+  if(e==='epub') return 'fa-book';
+  return 'fa-file';
+}
+function isStageUnlocked(stage){
+  const u = U();
+  if(stage==='temukan') return true;
+  if(stage==='bayangkan') return u.progress.temukan;
+  if(stage==='lakukan') return u.progress.bayangkan;
+  if(stage==='bagikan') return u.progress.lakukan;
+  return false;
+}
+function lockInfo(stage){
+  const map={bayangkan:'temukan',lakukan:'bayangkan',bagikan:'lakukan'};
+  const need=map[stage];
+  if(!need) return '';
+  const label=t(need);
+  return State.lang==='en'?`Finish "${label}" first`:`Selesaikan tahap "${label}" dulu`;
+}
+const VERBS=[
+['play','played','played','Regular'],['walk','walked','walked','Regular'],['talk','talked','talked','Regular'],['watch','watched','watched','Regular'],['cook','cooked','cooked','Regular'],['visit','visited','visited','Regular'],['study','studied','studied','Regular'],['clean','cleaned','cleaned','Regular'],['help','helped','helped','Regular'],['call','called','called','Regular'],['jump','jumped','jumped','Regular'],['dance','danced','danced','Regular'],['listen','listened','listened','Regular'],['wait','waited','waited','Regular'],['want','wanted','wanted','Regular'],['need','needed','needed','Regular'],['like','liked','liked','Regular'],['love','loved','loved','Regular'],['try','tried','tried','Regular'],['enjoy','enjoyed','enjoyed','Regular'],['arrive','arrived','arrived','Regular'],['travel','traveled','traveled','Regular'],['stay','stayed','stayed','Regular'],['open','opened','opened','Regular'],['close','closed','closed','Regular'],['finish','finished','finished','Regular'],['start','started','started','Regular'],['stop','stopped','stopped','Regular'],['laugh','laughed','laughed','Regular'],['smile','smiled','smiled','Regular'],
+['go','went','gone','Irregular'],['eat','ate','eaten','Irregular'],['see','saw','seen','Irregular'],['take','took','taken','Irregular'],['come','came','come','Irregular'],['get','got','got','Irregular'],['make','made','made','Irregular'],['do','did','done','Irregular'],['have','had','had','Irregular'],['say','said','said','Irregular'],['give','gave','given','Irregular'],['find','found','found','Irregular'],['think','thought','thought','Irregular'],['tell','told','told','Irregular'],['become','became','become','Irregular'],['leave','left','left','Irregular'],['feel','felt','felt','Irregular'],['bring','brought','brought','Irregular'],['begin','began','begun','Irregular'],['keep','kept','kept','Irregular'],['hold','held','held','Irregular'],['write','wrote','written','Irregular'],['stand','stood','stood','Irregular'],['hear','heard','heard','Irregular'],['meet','met','met','Irregular'],['run','ran','run','Irregular'],['pay','paid','paid','Irregular'],['sit','sat','sat','Irregular'],['speak','spoke','spoken','Irregular'],['read','read','read','Irregular'],['grow','grew','grown','Irregular'],['lose','lost','lost','Irregular'],['fall','fell','fallen','Irregular'],['send','sent','sent','Irregular'],['build','built','built','Irregular'],['draw','drew','drawn','Irregular'],['break','broke','broken','Irregular'],['spend','spent','spent','Irregular'],['cut','cut','cut','Irregular'],['drive','drove','driven','Irregular'],['buy','bought','bought','Irregular'],['wear','wore','worn','Irregular'],['choose','chose','chosen','Irregular'],['swim','swam','swum','Irregular'],['fly','flew','flown','Irregular'],['sing','sang','sung','Irregular'],['drink','drank','drunk','Irregular'],['ride','rode','ridden','Irregular'],['forget','forgot','forgotten','Irregular'],['sleep','slept','slept','Irregular'],['wake','woke','woken','Irregular'],['win','won','won','Irregular'],['teach','taught','taught','Irregular'],['catch','caught','caught','Irregular']
+];
+const V1_SET=new Set(VERBS.map(v=>v[0]));
+const V2_SET=new Set(VERBS.map(v=>v[1]));
+function analyzeText(text){
+  const words=(text.toLowerCase().match(/[a-z']+/g)||[]);
+  const v2Found=new Set(),v1Warnings=new Set();
+  words.forEach(w=>{if(V2_SET.has(w))v2Found.add(w);else if(V1_SET.has(w))v1Warnings.add(w)});
+  return {words:words.length,v2Found:[...v2Found],v1Warnings:[...v1Warnings]};
+}
+function getV1FromV2(v2){const found=VERBS.find(v=>v[1]===v2);return found?found[0]:null}
+function renderHighlightedText(text){
+  const lines=text.split(/\n+/);
+  return lines.map(line=>{
+    if(!line.trim()) return '<br><br>';
+    return line.replace(/\b([a-zA-Z]+)\b/g,w=>{
+      const lower=w.toLowerCase();
+      if(V2_SET.has(lower)){
+        const v1=getV1FromV2(lower)||lower;
+        return `<em data-v1="${v1}" data-v2="${lower}">${w}</em>`;
+      }
+      return w;
+    });
+  }).join('<br>');
+}
+function renderVerbRows(list){
+  if(!list.length) return `<tr><td colspan="4" class="text-center text-muted" style="padding:26px;">Tidak ada hasil</td></tr>`;
+  return list.map(v=>`<tr style="border-bottom:1px solid var(--border);"><td style="padding:11px;font-weight:600;color:var(--primary);">${v[0]}</td><td style="padding:11px;font-weight:600;">${v[1]}</td><td style="padding:11px;">${v[2]}</td><td style="padding:11px;"><span class="badge ${v[3]==='Regular'?'badge-info':'badge-warning'}">${v[3]}</span></td></tr>`).join('');
+}
+
+/* ============================================================
+   BADGES
+============================================================ */
+const BADGES=[
+  {id:'starter',emoji:'🚀',name:'Starter',name_en:'Starter',desc:'Buka RecountHub',desc_en:'Open RecountHub',check:()=>true},
+  {id:'reader',emoji:'📖',name:'Pembaca',name_en:'Reader',desc:'Selesai Interactive Reading',desc_en:'Finish Interactive Reading',check:()=>U().t1.readingDone},
+  {id:'watcher',emoji:'🎬',name:'Penonton',name_en:'Watcher',desc:'Tonton Video Discovery',desc_en:'Watch Video Discovery',check:()=>U().t1.videoWatched},
+  {id:'grammar',emoji:'📝',name:'Grammar Guru',name_en:'Grammar Guru',desc:'Selesai Grammar Corner',desc_en:'Finish Grammar Corner',check:()=>U().t1.grammarDone},
+  {id:'verbhunter',emoji:'🎯',name:'Pemburu Verb',name_en:'Verb Hunter',desc:'Skor 80+ Drag & Drop',desc_en:'Score 80+ Drag & Drop',check:()=>U().t1.ddScore>=80},
+  {id:'conjugator',emoji:'⚡',name:'Konjugator',name_en:'Conjugator',desc:'Skor 80+ Conjugation',desc_en:'Score 80+ Conjugation',check:()=>U().t1.conjScore>=80},
+  {id:'quizmaster',emoji:'🏆',name:'Juara Kuis',name_en:'Quiz Master',desc:'Lulus kuis 3/3',desc_en:'Pass quiz 3/3',check:()=>U().quiz.score>=3},
+  {id:'reflector',emoji:'💭',name:'Perenung',name_en:'Reflector',desc:'Isi Refleksi Tahap 1',desc_en:'Fill Reflection',check:()=>U().t1.reflection.length>20},
+  {id:'planner',emoji:'🗺️',name:'Perencana',name_en:'Planner',desc:'Isi Story Mapping',desc_en:'Fill Story Mapping',check:()=>!!U().t2.timeline.orientation&&!!U().t2.timeline.event1},
+  {id:'vocabularist',emoji:'📚',name:'Kosakata',name_en:'Vocabularist',desc:'Simpan 5 kosakata',desc_en:'Save 5 vocab',check:()=>U().t2.vocab.length>=5},
+  {id:'artist',emoji:'🎨',name:'Storyboarder',name_en:'Storyboarder',desc:'Buat 3 panel storyboard',desc_en:'Create 3 storyboard',check:()=>U().t2.storyboard.length>=3},
+  {id:'writer',emoji:'✍️',name:'Penulis',name_en:'Writer',desc:'Selesai Guided Writing',desc_en:'Finish Writing',check:()=>U().t3.guided.orientation.length>20&&U().t3.guided.events.every(e=>e.length>10)&&U().t3.guided.reorientation.length>20},
+  {id:'reviser',emoji:'🔁',name:'Reviser',name_en:'Reviser',desc:'Simpan 3 versi draf',desc_en:'Save 3 drafts',check:()=>U().t3.drafts.length>=3},
+  {id:'selfcheck',emoji:'✅',name:'Self Checker',name_en:'Self Checker',desc:'Centang semua self-check',desc_en:'Check all',check:()=>U().t3.selfCheck.past&&U().t3.selfCheck.order&&U().t3.selfCheck.structure},
+  {id:'publisher',emoji:'📢',name:'Publisher',name_en:'Publisher',desc:'Publikasikan karya',desc_en:'Publish work',check:()=>U().t4.published},
+  {id:'voiceactor',emoji:'🎙️',name:'Voice Actor',name_en:'Voice Actor',desc:'Rekam audio',desc_en:'Record audio',check:()=>!!U().t4.audio},
+  {id:'attach',emoji:'📎',name:'Kolektor',name_en:'Collector',desc:'Upload 1 lampiran',desc_en:'Upload attachment',check:()=>U().t4.attachments&&U().t4.attachments.length>=1},
+  {id:'reflective',emoji:'🌟',name:'Reflektif',name_en:'Reflective',desc:'Isi semua refleksi akhir',desc_en:'Fill all reflection',check:()=>U().t4.reflection.learned&&U().t4.reflection.challenge&&U().t4.reflection.improve},
+  {id:'rebel',emoji:'👑',name:'Rebel',name_en:'Rebel',desc:'Kumpulkan 12+ badge',desc_en:'Collect 12+ badges',check:()=>U().badges.length>=12}
+];
+function badgeName(b){return State.lang==='en'?(b.name_en||b.name):b.name}
+function badgeDesc(b){return State.lang==='en'?(b.desc_en||b.desc):b.desc}
+function checkBadges(){
+  const u=U();
+  let newOnes=[];
+  BADGES.forEach(b=>{
+    if(!u.badges.includes(b.id)&&b.check()){ u.badges.push(b.id); newOnes.push(b); }
+  });
+  if(newOnes.length){
+    save();
+    newOnes.forEach((b,i)=>setTimeout(()=>toast(`Badge ${b.emoji} ${badgeName(b)}!`,'fa-award'),i*800));
+  }
+}
+
+/* ============================================================
+   NAV & ROUTER
+============================================================ */
+const NAV=[
+  {id:'beranda',icon:'fa-house',label:'beranda'},
+  {id:'temukan',icon:'fa-magnifying-glass',label:'temukan'},
+  {id:'bayangkan',icon:'fa-lightbulb',label:'bayangkan'},
+  {id:'lakukan',icon:'fa-pen-to-square',label:'lakukan'},
+  {id:'bagikan',icon:'fa-share-nodes',label:'bagikan'}
+];
+const NAV_ALL=[...NAV,
+  {id:'kamus',icon:'fa-book',label:'kamus'},
+  {id:'badges',icon:'fa-award',label:'badges'},
+  {id:'ai',icon:'fa-robot',label:'ai'},
+  {id:'guru',icon:'fa-chart-line',label:'guru'},
+  {id:'kelas',icon:'fa-users',label:'kelas'},
+  {id:'profil',icon:'fa-user',label:'profil'}
+];
+
+/* Kelompok untuk sidebar */
+const SIDEBAR_GROUPS=[
+  {label:'beranda', ids:['beranda']},
+  {label:'section_stages', ids:['temukan','bayangkan','lakukan','bagikan']},
+  {label:'section_tools', ids:['kamus','badges','ai']},
+  {label:'section_account', ids:['guru','kelas','profil']}
+];
+
+function renderNav(cur){
+  const byId = Object.fromEntries(NAV_ALL.map(n=>[n.id,n]));
+  const sidebarHTML = SIDEBAR_GROUPS.map(g=>{
+    const items = g.ids.map(id=>byId[id]).filter(Boolean);
+    if(!items.length) return '';
+    const label = g.label==='beranda' ? '' : `<div class="sidebar-section-label">${t(g.label)}</div>`;
+    return label + items.map(n=>`
+      <a href="#${n.id}" class="${cur===n.id?'active':''}">
+        <i class="fa-solid ${n.icon}"></i> <span>${t(n.label)}</span>
+      </a>`).join('');
+  }).join('');
+  const sbNav = document.getElementById('sidebarNav');
+  if(sbNav) sbNav.innerHTML = sidebarHTML;
+
+  const dn = document.getElementById('desktopNav');
+  if(dn) dn.innerHTML=NAV_ALL.map(n=>`<a href="#${n.id}" class="${cur===n.id?'active':''}"><i class="fa-solid ${n.icon}"></i> ${t(n.label)}</a>`).join('');
+
+  const main=NAV.slice(0,4);
+  document.getElementById('mobileNav').innerHTML=main.map(n=>`<a href="#${n.id}" class="${cur===n.id?'active':''}"><i class="fa-solid ${n.icon}"></i> ${t(n.label)}</a>`).join('')+`<a onclick="showMoreMenu(event)" style="cursor:pointer;"><i class="fa-solid fa-ellipsis"></i> ${t('more')}</a>`;
+
+  const av = U().profile.avatar||'👨‍🏫';
+  const ab = document.getElementById('avatarBtn'); if(ab) ab.textContent = av;
+  const abs = document.getElementById('avatarBtnSidebar'); if(abs) abs.textContent = av;
+}
+function showMoreMenu(e){
+  if(e) e.preventDefault();
+  const items=NAV_ALL.slice(4);
+  openModal(t('more'),`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">${items.map(n=>`<button class="btn btn-ghost" style="justify-content:flex-start;padding:14px;text-align:left;" onclick="closeModal();Router.go('${n.id}')"><i class="fa-solid ${n.icon}" style="width:20px;"></i> ${t(n.label)}</button>`).join('')}</div>`,`<button class="btn btn-ghost" onclick="closeModal()">${t('cancel')}</button>`);
+}
+const Router={
+  current:'beranda',
+  init(){ window.addEventListener('hashchange',()=>this.resolve()); this.resolve(); },
+  go(id){ location.hash=id; },
+  resolve(){
+    const id=(location.hash||'#beranda').slice(1);
+    this.current=NAV_ALL.find(n=>n.id===id)?id:'beranda';
+    if(this.current==='guru'&&!TeacherSession.isActive()){
+      history.replaceState(null,'','#beranda');
+      this.current='beranda';
+      this.render();
+      setTimeout(()=>requireTeacherPin(()=>{ location.hash='guru'; }),200);
+      return;
+    }
+    this.render();
+  },
+  render(){
+    checkBadges();
+    renderNav(this.current);
+    I18n.applyButtons();
+    const v=Views[this.current];
+    document.getElementById('main').innerHTML=v?v():'';
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(Binders[this.current]) Binders[this.current]();
+  }
+};
+function render(){ Router.render(); }
+
+/* ============================================================
+   VIEWS
+============================================================ */
+const Views={
+
+beranda(){
+  const u=U();
+  const done=Object.values(u.progress).filter(Boolean).length;
+  const pct=Math.round((done/4)*100);
+  const circum=2*Math.PI*70;
+  const off=circum-(pct/100)*circum;
+  const name=u.profile.name||t('role_greeting');
+  const stages=[
+    {id:'temukan',icon:'fa-magnifying-glass',num:1},
+    {id:'bayangkan',icon:'fa-lightbulb',num:2},
+    {id:'lakukan',icon:'fa-pen-to-square',num:3},
+    {id:'bagikan',icon:'fa-share-nodes',num:4}
+  ];
+  return `
+    <div class="hero">
+      <div class="hero-content">
+        <div class="badge" style="background:rgba(255,255,255,.2);color:#fff;margin-bottom:12px;"><i class="fa-solid fa-sparkles"></i> PjBL · Recount Text</div>
+        <h1>${t('greeting')}, ${esc(name)}! 👋</h1>
+        <p>${t('welcome')} — ${State.lang==='en'?'digital lab to learn Recount Text.':'laboratorium digital untuk belajar Recount Text.'}</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="Router.go('${done===4?'bagikan':'temukan'}')"><i class="fa-solid fa-play"></i> ${done===0?t('start'):t('continue')}</button>
+          <button class="btn btn-ghost" onclick="Router.go('ai')"><i class="fa-solid fa-robot"></i> ${t('ai')}</button>
+        </div>
+      </div>
+    </div>
+    ${!sb?`
+    <div class="card mb-4" style="background:#fef3c7;border-color:#f59e0b;color:#78350f;">
+      <div class="flex center gap-3"><i class="fa-solid fa-circle-exclamation" style="font-size:26px;color:#d97706;"></i><div><div style="font-weight:700;">⚠️ Supabase belum di-setup</div><div style="font-size:13px;">Isi SUPABASE_URL & SUPABASE_ANON_KEY di kode HTML.</div></div></div>
+    </div>`:''}
+    <div class="progress-wrap">
+      <div class="card text-center">
+        <div class="progress-ring">
+          <svg width="180" height="180">
+            <circle cx="90" cy="90" r="70" stroke="var(--border)" stroke-width="12" fill="none"/>
+            <circle class="progress-ring-circle" cx="90" cy="90" r="70" stroke="url(#g1)" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="${circum}" stroke-dashoffset="${off}"/>
+            <defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#c084fc"/></linearGradient></defs>
+          </svg>
+          <div class="progress-ring-label"><div><div class="num">${pct}%</div><div class="txt">${done}/4</div></div></div>
+        </div>
+        <div class="text-sm text-muted mt-3">${done===4?'🎉 '+t('done')+'!':'💪'}</div>
+        <div class="mt-3"><span class="badge badge-primary"><i class="fa-solid fa-award"></i> ${u.badges.length}/${BADGES.length}</span></div>
+      </div>
+      <div class="card">
+        <div class="section-title">${State.lang==='en'?'Your Project Journey':'Perjalanan Proyekmu'}</div>
+        <div class="section-sub">${State.lang==='en'?'Follow 4 stages.':'Ikuti 4 tahap.'}</div>
+        <div class="steps-grid">
+          ${stages.map(s=>{
+            const unlocked=isStageUnlocked(s.id);
+            const doneS=u.progress[s.id];
+            return `<div class="step-card ${doneS?'done':''} ${!unlocked?'locked':''}" onclick="${unlocked?`Router.go('${s.id}')`:`toast('${lockInfo(s.id)}','fa-lock')`}">
+              <div class="step-status">${doneS?'<i class="fa-solid fa-circle-check" style="color:var(--success)"></i>':'<i class="fa-regular fa-circle" style="color:var(--text-muted)"></i>'}</div>
+              <div class="step-num">${s.num}</div>
+              <h3>${t(s.id)}</h3>
+              <p>${State.lang==='en'?['Learn Recount Text','Plan your story','Write','Publish'][s.num-1]:['Kenali Recount Text','Rancang cerita','Tulis','Publikasikan'][s.num-1]}</p>
+              ${!unlocked?`<div class="lock-overlay"><i class="fa-solid fa-lock"></i><div class="lock-title">${t('locked')}</div><div class="lock-sub">${lockInfo(s.id)}</div></div>`:''}
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="card"><div class="flex center gap-3 mb-3"><div class="step-num" style="margin:0;"><i class="fa-solid fa-book"></i></div><div><div style="font-weight:700;">${t('kamus')}</div><div class="text-sm text-muted">${VERBS.length} verbs</div></div></div><button class="btn btn-ghost btn-sm" onclick="Router.go('kamus')">${t('open')} <i class="fa-solid fa-arrow-right"></i></button></div>
+      <div class="card"><div class="flex center gap-3 mb-3"><div class="step-num" style="margin:0;"><i class="fa-solid fa-award"></i></div><div><div style="font-weight:700;">${t('badges')}</div><div class="text-sm text-muted">${u.badges.length} / ${BADGES.length}</div></div></div><button class="btn btn-ghost btn-sm" onclick="Router.go('badges')">${t('view')} <i class="fa-solid fa-arrow-right"></i></button></div>
+      <div class="card"><div class="flex center gap-3 mb-3"><div class="step-num" style="margin:0;"><i class="fa-solid fa-user"></i></div><div><div style="font-weight:700;">${t('profil')}</div><div class="text-sm text-muted">${esc(u.profile.name||'-')}</div></div></div><button class="btn btn-ghost btn-sm" onclick="Router.go('profil')">${t('fill')} <i class="fa-solid fa-arrow-right"></i></button></div>
+    </div>`;
+},
+
+temukan(){
+  const t1=U().t1;
+  const tab=State._tabTemukan||'reading';
+  return `<div class="section-title">🔍 ${t('stage1')}</div>
+    <div class="section-sub">${State.lang==='en'?'Recognize Recount Text & Simple Past Tense.':'Kenali Recount Text & Simple Past Tense.'}</div>
+    <div class="tabs">${[['reading','📖 Reading'],['video','🎬 Video'],['grammar','📝 Grammar'],['game','🎯 Drag & Drop'],['conjugation','⚡ Conjugation'],['reflection','💭 '+(State.lang==='en'?'Reflection':'Refleksi')]].map(([k,l])=>`<div class="tab ${tab===k?'active':''}" onclick="setTab('temukan','${k}')">${l}</div>`).join('')}</div>
+    <div id="tabContent">${renderTabTemukan(tab,t1)}</div>`;
+},
+
+bayangkan(){
+  const t2=U().t2;
+  const tab=State._tabBayangkan||'timeline';
+  if(!isStageUnlocked('bayangkan')){
+    return `<div class="section-title">💡 ${t('stage2')}</div><div class="card text-center" style="padding:50px 20px;"><i class="fa-solid fa-lock" style="font-size:44px;color:var(--text-muted);margin-bottom:16px;"></i><h2 style="font-size:18px;margin-bottom:8px;">${t('locked')}</h2><p class="text-sm text-muted mb-4">${lockInfo('bayangkan')}</p><button class="btn btn-primary" onclick="Router.go('temukan')"><i class="fa-solid fa-arrow-left"></i> ${t('stage1')}</button></div>`;
+  }
+  return `<div class="section-title">💡 ${t('stage2')}</div><div class="section-sub">${State.lang==='en'?'Design your Recount Text concept.':'Rancang konsep Recount Text.'}</div>
+    <div class="tabs">${[['timeline','🗺️ Timeline'],['vocab','📚 '+(State.lang==='en'?'Vocab':'Kosakata')],['mindmap','🧠 Mind Map'],['storyboard','🎨 Storyboard'],['brainstorm','💬 Brainstorm']].map(([k,l])=>`<div class="tab ${tab===k?'active':''}" onclick="setTab('bayangkan','${k}')">${l}</div>`).join('')}</div>
+    <div id="tabContent">${renderTabBayangkan(tab,t2)}</div>`;
+},
+
+lakukan(){
+  const t3=U().t3;
+  const tab=State._tabLakukan||'guided';
+  if(!isStageUnlocked('lakukan')){
+    return `<div class="section-title">✍️ ${t('stage3')}</div><div class="card text-center" style="padding:50px 20px;"><i class="fa-solid fa-lock" style="font-size:44px;color:var(--text-muted);margin-bottom:16px;"></i><h2 style="font-size:18px;margin-bottom:8px;">${t('locked')}</h2><p class="text-sm text-muted mb-4">${lockInfo('lakukan')}</p><button class="btn btn-primary" onclick="Router.go('bayangkan')"><i class="fa-solid fa-arrow-left"></i> ${t('stage2')}</button></div>`;
+  }
+  return `<div class="section-title">✍️ ${t('stage3')}</div><div class="section-sub">${State.lang==='en'?'Write step by step.':'Tulis secara bertahap.'}</div>
+    <div class="tabs">${[['guided','📝 Guided Writing'],['drafts','💾 Draft Manager'],['selfcheck','✅ Self-Check']].map(([k,l])=>`<div class="tab ${tab===k?'active':''}" onclick="setTab('lakukan','${k}')">${l}</div>`).join('')}</div>
+    <div id="tabContent">${renderTabLakukan(tab,t3)}</div>`;
+},
+
+bagikan(){
+  const u=U();
+  const g=u.t3.guided;
+  const combined=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
+  const has=combined.length>30;
+  const tab=State._tabBagikan||'publish';
+  if(!isStageUnlocked('bagikan')){
+    return `<div class="section-title">📤 ${t('stage4')}</div><div class="card text-center" style="padding:50px 20px;"><i class="fa-solid fa-lock" style="font-size:44px;color:var(--text-muted);margin-bottom:16px;"></i><h2 style="font-size:18px;margin-bottom:8px;">${t('locked')}</h2><p class="text-sm text-muted mb-4">${lockInfo('bagikan')}</p><button class="btn btn-primary" onclick="Router.go('lakukan')"><i class="fa-solid fa-arrow-left"></i> ${t('stage3')}</button></div>`;
+  }
+  if(!has) return `<div class="section-title">📤 ${t('stage4')}</div><div class="card"><div class="empty"><i class="fa-solid fa-inbox"></i><div style="font-weight:600;color:var(--text);">${State.lang==='en'?'No work yet':'Belum ada karya'}</div><p class="text-sm mt-3">${State.lang==='en'?'Finish Stage 3 first.':'Selesaikan Tahap 3.'}</p><button class="btn btn-primary mt-4" onclick="Router.go('lakukan')"><i class="fa-solid fa-pen"></i> ${State.lang==='en'?'Write Now':'Tulis'}</button></div></div>`;
+  return `<div class="section-title">📤 ${t('stage4')}</div><div class="section-sub">${State.lang==='en'?'Publish, record, upload, feedback.':'Publikasikan, rekam, upload, feedback.'}</div>
+    <div class="tabs">${[['publish','📢 Publish'],['audio','🎙️ Audio'],['attach','📎 '+(State.lang==='en'?'Attachments':'Lampiran')],['peer','⭐ Peer'],['reflect','🌟 '+(State.lang==='en'?'Reflection':'Refleksi')],['gallery','🖼️ '+(State.lang==='en'?'Gallery':'Galeri')]].map(([k,l])=>`<div class="tab ${tab===k?'active':''}" onclick="setTab('bagikan','${k}')">${l}</div>`).join('')}</div>
+    <div id="tabContent">${renderTabBagikan(tab,u,combined)}</div>`;
+},
+
+kamus(){
+  return `<div class="section-title">📖 ${t('kamus')}</div><div class="section-sub">${VERBS.length} verbs.</div>
+    <div class="card mb-4">
+      <div style="position:relative;"><i class="fa-solid fa-magnifying-glass" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--text-muted);"></i><input class="input" id="verbSearch" placeholder="Cari..." style="padding-left:42px;" oninput="filterVerbs(this.value,State._verbType||'all')"></div>
+      <div class="flex gap-2 mt-3 wrap">
+        <button class="btn ${!State._verbType||State._verbType==='all'?'btn-primary':'btn-ghost'} btn-sm" onclick="filterVerbs('','all')">${State.lang==='en'?'All':'Semua'}</button>
+        <button class="btn ${State._verbType==='Regular'?'btn-primary':'btn-ghost'} btn-sm" onclick="filterVerbs('','Regular')">Regular</button>
+        <button class="btn ${State._verbType==='Irregular'?'btn-primary':'btn-ghost'} btn-sm" onclick="filterVerbs('','Irregular')">Irregular</button>
+      </div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden;"><div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13.5px;"><thead><tr style="background:var(--grad-soft);"><th style="padding:11px;text-align:left;font-size:11.5px;text-transform:uppercase;color:var(--text-muted);">V1</th><th style="padding:11px;text-align:left;font-size:11.5px;text-transform:uppercase;color:var(--text-muted);">V2</th><th style="padding:11px;text-align:left;font-size:11.5px;text-transform:uppercase;color:var(--text-muted);">V3</th><th style="padding:11px;text-align:left;font-size:11.5px;text-transform:uppercase;color:var(--text-muted);">${State.lang==='en'?'Type':'Tipe'}</th></tr></thead><tbody id="verbBody">${renderVerbRows(VERBS)}</tbody></table></div></div>`;
+},
+
+badges(){
+  const u=U();
+  const pct=Math.round(u.badges.length/BADGES.length*100);
+  return `<div class="section-title">🏆 ${t('badges')}</div><div class="section-sub">${u.badges.length} / ${BADGES.length} unlocked.</div>
+    <div class="card mb-4"><div style="height:10px;background:var(--bg);border-radius:999px;overflow:hidden;border:1px solid var(--border);"><div style="height:100%;width:${pct}%;background:var(--grad);transition:width .5s;"></div></div><div class="text-xs text-muted mt-2">Progress: ${pct}%</div></div>
+    <div class="badge-grid">${BADGES.map(b=>{const on=u.badges.includes(b.id);return `<div class="badge-item ${on?'unlocked':'locked'}"><span class="badge-emoji">${b.emoji}</span><div class="badge-name">${badgeName(b)}</div><div class="badge-desc">${badgeDesc(b)}</div></div>`}).join('')}</div>`;
+},
+
+ai(){
+  return `<div class="section-title">🤖 ${t('ai')}</div><div class="section-sub">${State.lang==='en'?'Ask grammar, suggestions, corrections.':'Tanya grammar, saran, koreksi.'}</div>
+    <div class="chat-wrap">
+      <div class="chat-head"><div class="avatar"><i class="fa-solid fa-robot"></i></div><div style="flex:1;"><div style="font-weight:700;font-size:14px;">${t('ai')}</div><div class="text-xs text-muted">${State.settings.aiProvider==='gemini'?'Gemini':'Groq'} · ${esc(State.settings.aiModel||'-')}</div></div><button class="btn btn-ghost btn-sm" onclick="clearChat()"><i class="fa-solid fa-rotate"></i> Reset</button></div>
+      <div class="chat-body" id="chatBody">${renderChat()}</div>
+      <div class="chat-input"><textarea class="input" id="chatInput" placeholder="Tanya..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea><button class="chat-send" onclick="sendChat()"><i class="fa-solid fa-paper-plane"></i></button></div>
+    </div>
+    <div class="card mt-4" style="background:var(--grad-soft);border-color:var(--primary-light);">
+      <div style="font-weight:700;margin-bottom:8px;"><i class="fa-solid fa-lightbulb"></i> Contoh</div>
+      <div class="flex gap-2 wrap">${['Apa V2 dari eat?','Perbaiki: I go to Bali last week','Buat 1 kalimat dengan "went"','Beda Regular & Irregular?'].map(q=>`<button class="btn btn-ghost btn-sm" onclick="document.getElementById('chatInput').value='${q}';sendChat()">${q}</button>`).join('')}</div>
+    </div>`;
+},
+
+guru(){
+  const users=Object.values(State.users);
+  const totalStudents=users.filter(u=>u.profile.role==='student').length||users.length;
+  const totalProgress=users.reduce((s,u)=>s+Object.values(u.progress).filter(Boolean).length,0);
+  const avgProgress=users.length?Math.round(totalProgress/(users.length*4)*100):0;
+  const publishedCount=users.filter(u=>u.t4.published).length;
+  const totalBadgesCollected=users.reduce((s,u)=>s+u.badges.length,0);
+  const tab=State._tabGuru||'overview';
+  return `<div class="flex between center mb-3 wrap gap-2"><div><div class="section-title">📊 ${t('guru')}</div><div class="section-sub" style="margin-bottom:0;">Pantau siswa.</div></div><button class="btn btn-ghost btn-sm" onclick="logoutTeacher()" style="color:var(--danger);border-color:var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Logout</button></div>
+    <div class="tabs">${[['overview','📊 Overview'],['students','👥 '+t('students')],['materials','🎬 '+t('materials_mgmt')],['aigen','✨ AI Generator'],['reports','📈 '+t('reports')]].map(([k,l])=>`<div class="tab ${tab===k?'active':''}" onclick="setTab('guru','${k}')">${l}</div>`).join('')}</div>
+    <div id="tabContent">${renderTabGuru(tab,{users,totalStudents,avgProgress,publishedCount,totalBadgesCollected})}</div>`;
+},
+
+kelas(){
+  const isTeacher=TeacherSession.isActive();
+  const isReady = !!sb;
+  return `<div class="section-title">👥 ${t('kelas')}</div><div class="section-sub">${State.lang==='en'?'Manage users.':'Kelola pengguna.'}</div>
+    <div class="grid-2 mb-4">
+      <div class="card">
+        <div class="badge badge-primary mb-3"><i class="fa-solid fa-users"></i> ${State.lang==='en'?'Active User':'Pengguna Aktif'}</div>
+        <div style="font-size:28px;text-align:center;margin:10px 0;">${U().profile.avatar}</div>
+        <div class="text-center" style="font-weight:700;">${esc(U().profile.name||'-')}</div>
+        <div class="text-center text-sm text-muted mb-3">${U().profile.role==='student'?'Siswa':'Guru'}</div>
+        <div class="flex gap-2 wrap">
+          <button class="btn btn-ghost btn-sm" onclick="showUserSwitcher()"><i class="fa-solid fa-arrows-rotate"></i> Ganti</button>
+          <button class="btn btn-primary btn-sm" onclick="addNewUser()"><i class="fa-solid fa-user-plus"></i> Baru</button>
+        </div>
+      </div>
+      <div class="card" style="background:var(--grad-soft);border-color:var(--primary-light);">
+        <div class="flex center gap-3">
+          <i class="fa-solid fa-circle-check" style="font-size:28px;color:${isReady?'var(--success)':'var(--warning)'};"></i>
+          <div style="flex:1;">
+            <div style="font-weight:700;">${isReady?(State.lang==='en'?'Connected':'Terhubung'):(State.lang==='en'?'Not connected':'Belum terhubung')}</div>
+            <div class="text-sm text-muted">${isReady?'Auto-sync via Supabase':(State.lang==='en'?'Ask admin to setup.':'Hubungi admin.')}</div>
+          </div>
+        </div>
+        ${isReady?`<div class="mt-3"><button class="btn btn-ghost btn-sm" onclick="testBackend()"><i class="fa-solid fa-vial"></i> Test</button></div>`:''}
+      </div>
+    </div>
+    <div class="card" style="border:2px solid ${isTeacher?'var(--success)':'var(--warning)'};">
+      <div class="flex between center wrap gap-2 mb-3">
+        <div>
+          <div class="badge ${isTeacher?'badge-success':'badge-warning'} mb-2"><i class="fa-solid ${isTeacher?'fa-lock-open':'fa-lock'}"></i> ${State.lang==='en'?'Teacher Only':'Khusus Guru'}</div>
+          <div style="font-weight:700;">${State.lang==='en'?'Teacher Panel':'Panel Guru'}</div>
+        </div>
+        ${isTeacher?`<button class="btn btn-ghost btn-sm" onclick="logoutTeacher()"><i class="fa-solid fa-lock"></i> Lock</button>`:`<button class="btn btn-primary btn-sm" onclick="unlockTeacherConfig()"><i class="fa-solid fa-unlock"></i> Buka</button>`}
+      </div>
+      ${isTeacher?`
+        <div class="card mb-4" style="background:var(--bg);">
+          <div class="badge badge-success mb-3"><i class="fa-solid fa-robot"></i> AI Buddy</div>
+          <div class="flex center gap-3">
+            <i class="fa-solid fa-circle-check" style="font-size:28px;color:var(--success);"></i>
+            <div style="flex:1;">
+              <div style="font-weight:700;">${State.lang==='en'?'AI Ready':'AI Siap'}</div>
+              <div class="text-sm text-muted">${State.lang==='en'?'Provided by admin.':'Disediakan admin.'}</div>
+            </div>
+          </div>
+          <div class="mt-3 flex gap-2 wrap">
+            <span class="badge badge-primary">${(State.settings.aiProvider||'gemini')==='gemini'?'Gemini':'Groq'}</span>
+            <span class="badge badge-muted">${esc(State.settings.aiModel||'default')}</span>
+          </div>
+          <div class="mt-3"><button class="btn btn-ghost btn-sm" onclick="testAIConnection()"><i class="fa-solid fa-vial"></i> Test AI</button></div>
+        </div>
+        <div class="card" style="background:var(--bg);">
+          <div class="badge badge-warning mb-3"><i class="fa-solid fa-lock"></i> PIN Guru</div>
+          <div class="grid-2">
+            <div class="field"><label class="label">PIN Baru</label><input class="input" type="password" id="newPinInput" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+            <div class="field"><label class="label">Konfirmasi</label><input class="input" type="password" id="confirmPinInput" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+          </div>
+          <button class="btn btn-primary" onclick="saveTeacherPin()"><i class="fa-solid fa-save"></i> Update PIN</button>
+        </div>
+      `:`
+        <div style="text-align:center;padding:30px;color:var(--text-muted);">
+          <i class="fa-solid fa-user-lock" style="font-size:40px;opacity:.3;margin-bottom:12px;display:block;"></i>
+          <div class="text-sm">Bagian ini untuk guru.</div>
+          <div class="text-xs mt-2">Masukkan PIN untuk akses.</div>
+        </div>
+      `}
+    </div>
+  `;
+},
+
+profil(){
+  const p=U().profile;
+  const avatars=['👨‍🏫','👩‍🏫','🧑‍🏫','👨‍💼','👩‍💼','🧑‍💻','📚','🎓','✨','🌟','🧑‍🎓','👨‍🎓','👩‍🎓'];
+  return `<div class="section-title">👤 ${t('profil')}</div><div class="section-sub">Lengkapi data.</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="text-center mb-4">
+          <div style="width:100px;height:100px;border-radius:24px;margin:0 auto 12px;background:var(--grad);display:grid;place-items:center;font-size:46px;box-shadow:var(--shadow-lg);">${p.avatar||'👨‍🏫'}</div>
+          <div style="font-weight:700;font-size:17px;">${esc(p.name||'-')}</div>
+          <div class="text-sm text-muted">${esc(p.subject||'-')} · ${esc(p.school||'-')}</div>
+        </div>
+        <div class="label mb-3">Avatar</div>
+        <div class="flex gap-2 wrap">${avatars.map(a=>`<button onclick="setAvatar('${a}')" style="width:42px;height:42px;border-radius:11px;font-size:20px;background:${p.avatar===a?'var(--grad)':'var(--bg)'};border:1.5px solid ${p.avatar===a?'transparent':'var(--border)'};display:grid;place-items:center;">${a}</button>`).join('')}</div>
+      </div>
+      <div class="card">
+        <div class="field"><label class="label">Nama Lengkap</label><input class="input" id="pfName" value="${esc(p.name)}"></div>
+        <div class="field"><label class="label">Role</label><select class="select" id="pfRole"><option value="teacher" ${p.role==='teacher'?'selected':''}>Guru</option><option value="student" ${p.role==='student'?'selected':''}>Siswa</option></select></div>
+        <div class="field"><label class="label">NIP / NIS</label><input class="input" id="pfNip" value="${esc(p.nip)}"></div>
+        <div class="field"><label class="label">Sekolah</label><input class="input" id="pfSchool" value="${esc(p.school)}"></div>
+        <div class="field"><label class="label">Mata Pelajaran</label><input class="input" id="pfSubject" value="${esc(p.subject)}"></div>
+        <div class="field"><label class="label">Kelas</label><input class="input" id="pfClasses" value="${esc(p.classes)}"></div>
+        <div class="flex gap-2 wrap mt-3">
+          <button class="btn btn-primary" onclick="saveProfile()"><i class="fa-solid fa-save"></i> ${t('save')}</button>
+          <button class="btn btn-ghost" onclick="printReport()"><i class="fa-solid fa-print"></i> Cetak</button>
+          <button class="btn btn-ghost" onclick="resetAll()" style="color:var(--danger);border-color:var(--danger);"><i class="fa-solid fa-trash"></i> Reset</button>
+        </div>
+      </div>
+    </div>`;
+}
+};
+
+/* ============================================================
+   TAB RENDERERS
+============================================================ */
+function setTab(page,tab){ State['_tab'+page.charAt(0).toUpperCase()+page.slice(1)]=tab; render(); }
+
+function renderTabTemukan(tab,t1){
+  const L=State.lang;
+  if(tab==='reading') return `<div class="card mb-4">
+      <div class="flex between center mb-3 wrap gap-2"><div class="badge badge-primary"><i class="fa-solid fa-book-open"></i> Interactive Reading</div>${t1.readingDone?'<span class="badge badge-success"><i class="fa-solid fa-check"></i> '+t('done')+'</span>':''}</div>
+      <div class="quiz-text" id="readText">${State.materials.readingText?renderHighlightedText(State.materials.readingText):`<em data-v1="go" data-v2="went">Last holiday</em>, my family <em data-v1="go" data-v2="went">went</em> to Bali. We <em data-v1="stay" data-v2="stayed">stayed</em> at a small hotel near Kuta Beach.<br><br>On the first day, we <em data-v1="visit" data-v2="visited">visited</em> Tanah Lot Temple and <em data-v1="watch" data-v2="watched">watched</em> the beautiful sunset. The next morning, I <em data-v1="swim" data-v2="swam">swam</em> in the sea. We <em data-v1="eat" data-v2="ate">ate</em> delicious seafood.<br><br>It <em data-v1="be" data-v2="was">was</em> an unforgettable trip. I <em data-v1="feel" data-v2="felt">felt</em> so happy.`}</div>
+      <button class="btn ${t1.readingDone?'btn-ghost':'btn-primary'} btn-sm" onclick="markReading()"><i class="fa-solid fa-check"></i> ${t1.readingDone?t('done'):'Tandai Selesai'}</button>
+    </div>
+    <div class="grid-2 mb-4">
+      <div class="card"><div class="badge badge-primary mb-3"><i class="fa-solid fa-info-circle"></i> Apa itu Recount Text?</div><p class="text-sm mb-3">Teks yang menceritakan pengalaman lampau.</p><ul class="check-list"><li><b>Orientation</b> — Siapa, kapan, di mana</li><li><b>Events</b> — Urutan kejadian</li><li><b>Re-orientation</b> — Penutup/kesan</li></ul></div>
+      <div class="card"><div class="badge badge-primary mb-3"><i class="fa-solid fa-clock-rotate-left"></i> Simple Past Tense</div><ul class="check-list"><li><b>Regular</b>: +ed → <em>play → played</em></li><li><b>Irregular</b>: berubah → <em>go → went</em></li><li><b>Was/Were</b> for to be</li></ul></div>
+    </div>
+    <div class="card">
+      <div class="section-title" style="font-size:17px;">🎯 Kuis Pemahaman</div>
+      <div class="section-sub">Skor minimal 2/3 untuk unlock Tahap 2.</div>
+      <div id="quizArea">${renderQuiz()}</div>
+      ${U().quiz.passed?`<div class="card" style="background:var(--grad-soft);border-color:var(--primary-light);margin-top:14px;"><div class="flex center gap-3"><i class="fa-solid fa-trophy" style="font-size:26px;color:var(--primary)"></i><div><div style="font-weight:700;">Selamat, kamu lulus! 🎉</div><div class="text-sm text-muted">Score: ${U().quiz.score}/3</div></div></div></div><div class="mt-4 flex gap-2 wrap"><button class="btn btn-primary" onclick="Router.go('bayangkan')">Lanjut Tahap 2 <i class="fa-solid fa-arrow-right"></i></button><button class="btn btn-ghost" onclick="resetQuiz()"><i class="fa-solid fa-rotate"></i> Ulangi</button></div>`:''}
+    </div>`;
+  if(tab==='video') return `<div class="card mb-4">
+      <div class="flex between center mb-3 wrap gap-2"><div class="badge badge-primary"><i class="fa-solid fa-video"></i> Video Discovery</div>${t1.videoWatched?'<span class="badge badge-success"><i class="fa-solid fa-check"></i> '+t('done')+'</span>':''}</div>
+      <div style="position:relative;padding-bottom:56.25%;border-radius:14px;overflow:hidden;background:#000;"><iframe style="position:absolute;inset:0;width:100%;height:100%;border:0;" src="${esc(State.materials.videoUrl)}" allowfullscreen></iframe></div>
+      <div class="mt-4"><label class="label">1 hal menarik yang kamu pelajari?</label><textarea class="textarea" id="videoNote">${esc(t1._videoNote||'')}</textarea></div>
+      <div class="mt-3"><button class="btn ${t1.videoWatched?'btn-ghost':'btn-primary'}" onclick="markVideo()"><i class="fa-solid fa-check"></i> ${t1.videoWatched?t('done'):'Tandai Selesai'}</button></div>
+    </div>`;
+  if(tab==='grammar') return `<div class="card mb-4">
+      <div class="flex between center mb-3 wrap gap-2"><div class="badge badge-primary"><i class="fa-solid fa-spell-check"></i> Grammar</div>${t1.grammarDone?'<span class="badge badge-success"><i class="fa-solid fa-check"></i> '+t('done')+'</span>':''}</div>
+      <div class="grid-2 mb-4">
+        <div class="card" style="background:var(--grad-soft);"><div style="font-weight:700;margin-bottom:8px;">🟦 Regular Verb</div><div class="text-sm">play → play<b style="color:var(--primary)">ed</b></div><div class="text-sm">visit → visit<b style="color:var(--primary)">ed</b></div><div class="text-sm">study → studi<b style="color:var(--primary)">ed</b></div></div>
+        <div class="card" style="background:var(--grad-soft);"><div style="font-weight:700;margin-bottom:8px;">🟧 Irregular Verb</div><div class="text-sm">go → <b style="color:var(--warning)">went</b></div><div class="text-sm">eat → <b style="color:var(--warning)">ate</b></div><div class="text-sm">see → <b style="color:var(--warning)">saw</b></div></div>
+      </div>
+      <div class="card mb-4" style="border:1.5px solid var(--primary);">
+        <div class="flex center gap-2 mb-3"><div class="step-num" style="margin:0;width:34px;height:34px;font-size:14px;">📐</div><div style="font-weight:800;font-size:15px;color:var(--primary);">Rumus Simple Past Tense</div></div>
+        <div style="overflow-x:auto;"><table class="tense-table"><thead><tr><th>Bentuk</th><th>Rumus</th><th>Contoh</th></tr></thead><tbody>
+          <tr><td><b style="color:var(--success);">(+)</b></td><td>S + V2 + O</td><td>I <b>visited</b> Bali last year.</td></tr>
+          <tr><td><b style="color:var(--danger);">(–)</b></td><td>S + did not + V1 + O</td><td>I <b>did not visit</b> Bali.</td></tr>
+          <tr><td><b style="color:var(--info);">(?)</b></td><td>Did + S + V1 + O?</td><td><b>Did</b> you <b>visit</b>?</td></tr>
+          <tr><td colspan="3" style="background:var(--grad-soft);padding:6px;text-align:center;font-size:11.5px;font-weight:700;">TO BE</td></tr>
+          <tr><td><b>(+)</b></td><td>S + was/were + C</td><td>She <b>was</b> happy.</td></tr>
+          <tr><td><b>(–)</b></td><td>S + was/were + not + C</td><td>She <b>was not</b> happy.</td></tr>
+          <tr><td><b>(?)</b></td><td>Was/Were + S + C?</td><td><b>Was</b> she happy?</td></tr>
+        </tbody></table></div>
+        <div class="tense-alert"><b>⚠️ Penting!</b> Setelah DID / DID NOT, verb kembali ke V1.<br>✅ <i>I <b>did not go</b>.</i> ❌ <i>I did not <b>went</b>.</i></div>
+      </div>
+      <div class="mt-4"><button class="btn ${t1.grammarDone?'btn-ghost':'btn-primary'}" onclick="markGrammar()"><i class="fa-solid fa-check"></i> ${t1.grammarDone?t('done'):'Tandai Selesai'}</button></div>
+    </div>`;
+  if(tab==='game') return renderDragDrop(t1);
+  if(tab==='conjugation') return renderConjugation(t1);
+  if(tab==='reflection') return `<div class="card mb-4">
+      <div class="badge badge-primary mb-3"><i class="fa-solid fa-mirror"></i> Reflection Journal</div>
+      <label class="label">Pengalaman menarik yang ingin kamu tulis?</label>
+      <textarea class="textarea" id="reflectionInput">${esc(t1.reflection)}</textarea>
+      <button class="btn btn-primary mt-3" onclick="saveReflection()"><i class="fa-solid fa-save"></i> ${t('save')}</button>
+    </div>
+    <div class="card">
+      <div class="badge badge-primary mb-3"><i class="fa-solid fa-list-check"></i> Misi Tahap 1</div>
+      <div class="section-sub">Kumpulkan 5 pengalaman (min 5 kata).</div>
+      ${[0,1,2,3,4].map(i=>`<div class="flex center gap-2 mb-3"><div style="width:32px;height:32px;border-radius:8px;background:var(--grad-soft);color:var(--primary);font-weight:700;display:grid;place-items:center;flex-shrink:0;">${i+1}</div><input class="input" id="exp${i}" value="${esc(t1.experiences[i]||'')}" placeholder="Pengalaman ${i+1}..." oninput="saveExperience(${i},this.value)"></div>`).join('')}
+      <div class="mt-3"><span class="badge ${t1.experiences.filter(e=>e&&e.trim().length>4).length>=5?'badge-success':'badge-muted'}"><i class="fa-solid fa-check"></i> ${t1.experiences.filter(e=>e&&e.trim().length>4).length}/5</span></div>
+    </div>`;
+  return '';
+}
+
+function renderTabBayangkan(tab,t2){
+  if(tab==='timeline'){ const tl=t2.timeline; return `<div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-timeline"></i> Story Mapping Timeline</div>
+    <div class="timeline">
+      <div class="tl-item"><h4>1. ORIENTATION</h4><textarea class="textarea" placeholder="Siapa, kapan, di mana..." style="min-height:70px;" oninput="saveTimeline('orientation',this.value)">${esc(tl.orientation)}</textarea></div>
+      <div class="tl-item"><h4>2. EVENT 1</h4><textarea class="textarea" placeholder="Kejadian pertama..." style="min-height:70px;" oninput="saveTimeline('event1',this.value)">${esc(tl.event1)}</textarea></div>
+      <div class="tl-item"><h4>3. EVENT 2</h4><textarea class="textarea" placeholder="Kejadian kedua..." style="min-height:70px;" oninput="saveTimeline('event2',this.value)">${esc(tl.event2)}</textarea></div>
+      <div class="tl-item"><h4>4. EVENT 3</h4><textarea class="textarea" placeholder="Kejadian ketiga..." style="min-height:70px;" oninput="saveTimeline('event3',this.value)">${esc(tl.event3)}</textarea></div>
+      <div class="tl-item"><h4>5. RE-ORIENTATION</h4><textarea class="textarea" placeholder="Kesan/pesan..." style="min-height:70px;" oninput="saveTimeline('reorientation',this.value)">${esc(tl.reorientation)}</textarea></div>
+    </div>
+    <div class="mt-3 flex gap-2 wrap"><button class="btn btn-primary" onclick="saveTimelineFinal()"><i class="fa-solid fa-check"></i> Tandai Selesai</button><button class="btn btn-ghost" onclick="Router.go('lakukan')">Lanjut Tahap 3 <i class="fa-solid fa-arrow-right"></i></button></div>
+  </div>`; }
+  if(tab==='vocab') return `<div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-book-bookmark"></i> Vocabulary Builder</div>
+    <div class="grid-3 mb-3"><input class="input" id="vV1" placeholder="V1 (go)"><input class="input" id="vV2" placeholder="V2 (went)"><select class="select" id="vType"><option>Irregular</option><option>Regular</option></select></div>
+    <button class="btn btn-primary" onclick="addVocab()"><i class="fa-solid fa-plus"></i> Tambah</button>
+    <div class="mt-4">${t2.vocab.length?`<div class="flex gap-2 wrap">${t2.vocab.map((v,i)=>`<div class="dd-chip">${esc(v.v1)} → <b>${esc(v.v2)}</b> <button onclick="removeVocab(${i})" style="color:var(--danger);margin-left:4px;"><i class="fa-solid fa-xmark"></i></button></div>`).join('')}</div>`:`<div class="text-sm text-muted text-center" style="padding:20px;">Belum ada kosakata</div>`}</div>
+  </div>`;
+  if(tab==='mindmap'){ const m=t2.mindMap; return `<div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-brain"></i> Mind Mapping (5W+1H)</div>
+    <div class="grid-2">
+      <div class="field"><label class="label">What?</label><textarea class="textarea" oninput="saveMindMap('what',this.value)">${esc(m.what)}</textarea></div>
+      <div class="field"><label class="label">Who?</label><textarea class="textarea" oninput="saveMindMap('who',this.value)">${esc(m.who)}</textarea></div>
+      <div class="field"><label class="label">When?</label><textarea class="textarea" oninput="saveMindMap('when',this.value)">${esc(m.when)}</textarea></div>
+      <div class="field"><label class="label">Where?</label><textarea class="textarea" oninput="saveMindMap('where',this.value)">${esc(m.where)}</textarea></div>
+      <div class="field"><label class="label">Why?</label><textarea class="textarea" oninput="saveMindMap('why',this.value)">${esc(m.why)}</textarea></div>
+      <div class="field"><label class="label">How?</label><textarea class="textarea" oninput="saveMindMap('how',this.value)">${esc(m.how)}</textarea></div>
+    </div>
+  </div>`; }
+  if(tab==='storyboard') return `<div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-images"></i> Storyboard Creator</div>
+    <div class="grid-2 mb-3"><div><label class="label">Upload Gambar</label><input type="file" accept="image/*" class="input" onchange="uploadStoryboard(this)"></div>
+    <div><label class="label">Atau emoji</label><div class="flex gap-2 wrap">${['🏖️','🏔️','🏫','🏠','🚗','✈️','🎉','😄','😢','🌅','🍽️','⚽'].map(e=>`<button class="btn btn-ghost btn-sm" style="font-size:20px;padding:6px 10px;" onclick="addStoryboardEmoji('${e}')">${e}</button>`).join('')}</div></div></div>
+    <div class="storyboard-grid">${t2.storyboard.map((s,i)=>`<div class="sb-card"><div class="sb-del" onclick="removeStoryboard(${i})"><i class="fa-solid fa-xmark"></i></div><div class="sb-thumb">${s.img.startsWith('data:')?`<img src="${s.img}">`:s.img}</div><div class="sb-cap"><input class="input" value="${esc(s.caption)}" placeholder="Caption..." style="padding:6px 8px;font-size:12px;" oninput="updateStoryboardCaption(${i},this.value)"></div></div>`).join('')}</div>
+  </div>`;
+  if(tab==='brainstorm') return `<div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-comments"></i> Peer Brainstorm</div>
+    <textarea class="textarea" style="min-height:200px;" oninput="saveBrainstorm(this.value)">${esc(t2.brainstorm)}</textarea>
+    <div class="flex gap-2 wrap mt-3"><button class="btn btn-primary" onclick="toast('Tersimpan 💾')"><i class="fa-solid fa-save"></i> ${t('save')}</button><button class="btn btn-ghost" onclick="copyBrainstorm()"><i class="fa-solid fa-copy"></i> Copy</button></div>
+  </div>`;
+  return '';
+}
+
+function renderTabLakukan(tab,t3){
+  if(tab==='guided'){ const g=t3.guided;
+    const combined=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
+    const a=analyzeText(combined);
+    return `<div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-shoe-prints"></i> Guided Writing</div>
+    <div class="card mb-3" style="background:var(--grad-soft);">
+      <div class="flex center gap-2 mb-2"><div class="step-num" style="margin:0;width:32px;height:32px;font-size:14px;">1</div><b>Orientation</b></div>
+      <div class="text-xs text-muted mb-2">Siapa, kapan, di mana. <em>Last week, my family and I went to...</em></div>
+      <textarea class="textarea" oninput="saveGuided('orientation',this.value)">${esc(g.orientation)}</textarea>
+    </div>
+    <div class="card mb-3" style="background:var(--grad-soft);">
+      <div class="flex center gap-2 mb-2"><div class="step-num" style="margin:0;width:32px;height:32px;font-size:14px;">2</div><b>Events (min 3)</b></div>
+      <div class="text-xs text-muted mb-2">Kronologis. Pakai V2.</div>
+      ${[0,1,2].map(i=>`<textarea class="textarea mb-2" style="min-height:60px;" placeholder="Kejadian ${i+1}..." oninput="saveGuidedEvent(${i},this.value)">${esc(g.events[i]||'')}</textarea>`).join('')}
+    </div>
+    <div class="card mb-3" style="background:var(--grad-soft);">
+      <div class="flex center gap-2 mb-2"><div class="step-num" style="margin:0;width:32px;height:32px;font-size:14px;">3</div><b>Re-orientation</b></div>
+      <div class="text-xs text-muted mb-2">Kesan, perasaan, penutup.</div>
+      <textarea class="textarea" oninput="saveGuided('reorientation',this.value)">${esc(g.reorientation)}</textarea>
+    </div>
+    <div id="grammarReport">${renderGrammarReport(a)}</div>
+    <div class="mt-3 flex gap-2 wrap"><button class="btn btn-primary" onclick="finishGuided()"><i class="fa-solid fa-check"></i> Selesai & Lanjut</button><button class="btn btn-ghost" onclick="saveCurrentDraft()"><i class="fa-solid fa-floppy-disk"></i> Simpan Draft</button></div>
+  </div>`; }
+  if(tab==='drafts') return `<div class="card mb-4">
+    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-box-archive"></i> Draft Manager</div><div style="font-weight:700;">Riwayat Versi</div></div><button class="btn btn-primary btn-sm" onclick="saveCurrentDraft()"><i class="fa-solid fa-plus"></i> Simpan Baru</button></div>
+    ${t3.drafts.length?`<div class="grid-2">${t3.drafts.slice().reverse().map((d,i)=>{
+      const realIdx=t3.drafts.length-1-i;
+      return `<div class="card" style="background:var(--bg);border-style:dashed;">
+      <div class="flex between center mb-2"><b>Versi ${realIdx+1}</b><span class="badge badge-muted">${new Date(d.ts).toLocaleString()}</span></div>
+      <div class="text-xs text-muted mb-2">${d.words} kata</div>
+      <div style="font-size:12.5px;max-height:100px;overflow:hidden;">${esc(d.content.slice(0,180))}...</div>
+      <div class="flex gap-2 mt-3 wrap"><button class="btn btn-ghost btn-sm" onclick="viewDraft(${realIdx})"><i class="fa-solid fa-eye"></i></button><button class="btn btn-ghost btn-sm" onclick="restoreDraft(${realIdx})"><i class="fa-solid fa-rotate-left"></i></button><button class="btn btn-ghost btn-sm" onclick="deleteDraft(${realIdx})" style="color:var(--danger);"><i class="fa-solid fa-trash"></i></button></div>
+    </div>`; }).join('')}</div>`:`<div class="empty"><i class="fa-solid fa-box-open"></i><div>Belum ada draf</div></div>`}
+  </div>`;
+  if(tab==='selfcheck'){ const sc=t3.selfCheck; return `<div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-clipboard-check"></i> Self-Assessment</div>
+    <div class="field"><label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;"><input type="checkbox" ${sc.past?'checked':''} onchange="toggleSelfCheck('past',this.checked)" style="width:20px;height:20px;accent-color:var(--primary);margin-top:3px;"><span>Sudah pakai Simple Past Tense (V2)?</span></label></div>
+    <div class="field"><label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;"><input type="checkbox" ${sc.order?'checked':''} onchange="toggleSelfCheck('order',this.checked)" style="width:20px;height:20px;accent-color:var(--primary);margin-top:3px;"><span>Urutan waktu jelas (kronologis)?</span></label></div>
+    <div class="field"><label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;"><input type="checkbox" ${sc.structure?'checked':''} onchange="toggleSelfCheck('structure',this.checked)" style="width:20px;height:20px;accent-color:var(--primary);margin-top:3px;"><span>3 struktur lengkap (O-E-R)?</span></label></div>
+    <div class="mt-4"><button class="btn btn-primary" onclick="Router.go('bagikan')">Lanjut Tahap 4 <i class="fa-solid fa-arrow-right"></i></button></div>
+  </div>`; }
+  return '';
+}
+
+function renderTabBagikan(tab,u,combined){
+  const g=u.t3.guided;
+  const a=analyzeText(combined);
+  const prof=u.profile;
+  if(tab==='publish') return `<div class="card mb-4">
+    <div class="flex between center mb-4 wrap gap-2"><div><div class="badge badge-success mb-3"><i class="fa-solid fa-check"></i> ${u.t4.published?'Dipublikasikan':'Siap'}</div><h2 style="font-size:22px;font-weight:800;">${esc(prof.name||'Karyamu')}</h2><div class="text-sm text-muted">${fmtDate()}</div></div><button class="btn btn-primary no-print" onclick="printStory()"><i class="fa-solid fa-print"></i> Cetak</button></div>
+    <div class="print-header"><h1>${esc(prof.name||'Karya')}</h1><div>Recount Text · ${esc(prof.school||'')} · ${fmtDate()}</div></div>
+    <div style="font-size:15px;line-height:2;white-space:pre-wrap;">${esc(combined)}</div>
+    <div class="grid-3 mt-4"><div class="text-center"><div style="font-size:22px;font-weight:800;color:var(--primary);">${a.words}</div><div class="text-xs text-muted">Kata</div></div><div class="text-center"><div style="font-size:22px;font-weight:800;color:var(--success);">${a.v2Found.length}</div><div class="text-xs text-muted">V2</div></div><div class="text-center"><div style="font-size:22px;font-weight:800;color:var(--warning);">${u.badges.length}</div><div class="text-xs text-muted">Badge</div></div></div>
+    ${!u.t4.published?`<button class="btn btn-primary mt-4" onclick="publishWork()"><i class="fa-solid fa-bullhorn"></i> Publikasikan Sekarang</button>`:`<div class="badge badge-success mt-4"><i class="fa-solid fa-check"></i> Sudah dipublikasikan</div>`}
+  </div>`;
+  if(tab==='audio') return `<div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-microphone"></i> Audio Recording</div>
+    <div class="audio-rec"><button class="rec-btn ${State._recording?'recording':''}" id="recBtn" onclick="toggleRecord()"><i class="fa-solid ${State._recording?'fa-stop':'fa-microphone'}"></i></button>
+    <div class="rec-info"><div class="title">${State._recording?'🔴 Merekam...':(u.t4.audio?'Tersimpan':'Klik merekam')}</div><div class="sub" id="recTime">${State._recording?'00:00':(u.t4.audio?'Duration: '+(u.t4.audioDur||'-')+'s':'Max 3 min')}</div></div></div>
+    ${u.t4.audio?`<audio controls src="${u.t4.audio}" style="width:100%;margin-top:14px;"></audio><button class="btn btn-danger btn-sm mt-3" onclick="deleteAudio()"><i class="fa-solid fa-trash"></i> Hapus</button>`:''}
+  </div>`;
+  if(tab==='attach') return `<div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-paperclip"></i> Lampiran</div>
+    <div class="section-sub">Max 3 file, 2MB tiap file.</div>
+    <div class="attach-zone" onclick="document.getElementById('attachInput').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleAttachDrop(event)"><i class="fa-solid fa-cloud-arrow-up"></i><div style="font-weight:600;">Klik atau drag & drop</div></div>
+    <input type="file" id="attachInput" style="display:none;" multiple onchange="handleAttachFiles(this.files)">
+    ${u.t4.attachments&&u.t4.attachments.length?`<div class="attach-list mt-4">${u.t4.attachments.map((f,i)=>`<div class="attach-item"><div class="icon"><i class="fa-solid ${fileIcon(f.name)}"></i></div><div class="info"><div class="name">${esc(f.name)}</div><div class="size">${formatBytes(f.size)}</div></div><a href="${f.data||f.url||'#'}" download="${esc(f.name)}" class="btn btn-ghost btn-sm"><i class="fa-solid fa-download"></i></a><button class="del" onclick="removeAttachment(${i})"><i class="fa-solid fa-trash"></i></button></div>`).join('')}</div>`:''}
+  </div>`;
+  if(tab==='peer') return `<div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-star"></i> Peer Feedback</div>
+    ${u.t4.peerFeedback.length?u.t4.peerFeedback.map(f=>`<div class="card mb-3" style="background:var(--bg);border-style:dashed;"><div class="flex between center mb-2"><b>${esc(f.from||'Anonim')}</b></div><div class="mb-2"><b style="color:var(--success);">⭐ 2 Stars:</b><div class="text-sm">${esc(f.star1)}</div><div class="text-sm">${esc(f.star2)}</div></div><div><b style="color:var(--warning);">💭 1 Wish:</b><div class="text-sm">${esc(f.wish)}</div></div></div>`).join(''):`<div class="text-sm text-muted text-center mb-3" style="padding:20px;">Belum ada feedback</div>`}
+    <button class="btn btn-primary" onclick="openPeerForm()"><i class="fa-solid fa-plus"></i> Tambah Feedback</button>
+  </div>`;
+  if(tab==='reflect'){ const r=u.t4.reflection; return `<div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-sparkles"></i> Refleksi Akhir</div>
+    <div class="field"><label class="label">Apa yang kamu pelajari?</label><textarea class="textarea" oninput="saveReflect('learned',this.value)">${esc(r.learned)}</textarea></div>
+    <div class="field"><label class="label">Tantangan terbesar?</label><textarea class="textarea" oninput="saveReflect('challenge',this.value)">${esc(r.challenge)}</textarea></div>
+    <div class="field"><label class="label">Apa yang akan diperbaiki?</label><textarea class="textarea" oninput="saveReflect('improve',this.value)">${esc(r.improve)}</textarea></div>
+  </div>`; }
+  if(tab==='gallery') return `<div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-image"></i> Galeri</div>
+    <div class="gallery-grid"><div class="story-card"><h4>${esc((g.orientation||'').slice(0,40)||'Karyamu')}</h4><div class="meta"><span><i class="fa-solid fa-user"></i> ${esc(prof.name||'-')}</span><span><i class="fa-solid fa-calendar"></i> ${fmtDate()}</span></div><div class="excerpt">${esc(combined)}</div><div class="actions">${['clap','heart','fire','star'].map(k=>{const e={clap:'👏',heart:'❤️',fire:'🔥',star:'⭐'}[k];return `<button class="react-btn ${u.t4.reactions[k]>0?'active':''}" onclick="react('${k}')">${e} ${u.t4.reactions[k]||0}</button>`}).join('')}</div></div></div>
+  </div>`;
+  return '';
+}
+
+function renderTabGuru(tab,stats){
+  const {users,totalStudents,avgProgress,publishedCount,totalBadgesCollected}=stats;
+  if(tab==='overview') return `<div class="dash-grid">
+    <div class="stat-card"><div class="icon"><i class="fa-solid fa-users"></i></div><div class="num">${totalStudents}</div><div class="lbl">Total Siswa</div></div>
+    <div class="stat-card"><div class="icon"><i class="fa-solid fa-chart-simple"></i></div><div class="num">${avgProgress}%</div><div class="lbl">Rata-rata</div></div>
+    <div class="stat-card"><div class="icon"><i class="fa-solid fa-bullhorn"></i></div><div class="num">${publishedCount}</div><div class="lbl">Dipublikasikan</div></div>
+    <div class="stat-card"><div class="icon"><i class="fa-solid fa-award"></i></div><div class="num">${totalBadgesCollected}</div><div class="lbl">Total Badge</div></div>
+  </div>
+  <div class="card mb-4"><div style="font-weight:700;margin-bottom:12px;"><i class="fa-solid fa-chart-line"></i> Penyelesaian Tahap</div>
+    ${['temukan','bayangkan','lakukan','bagikan'].map((st,i)=>{const count=users.filter(u=>u.progress[st]).length;const pct=users.length?Math.round(count/users.length*100):0;return `<div class="mb-3"><div class="flex between center mb-2"><span class="text-sm"><b>${i+1}. ${t(st)}</b></span><span class="badge badge-primary">${count}/${users.length} (${pct}%)</span></div><div class="mini-progress" style="width:100%;height:8px;"><div style="width:${pct}%"></div></div></div>`}).join('')}
+  </div>`;
+  if(tab==='students') return `<div class="card" style="padding:0;overflow:hidden;">
+    <div class="flex between center" style="padding:14px 18px;border-bottom:1px solid var(--border);"><b>Siswa (${users.length})</b><button class="btn btn-primary btn-sm" onclick="addNewUser()"><i class="fa-solid fa-plus"></i> Tambah</button></div>
+    <div>${users.map(u=>{const done=Object.values(u.progress||{}).filter(Boolean).length;const pct=Math.round(done/4*100);return `<div class="student-row" onclick="viewStudent('${u.id}')"><div class="avatar">${u.profile.avatar||'👤'}</div><div class="info"><div class="name">${esc(u.profile.name||'Tanpa Nama')}</div><div class="meta">${u.profile.role==='student'?'Siswa':'Guru'} · ${esc(u.profile.classes||'-')} · ${(u.badges||[]).length} badge</div></div><div class="mini-progress"><div style="width:${pct}%"></div></div><div style="font-size:12px;font-weight:700;color:var(--primary);min-width:38px;text-align:right;">${pct}%</div></div>`}).join('')}</div>
+  </div>`;
+  if(tab==='materials') return `<div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-video"></i> Video Discovery</div>
+    <div class="field"><label class="label">YouTube Embed URL</label><input class="input" id="matVideoUrl" value="${esc(State.materials.videoUrl)}"></div>
+    <div class="field"><label class="label">Judul</label><input class="input" id="matVideoTitle" value="${esc(State.materials.videoTitle)}"></div>
+    <button class="btn btn-primary" onclick="saveMaterials()"><i class="fa-solid fa-save"></i> ${t('save')}</button>
+  </div>
+  <div class="card mb-4">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-book"></i> Kamus Verb</div>
+    <div class="text-sm text-muted mb-3">${VERBS.length} verbs.</div>
+    <div class="grid-3 mb-3"><input class="input" id="newVerbV1" placeholder="V1"><input class="input" id="newVerbV2" placeholder="V2"><input class="input" id="newVerbV3" placeholder="V3"></div>
+    <select class="select mb-3" id="newVerbType"><option>Regular</option><option>Irregular</option></select>
+    <button class="btn btn-primary btn-sm" onclick="addManualVerb()"><i class="fa-solid fa-plus"></i> Tambah</button>
+  </div>`;
+  if(tab==='aigen'){
+    const readingText=State.materials.readingText||'';
+    const quizzes=State.aiGenerated&&State.aiGenerated.quizzes?State.aiGenerated.quizzes:[];
+    const hasAI=!!sb;
+    return `<div class="card mb-4" style="background:var(--grad-soft);"><div class="flex center gap-3 mb-2"><i class="fa-solid fa-wand-magic-sparkles" style="font-size:24px;color:var(--primary);"></i><div><div style="font-weight:800;font-size:16px;">AI Content Generator</div><div class="text-sm text-muted">Generate bacaan, kuis, atau verb.</div></div></div></div>
+  <div class="card mb-4">
+    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-book-open"></i> Reading Text</div><div style="font-weight:700;">Generate Recount Text</div></div><span class="badge ${readingText?'badge-success':'badge-muted'}">${readingText?'Ada':'Kosong'}</span></div>
+    <div class="grid-2 mb-3"><select class="select" id="genTopic"><option value="holiday">Liburan</option><option value="school">Acara Sekolah</option><option value="family">Keluarga</option><option value="funny">Lucu</option><option value="competition">Lomba</option></select><select class="select" id="genWords"><option value="80">~80</option><option value="120" selected>~120</option><option value="180">~180</option></select></div>
+    <div class="flex gap-2 wrap mb-3"><button class="btn btn-primary" onclick="generateReading(event)" ${!hasAI?'disabled':''}><i class="fa-solid fa-wand-magic-sparkles"></i> Generate</button>${readingText?`<button class="btn btn-ghost" onclick="clearReading()" style="color:var(--danger);"><i class="fa-solid fa-trash"></i> Clear</button>`:''}</div>
+    <textarea class="textarea" id="genReadingText" style="min-height:200px;" placeholder="Hasil generate...">${esc(readingText)}</textarea>
+    <button class="btn btn-primary mt-3" onclick="saveReading()"><i class="fa-solid fa-save"></i> ${t('save')}</button>
+  </div>
+  <div class="card mb-4">
+    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-question"></i> Quiz</div><div style="font-weight:700;">Generate Quiz</div></div><span class="badge ${quizzes.length?'badge-success':'badge-muted'}">${quizzes.length} soal</span></div>
+    <div class="flex gap-2 wrap mb-3"><button class="btn btn-primary" onclick="generateQuiz(event)" ${(!hasAI||!readingText)?'disabled':''}><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Quiz</button>${quizzes.length?`<button class="btn btn-ghost" onclick="clearQuiz()" style="color:var(--danger);"><i class="fa-solid fa-trash"></i> Clear</button>`:''}</div>
+    ${quizzes.length?quizzes.map((q,i)=>`<div class="card mb-3" style="background:var(--bg);border-style:dashed;"><div class="flex between center mb-2"><b>Q ${i+1}</b><button class="btn btn-ghost btn-sm" onclick="deleteGeneratedQuestion(${i})" style="color:var(--danger);"><i class="fa-solid fa-trash"></i></button></div><input class="input mb-2" value="${esc(q.q)}" oninput="updateGeneratedQuestion(${i},'q',this.value)">${q.opts.map((o,j)=>`<input class="input mb-2" value="${esc(o)}" oninput="updateGeneratedQuestion(${i},'opt${j}',this.value)" placeholder="${String.fromCharCode(65+j)}">`).join('')}<select class="select mt-2" onchange="updateGeneratedQuestion(${i},'a',parseInt(this.value))">${q.opts.map((_,j)=>`<option value="${j}" ${q.a===j?'selected':''}>Benar: ${String.fromCharCode(65+j)}</option>`).join('')}</select></div>`).join(''):''}
+  </div>
+  <div class="card">
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-book-bookmark"></i> Generate Verbs</div>
+    <button class="btn btn-primary mb-3" onclick="generateVerbs(event)" ${!hasAI?'disabled':''}><i class="fa-solid fa-wand-magic-sparkles"></i> Generate 10 Verb</button>
+    <div id="genVerbsResult"></div>
+  </div>`;
+  }
+  if(tab==='reports'){
+    return `<div class="card mb-4">
+    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-table"></i> Rekap Nilai</div><div style="font-weight:700;">Semua Pengguna</div></div><div class="flex gap-2 wrap"><button class="btn btn-ghost btn-sm" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> CSV</button><button class="btn btn-primary btn-sm" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button><button class="btn btn-ghost btn-sm" onclick="importExcelDialog()"><i class="fa-solid fa-upload"></i> Import</button><button class="btn btn-primary btn-sm" onclick="printReport()"><i class="fa-solid fa-print"></i> PDF</button></div></div>
+    <div class="dt-wrap"><table class="dt"><thead><tr><th>Nama</th><th>Role</th><th>Progress</th><th>Badges</th><th>Kata</th><th>V2</th><th>Status</th></tr></thead>
+    <tbody>${users.map(u=>{const g=u.t3?.guided||{orientation:'',events:[],reorientation:''};const combined=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();const a=analyzeText(combined);const done=Object.values(u.progress||{}).filter(Boolean).length;return `<tr><td><b>${esc(u.profile.name||'-')}</b></td><td>${u.profile.role==='student'?'Siswa':'Guru'}</td><td><span class="badge badge-primary">${done}/4</span></td><td><span class="badge badge-warning">${(u.badges||[]).length}</span></td><td>${a.words}</td><td>${a.v2Found.length}</td><td>${u.t4?.published?'<span class="badge badge-success">✓</span>':'-'}</td></tr>`}).join('')}</tbody></table></div>
+  </div>`;
+  }
+  return '';
+}
+
+/* ============================================================
+   DRAG & DROP GAME
+============================================================ */
+const DD_POOL=[
+  {v:'played',t:'Regular'},{v:'went',t:'Irregular'},{v:'visited',t:'Regular'},
+  {v:'ate',t:'Irregular'},{v:'watched',t:'Regular'},{v:'saw',t:'Irregular'},
+  {v:'studied',t:'Regular'},{v:'took',t:'Irregular'},{v:'cleaned',t:'Regular'},
+  {v:'gave',t:'Irregular'}
+];
+function renderDragDrop(t1){
+  if(!State._ddItems) State._ddItems=[...DD_POOL].sort(()=>Math.random()-.5);
+  const items=State._ddItems;
+  const placed=State._ddPlaced||{Regular:[],Irregular:[]};
+  const used=[...placed.Regular,...placed.Irregular];
+  return `<div class="card mb-4">
+    <div class="flex between center mb-3 wrap gap-2">
+      <div class="badge badge-primary"><i class="fa-solid fa-hand-pointer"></i> Drag & Drop</div>
+      ${t1.ddScore>0?`<span class="badge ${t1.ddScore>=80?'badge-success':'badge-warning'}">Skor: ${t1.ddScore}</span>`:''}
+    </div>
+    <div class="section-sub">Klik kata, lalu klik kotak tujuan.</div>
+    <div class="dd-items" id="ddItems">${items.map(it=>`<div class="dd-item ${used.includes(it.v)?'used':''}" data-v="${it.v}" data-t="${it.t}" onclick="pickDD(this)">${it.v}</div>`).join('')}</div>
+    <div class="dd-wrap">
+      <div class="dd-zone regular" id="zoneRegular" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropDD(event,'Regular')" onclick="dropToZone('Regular')">
+        <h4><i class="fa-solid fa-circle" style="font-size:8px;"></i> REGULAR</h4>
+        <div>${placed.Regular.map(v=>`<span class="dd-chip correct">${v}</span>`).join('')}</div>
+      </div>
+      <div class="dd-zone irregular" id="zoneIrregular" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropDD(event,'Irregular')" onclick="dropToZone('Irregular')">
+        <h4><i class="fa-solid fa-circle" style="width:8px;height:8px;background:var(--warning);border-radius:2px;display:inline-block;"></i> IRREGULAR</h4>
+        <div>${placed.Irregular.map(v=>`<span class="dd-chip correct">${v}</span>`).join('')}</div>
+      </div>
+    </div>
+    <div class="flex gap-2 mt-4 wrap">
+      <button class="btn btn-primary" onclick="checkDD()" ${used.length<items.length?'disabled':''}><i class="fa-solid fa-check"></i> Cek</button>
+      <button class="btn btn-ghost" onclick="resetDD()"><i class="fa-solid fa-rotate"></i> Ulangi</button>
+    </div>
+  </div>`;
+}
+function pickDD(el){
+  if(el.classList.contains('used')) return;
+  document.querySelectorAll('.dd-item').forEach(e=>e.classList.remove('dragging'));
+  el.classList.add('dragging');
+  State._pickedDD=el;
+}
+function dropToZone(zone){
+  const el=State._pickedDD; if(!el) return;
+  const v=el.dataset.v;
+  State._ddPlaced=State._ddPlaced||{Regular:[],Irregular:[]};
+  if(!State._ddPlaced[zone].includes(v)) State._ddPlaced[zone].push(v);
+  el.classList.remove('dragging');
+  State._pickedDD=null;
+  render();
+}
+function dropDD(e,zone){ e.preventDefault(); const z=document.getElementById('zone'+zone); if(z) z.classList.remove('drag-over'); dropToZone(zone); }
+function checkDD(){
+  const placed=State._ddPlaced||{Regular:[],Irregular:[]};
+  const all=[...placed.Regular,...placed.Irregular];
+  const correct=all.filter(v=>{
+    const item=DD_POOL.find(p=>p.v===v);
+    return item&&((placed.Regular.includes(v)&&item.t==='Regular')||(placed.Irregular.includes(v)&&item.t==='Irregular'));
+  }).length;
+  const score=Math.round(correct/all.length*100);
+  if(score>U().t1.ddScore) setU(u=>u.t1.ddScore=score);
+  toast(`Score: ${score} (${correct}/${all.length})`,score>=80?'fa-trophy':'fa-info-circle');
+  checkBadges(); render();
+}
+function resetDD(){ State._ddPlaced={Regular:[],Irregular:[]}; State._ddItems=[...DD_POOL].sort(()=>Math.random()-.5); State._pickedDD=null; render(); }
+
+/* ============================================================
+   CONJUGATION
+============================================================ */
+const CONJ_Q=[
+  {s:'Yesterday, I ___ (go) to the market.',a:'went'},
+  {s:'She ___ (eat) fried rice this morning.',a:'ate'},
+  {s:'They ___ (play) football last Sunday.',a:'played'},
+  {s:'We ___ (see) a beautiful rainbow.',a:'saw'},
+  {s:'He ___ (study) hard for the exam.',a:'studied'}
+];
+function renderConjugation(t1){
+  if(State._conjIdx===undefined) State._conjIdx=0;
+  const i=State._conjIdx;
+  if(i>=CONJ_Q.length){
+    return `<div class="card text-center">
+      <div class="badge badge-primary mb-3"><i class="fa-solid fa-bolt"></i> Conjugation</div>
+      <h2 style="font-size:22px;margin:14px 0;">Selesai! 🎉</h2>
+      <div style="font-size:44px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">${t1.conjScore}%</div>
+      <p class="text-sm text-muted mb-4">Skor tertinggi</p>
+      <button class="btn btn-primary" onclick="State._conjIdx=0;State._conjCorrect=0;render()"><i class="fa-solid fa-rotate"></i> Ulangi</button>
+    </div>`;
+  }
+  const q=CONJ_Q[i];
+  return `<div class="card">
+    <div class="flex between center mb-3"><div class="badge badge-primary"><i class="fa-solid fa-bolt"></i> Conjugation</div><span class="text-sm text-muted">${i+1}/${CONJ_Q.length}</span></div>
+    <div class="section-sub">Isi dengan V2 yang tepat.</div>
+    <div class="quiz-text" style="font-size:15px;">${q.s}</div>
+    <input class="input mb-3" id="conjInput" placeholder="Tulis V2..." onkeydown="if(event.key==='Enter')checkConj()">
+    <button class="btn btn-primary" onclick="checkConj()"><i class="fa-solid fa-check"></i> Jawab</button>
+    <button class="btn btn-ghost" onclick="State._conjIdx++;render()"><i class="fa-solid fa-forward"></i> Lewati</button>
+  </div>`;
+}
+function checkConj(){
+  const inp=document.getElementById('conjInput'); if(!inp) return;
+  const val=inp.value.trim().toLowerCase();
+  const q=CONJ_Q[State._conjIdx];
+  if(val===q.a){ toast('✓','fa-check'); State._conjCorrect=(State._conjCorrect||0)+1; }
+  else toast(`✗ ${q.a}`,'fa-xmark');
+  State._conjIdx++;
+  if(State._conjIdx>=CONJ_Q.length){
+    const score=Math.round((State._conjCorrect||0)/CONJ_Q.length*100);
+    if(score>U().t1.conjScore) setU(u=>u.t1.conjScore=score);
+    checkBadges();
+  }
+  render();
+}
+
+/* ============================================================
+   QUIZ
+============================================================ */
+const QUIZ=[
+  {q:'Bagian "Last holiday, my family went to Bali." termasuk struktur apa?',opts:['Orientation','Events','Re-orientation'],a:0},
+  {q:'Kata kerja manakah yang berbentuk Past Tense (V2)?',opts:['go','went','going'],a:1},
+  {q:'Bagian penutup yang berisi kesan atau pesan disebut...',opts:['Orientation','Events','Re-orientation'],a:2}
+];
+function getActiveQuiz(){
+  if(State.aiGenerated && State.aiGenerated.quizzes && State.aiGenerated.quizzes.length){
+    return State.aiGenerated.quizzes;
+  }
+  return QUIZ;
+}
+function renderQuiz(){
+  const q=U().quiz;
+  const quiz=getActiveQuiz();
+  return quiz.map((item,i)=>{
+    const sel=q.answers[i];
+    const ans=sel!==undefined && sel!==null;
+    return `<div class="mb-4"><div style="font-weight:600;margin-bottom:9px;">${i+1}. ${item.q}</div>
+      ${item.opts.map((o,j)=>{let c='quiz-option';if(ans){if(j===item.a)c+=' correct';else if(j===sel)c+=' wrong'}return `<div class="${c}" onclick="answerQuiz(${i},${j})">${String.fromCharCode(65+j)}. ${o}</div>`}).join('')}
+    </div>`;
+  }).join('');
+}
+function answerQuiz(i,j){
+  const q=U().quiz; q.answers[i]=j;
+  const quiz=getActiveQuiz();
+  q.score=quiz.filter((it,k)=>q.answers[k]===it.a).length;
+  if(q.score>=Math.ceil(quiz.length*0.6)) q.passed=true;
+  if(q.passed) U().progress.temukan=true;
+  save(); checkBadges(); render();
+}
+function resetQuiz(){ setU(u=>{u.quiz={answers:[],passed:false,score:0};u.progress.temukan=u.t1.readingDone&&u.t1.grammarDone}); render(); toast('Reset','fa-rotate'); }
+
+/* ============================================================
+   GRAMMAR REPORT
+============================================================ */
+function renderGrammarReport(a){
+  const v2=a.v2Found.slice(0,12), v1=a.v1Warnings.slice(0,10);
+  return `<div class="card" style="background:var(--bg);border-style:dashed;">
+    <div class="flex center gap-3 mb-3"><i class="fa-solid fa-spell-check" style="color:var(--primary);font-size:18px;"></i><div style="font-weight:700;font-size:14px;">Grammar Checker</div></div>
+    <div class="flex gap-2 wrap mb-3"><span class="badge badge-muted">${a.words} kata</span><span class="badge badge-success">${a.v2Found.length} V2</span>${a.v1Warnings.length?`<span class="badge badge-warning">${a.v1Warnings.length} ⚠</span>`:''}</div>
+    ${v2.length?`<div class="mb-3"><div class="badge badge-success mb-2"><i class="fa-solid fa-check"></i> V2</div><div class="text-sm" style="color:var(--success);">${v2.map(v=>`<em style="font-style:normal;background:rgba(16,185,129,.15);padding:1px 6px;border-radius:5px;margin-right:4px;">${v}</em>`).join('')}</div></div>`:''}
+    ${v1.length?`<div class="mb-3"><div class="badge badge-warning mb-2"><i class="fa-solid fa-triangle-exclamation"></i> Cek V2</div><div class="text-sm" style="color:var(--warning);">${v1.map(v=>`<em style="font-style:normal;background:rgba(245,158,11,.15);padding:1px 6px;border-radius:5px;margin-right:4px;">${v}</em>`).join('')}</div></div>`:''}
+    ${(!v2.length&&!v1.length)?`<div class="text-sm text-muted">Belum ada kata kerja terdeteksi.</div>`:''}
+  </div>`;
+}
+function refreshGrammarReport(){
+  const g=U().t3.guided;
+  const c=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`;
+  const el=document.getElementById('grammarReport');
+  if(el) el.innerHTML=renderGrammarReport(analyzeText(c));
+}
+
+/* ============================================================
+   AI CHAT
+============================================================ */
+function renderChat(){
+  const c=State._chat||[{role:'sys',text:'Halo! Aku AI Writing Buddy. Tanya apa saja tentang Recount Text & Past Tense 📚'}];
+  return c.map(m=>`<div class="msg ${m.role==='user'?'user':(m.role==='sys'?'sys':'ai')}">${esc(m.text)}</div>`).join('');
+}
+async function sendChat(){
+  const inp=document.getElementById('chatInput'); if(!inp) return;
+  const txt=inp.value.trim(); if(!txt) return;
+  State._chat=State._chat||[];
+  State._chat.push({role:'user',text:txt}); inp.value='';
+  document.getElementById('chatBody').innerHTML=renderChat();
+  document.getElementById('chatBody').scrollTop=999999;
+  State._chat.push({role:'ai',text:'⏳...'});
+  document.getElementById('chatBody').innerHTML=renderChat();
+  document.getElementById('chatBody').scrollTop=999999;
+  try{
+    const reply=await AI.chat(txt);
+    State._chat[State._chat.length-1]={role:'ai',text:reply};
+  }catch(e){
+    State._chat[State._chat.length-1]={role:'ai',text:'❌ Error: '+e.message};
+  }
+  document.getElementById('chatBody').innerHTML=renderChat();
+  document.getElementById('chatBody').scrollTop=999999;
+}
+function clearChat(){ State._chat=[{role:'sys',text:'Chat direset.'}]; render(); }
+
+/* ============================================================
+   TEMUKAN HANDLERS
+============================================================ */
+function markReading(){ setU(u=>u.t1.readingDone=true); toast('✓','fa-check'); render(); }
+function markVideo(){
+  const note=document.getElementById('videoNote')?.value||'';
+  setU(u=>{u.t1.videoWatched=true; u.t1._videoNote=note});
+  toast('✓','fa-check'); render();
+}
+function markGrammar(){ setU(u=>u.t1.grammarDone=true); toast('✓','fa-check'); render(); }
+function saveReflection(){
+  const v=document.getElementById('reflectionInput').value;
+  setU(u=>u.t1.reflection=v); toast('Tersimpan ✓'); render();
+}
+function saveExperience(i,v){ setU(u=>u.t1.experiences[i]=v); }
+
+/* ============================================================
+   BAYANGKAN HANDLERS
+============================================================ */
+function saveTimeline(k,v){ setU(u=>u.t2.timeline[k]=v); }
+function saveTimelineFinal(){
+  const tl=U().t2.timeline;
+  if(tl.orientation.length>5&&tl.event1&&tl.event2&&tl.event3&&tl.reorientation){
+    U().progress.bayangkan=true; save(); toast('✓','fa-check'); checkBadges();
+  } else toast('Lengkapi semua bagian','fa-triangle-exclamation');
+  render();
+}
+function addVocab(){
+  const v1=document.getElementById('vV1').value.trim();
+  const v2=document.getElementById('vV2').value.trim();
+  const type=document.getElementById('vType').value;
+  if(!v1||!v2) return toast('Isi V1 & V2','fa-triangle-exclamation');
+  setU(u=>u.t2.vocab.push({v1,v2,type}));
+  checkBadges(); render(); toast('✓','fa-check');
+}
+function removeVocab(i){ setU(u=>u.t2.vocab.splice(i,1)); render(); }
+function saveMindMap(k,v){ setU(u=>u.t2.mindMap[k]=v); }
+function uploadStoryboard(inp){
+  const f=inp.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=e=>{ setU(u=>u.t2.storyboard.push({img:e.target.result,caption:''})); render(); };
+  r.readAsDataURL(f);
+}
+function addStoryboardEmoji(e){ setU(u=>u.t2.storyboard.push({img:e,caption:''})); render(); }
+function removeStoryboard(i){ setU(u=>u.t2.storyboard.splice(i,1)); render(); }
+function updateStoryboardCaption(i,v){ setU(u=>u.t2.storyboard[i].caption=v); }
+function saveBrainstorm(v){ setU(u=>u.t2.brainstorm=v); }
+function copyBrainstorm(){
+  const txt=U().t2.brainstorm;
+  if(!txt) return toast('Empty','fa-info-circle');
+  navigator.clipboard?.writeText(txt); toast('Copied','fa-copy');
+}
+
+/* ============================================================
+   LAKUKAN HANDLERS
+============================================================ */
+function saveGuided(k,v){ setU(u=>u.t3.guided[k]=v); refreshGrammarReport(); }
+function saveGuidedEvent(i,v){ setU(u=>u.t3.guided.events[i]=v); refreshGrammarReport(); }
+function finishGuided(){
+  const g=U().t3.guided;
+  if(g.orientation.length<10||!g.events.filter(e=>e).length||g.reorientation.length<10){
+    toast('Lengkapi tulisanmu','fa-triangle-exclamation'); return;
+  }
+  setU(u=>u.progress.lakukan=true);
+  checkBadges(); render();
+  toast('Tahap 3 selesai! ✓');
+}
+function combinedDraft(){
+  const g=U().t3.guided;
+  return `${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
+}
+function saveCurrentDraft(){
+  const c=combinedDraft();
+  if(!c) return toast('Empty','fa-triangle-exclamation');
+  setU(u=>{u.t3.drafts.push({ts:Date.now(),content:c,words:analyzeText(c).words}); if(u.t3.drafts.length>10) u.t3.drafts.shift();});
+  checkBadges(); render(); toast('💾','fa-save');
+}
+function viewDraft(i){
+  const d=U().t3.drafts[i];
+  openModal(`Draft ${i+1}`,`<div style="white-space:pre-wrap;font-size:14px;line-height:1.8;">${esc(d.content)}</div>`);
+}
+function restoreDraft(i){
+  const d=U().t3.drafts[i];
+  const parts=d.content.split('\n\n');
+  setU(u=>{
+    u.t3.guided.orientation=parts[0]||'';
+    u.t3.guided.events=[parts[1]||'',parts[2]||'',parts[3]||''];
+    u.t3.guided.reorientation=parts[parts.length-1]||'';
+  });
+  toast('Restored'); render();
+}
+function deleteDraft(i){ setU(u=>u.t3.drafts.splice(i,1)); render(); }
+function toggleSelfCheck(k,v){ setU(u=>u.t3.selfCheck[k]=v); checkBadges(); render(); }
+
+/* ============================================================
+   BAGIKAN HANDLERS
+============================================================ */
+function publishWork(){ setU(u=>{u.t4.published=true; u.progress.bagikan=true}); checkBadges(); render(); toast('🎉','fa-bullhorn'); }
+function react(k){ setU(u=>u.t4.reactions[k]=(u.t4.reactions[k]||0)+1); render(); toast('❤️','fa-heart'); }
+function printStory(){ window.print(); }
+function openPeerForm(){
+  openModal('Peer Feedback',`
+    <div class="field"><label class="label">Nama Teman</label><input class="input" id="pfFrom" placeholder="Anonim"></div>
+    <div class="field"><label class="label">⭐ Pujian 1</label><input class="input" id="pfS1"></div>
+    <div class="field"><label class="label">⭐ Pujian 2</label><input class="input" id="pfS2"></div>
+    <div class="field"><label class="label">💭 Saran</label><textarea class="textarea" id="pfWish"></textarea></div>
+  `,`<button class="btn btn-ghost" onclick="closeModal()">Batal</button><button class="btn btn-primary" onclick="savePeerForm()">Simpan</button>`);
+}
+function savePeerForm(){
+  const from=document.getElementById('pfFrom').value||'Anonim';
+  const star1=document.getElementById('pfS1').value;
+  const star2=document.getElementById('pfS2').value;
+  const wish=document.getElementById('pfWish').value;
+  if(!star1||!star2||!wish) return toast('Isi semua kolom','fa-triangle-exclamation');
+  setU(u=>u.t4.peerFeedback.push({from,star1,star2,wish,ts:Date.now()}));
+  closeModal(); render(); toast('✓','fa-check');
+}
+function saveReflect(k,v){ setU(u=>u.t4.reflection[k]=v); checkBadges(); }
+
+/* ============================================================
+   AUDIO RECORDING
+============================================================ */
+let mediaRec,chunks=[],recTimer,recSec=0;
+async function toggleRecord(){
+  if(State._recording){ mediaRec.stop(); clearInterval(recTimer); State._recording=false; return; }
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    mediaRec=new MediaRecorder(stream); chunks=[]; recSec=0;
+    mediaRec.ondataavailable=e=>chunks.push(e.data);
+    mediaRec.onstop=async()=>{
+      const blob=new Blob(chunks,{type:'audio/webm'});
+      let url=null;
+      if(sb){
+        try{
+          const fileName=`audio-${U().id}-${Date.now()}.webm`;
+          const up = await Supabase.uploadFile('karya', fileName, blob);
+          if(up.ok) url = up.url;
+        }catch(e){ console.warn('Upload failed, fallback to base64',e.message); }
+      }
+      if(url){
+        setU(u=>{u.t4.audio=url; u.t4.audioDur=recSec});
+        render(); toast('🎙️ Uploaded','fa-cloud-arrow-up'); checkBadges();
+      } else {
+        const r=new FileReader();
+        r.onload=e=>{ setU(u=>{u.t4.audio=e.target.result; u.t4.audioDur=recSec}); render(); toast('🎙️','fa-microphone'); checkBadges(); };
+        r.readAsDataURL(blob);
+      }
+      stream.getTracks().forEach(tr=>tr.stop());
+    };
+    mediaRec.start(); State._recording=true;
+    recTimer=setInterval(()=>{
+      recSec++;
+      const el=document.getElementById('recTime');
+      if(el) el.textContent=`${String(Math.floor(recSec/60)).padStart(2,'0')}:${String(recSec%60).padStart(2,'0')}`;
+    },1000);
+    render();
+  }catch(e){ toast('Mic denied','fa-microphone-slash'); }
+}
+function deleteAudio(){ setU(u=>{u.t4.audio=''; u.t4.audioDur=0}); render(); }
+
+/* ============================================================
+   ATTACHMENT
+============================================================ */
+function handleAttachFiles(files){ processAttach(Array.from(files)); }
+function handleAttachDrop(e){ e.preventDefault(); e.currentTarget.classList.remove('drag-over'); processAttach(Array.from(e.dataTransfer.files)); }
+async function processAttach(files){
+  const MAX=2*1024*1024, MAXF=3;
+  const u=U();
+  const existing=u.t4.attachments?u.t4.attachments.length:0;
+  for(let i=0;i<files.length;i++){
+    const f=files[i];
+    if(existing+i>=MAXF){ toast(`Max ${MAXF} files`,'fa-triangle-exclamation'); continue; }
+    if(f.size>MAX){ toast(`${f.name} >2MB`,'fa-triangle-exclamation'); continue; }
+    let url=null;
+    if(sb){
+      try{
+        const fileName=`att-${U().id}-${Date.now()}-${f.name}`;
+        const up = await Supabase.uploadFile('karya', fileName, f);
+        if(up.ok) url = up.url;
+      }catch(e){ console.warn('Upload failed',e.message); }
+    }
+    if(url){
+      setU(u=>{
+        if(!u.t4.attachments) u.t4.attachments=[];
+        u.t4.attachments.push({name:f.name, size:f.size, type:f.type, url});
+      });
+    } else {
+      await new Promise(resolve=>{
+        const r=new FileReader();
+        r.onload=e=>{
+          setU(u=>{
+            if(!u.t4.attachments) u.t4.attachments=[];
+            u.t4.attachments.push({name:f.name, size:f.size, type:f.type, data:e.target.result});
+          });
+          resolve();
+        };
+        r.readAsDataURL(f);
+      });
+    }
+    checkBadges();
+  }
+  render();
+}
+function removeAttachment(i){ setU(u=>u.t4.attachments.splice(i,1)); render(); }
+
+/* ============================================================
+   KAMUS FILTER
+============================================================ */
+function filterVerbs(q,type){
+  State._verbType=type;
+  q=(q||'').toLowerCase().trim();
+  let list=VERBS;
+  if(type&&type!=='all') list=list.filter(v=>v[3]===type);
+  if(q) list=list.filter(v=>v.some((f,i)=>i<3&&f.toLowerCase().includes(q)));
+  const b=document.getElementById('verbBody'); if(!b) return;
+  b.innerHTML=renderVerbRows(list);
+  document.querySelectorAll('.card .btn-sm').forEach(btn=>{
+    const txt=btn.textContent.trim();
+    if(['Semua','Regular','Irregular','All'].includes(txt)){
+      const match=(txt==='Semua'||txt==='All')?(type==='all'||!type):(txt===type);
+      btn.className=match?'btn btn-primary btn-sm':'btn btn-ghost btn-sm';
+    }
+  });
+}
+
+/* ============================================================
+   KELAS HANDLERS
+============================================================ */
+function saveTeacherPin(){
+  const np=document.getElementById('newPinInput').value.trim();
+  const cp=document.getElementById('confirmPinInput').value.trim();
+  if(np.length<4||np.length>6) return toast('PIN 4-6 digit','fa-triangle-exclamation');
+  if(np!==cp) return toast('PIN tidak cocok','fa-triangle-exclamation');
+  State.settings.teacherPin=np; save();
+  TeacherSession.login();
+  toast('🔐 PIN updated','fa-lock'); render();
+}
+function showUserSwitcher(){
+  const users=Object.values(State.users);
+  openModal('Switch User',`
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      ${users.map(u=>`<div class="card" style="cursor:pointer;${u.id===State.activeUserId?'border-color:var(--primary);background:var(--primary-soft);':''}" onclick="switchUser('${u.id}')">
+        <div class="flex center gap-3">
+          <div style="font-size:32px;">${u.profile.avatar||'👤'}</div>
+          <div style="flex:1;"><div style="font-weight:700;">${esc(u.profile.name||'No Name')}</div><div class="text-sm text-muted">${u.profile.role==='student'?'Siswa':'Guru'} · ${u.badges.length} badges</div></div>
+          ${u.id===State.activeUserId?'<span class="badge badge-primary">Active</span>':''}
+        </div>
+      </div>`).join('')}
+    </div>
+  `,`<button class="btn btn-ghost" onclick="closeModal()">Batal</button><button class="btn btn-primary" onclick="addNewUser(true)"><i class="fa-solid fa-plus"></i> Baru</button>`);
+}
+function switchUser(id){ State.activeUserId=id; save(); closeModal(); render(); toast('Switched','fa-arrows-rotate'); }
+function addNewUser(fromModal){
+  const id=uid();
+  State.users[id]={...safeClone(DEFAULT_USER), id};
+  State.activeUserId=id; save();
+  if(fromModal) closeModal();
+  render(); toast('User baru','fa-user-plus');
+  Router.go('profil');
+}
+
+/* ============================================================
+   AUTO-LOAD CONFIG & MATERIALS
+   ⭐ FIX: render() setelah load agar UI auto-refresh
+============================================================ */
+async function autoLoadConfig(){
+  if(!sb) return;
+  try{
+    console.log('[Supabase] Fetching config...');
+    const cfg = await Supabase.fetchConfig();
+    if(cfg){
+      if(cfg.ai_provider) State.settings.aiProvider = cfg.ai_provider;
+      if(cfg.ai_model) State.settings.aiModel = cfg.ai_model;
+      if(cfg.ai_key) State.settings.aiKey = cfg.ai_key;
+      save();
+      console.log('[Config] Loaded:', cfg);
+    }
+    const mats = await Supabase.fetchMaterials();
+    if(mats){
+      if(mats.reading_text) State.materials.readingText = mats.reading_text;
+      if(mats.quizzes && mats.quizzes.length){
+        State.aiGenerated = State.aiGenerated || {};
+        State.aiGenerated.quizzes = mats.quizzes;
+      }
+      if(mats.video_url) State.materials.videoUrl = mats.video_url;
+      if(mats.video_title) State.materials.videoTitle = mats.video_title;
+      save();
+      console.log('[Materials] Loaded:', mats.video_url);
+      // ⭐ FIX: Re-render supaya video terbaru langsung tampil
+      render();
+    }
+  }catch(e){
+    console.warn('[Config] Failed:', e.message);
+  }
+}
+
+async function testAIConnection(){
+  try{
+    toast('Testing AI...','fa-spinner');
+    const res = await AI.chat('Halo, test 1+1 = ?');
+    toast('✓ AI aktif: '+(res||'').slice(0,40)+'...','fa-check');
+  }catch(e){ toast('AI error: '+e.message,'fa-xmark'); }
+}
+async function testBackend(){ await Supabase.test(); }
+
+/* ============================================================
+   PROFIL HANDLERS
+============================================================ */
+function setAvatar(a){ U().profile.avatar=a; save(); render(); }
+function saveProfile(){
+  setU(u=>{
+    u.profile.name=document.getElementById('pfName').value;
+    u.profile.role=document.getElementById('pfRole').value;
+    u.profile.nip=document.getElementById('pfNip').value;
+    u.profile.school=document.getElementById('pfSchool').value;
+    u.profile.subject=document.getElementById('pfSubject').value;
+    u.profile.classes=document.getElementById('pfClasses').value;
+  });
+  toast('✓','fa-check'); render();
+}
+function printReport(){
+  const p=U().profile;
+  const c=combinedDraft();
+  const a=analyzeText(c);
+  const w=window.open('','_blank','width=800,height=900');
+  w.document.write(`<html><head><title>Report</title>
+  <style>body{font-family:Arial,sans-serif;padding:36px;color:#1e1b4b}h1{color:#7c3aed;border-bottom:3px solid #7c3aed;padding-bottom:10px}h2{color:#7c3aed;margin-top:26px;font-size:17px}.row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e5e7eb}.label{color:#6b7280;font-weight:600}.box{background:#f7f5ff;padding:14px;border-radius:10px;margin-top:10px;white-space:pre-wrap;line-height:1.8}</style></head><body>
+  <h1>📖 DigitalRecount Report</h1>
+  <h2>Identity</h2>
+  <div class="row"><span class="label">Name</span><span>${esc(p.name||'-')}</span></div>
+  <div class="row"><span class="label">Role</span><span>${p.role==='student'?'Siswa':'Guru'}</span></div>
+  <div class="row"><span class="label">NIP/NIS</span><span>${esc(p.nip||'-')}</span></div>
+  <div class="row"><span class="label">School</span><span>${esc(p.school||'-')}</span></div>
+  <div class="row"><span class="label">Class</span><span>${esc(p.classes||'-')}</span></div>
+  <h2>Statistics</h2>
+  <div class="row"><span class="label">Words</span><span>${a.words}</span></div>
+  <div class="row"><span class="label">V2 Detected</span><span>${a.v2Found.length}</span></div>
+  <div class="row"><span class="label">Badges</span><span>${U().badges.length}/${BADGES.length}</span></div>
+  <h2>Recount Text</h2>
+  <div class="box">${esc(c||'(empty)')}</div>
+  <p style="margin-top:36px;font-size:11px;color:#9ca3af;text-align:center;">DigitalRecount · ${new Date().toLocaleString()}</p>
+  </body></html>`);
+  w.document.close(); setTimeout(()=>w.print(),400);
+}
+function resetAll(){
+  if(!confirm('Hapus SEMUA data lokal?')) return;
+  localStorage.removeItem(SK);
+  State=safeClone(DEFAULT_STATE);
+  save(); Theme.apply(); toast('Reset','fa-trash');
+  Router.go('beranda');
+}
+/* ============================================================
+   ⭐ FIX: saveMaterials() — sync ke Supabase
+============================================================ */
+async function saveMaterials(){
+  State.materials.videoUrl=document.getElementById('matVideoUrl').value;
+  State.materials.videoTitle=document.getElementById('matVideoTitle').value;
+  save();
+  // Sync ke Supabase materials
+  if(sb){
+    const res = await Supabase.saveMaterials({
+      readingText: State.materials.readingText,
+      quizzes: State.aiGenerated?.quizzes || [],
+      videoUrl: State.materials.videoUrl,
+      videoTitle: State.materials.videoTitle
+    });
+    if(res.ok){
+      toast('✓ Tersimpan & tersinkron','fa-cloud-arrow-up');
+    } else {
+      toast('Tersimpan lokal, gagal sync: '+res.error,'fa-triangle-exclamation');
+    }
+  } else {
+    toast('✓ Tersimpan (lokal)','fa-check');
+  }
+}
+function addManualVerb(){
+  const v1=document.getElementById('newVerbV1').value.trim();
+  const v2=document.getElementById('newVerbV2').value.trim();
+  const v3=document.getElementById('newVerbV3').value.trim()||v2;
+  const type=document.getElementById('newVerbType').value;
+  if(!v1||!v2) return toast('Isi V1 & V2','fa-triangle-exclamation');
+  if(VERBS.find(x=>x[0]===v1)) return toast('Verb exists','fa-info-circle');
+  VERBS.push([v1,v2,v3,type]);
+  V1_SET.add(v1); V2_SET.add(v2);
+  save(); toast('✓ Verb added','fa-check');
+  render();
+}
+
+/* ============================================================
+   EXPORT / IMPORT
+============================================================ */
+function exportCSV(){
+  const users=Object.values(State.users);
+  const rows=[['Name','Role','Progress','Badges','Words','V2','Published']];
+  users.forEach(u=>{
+    const g=u.t3?.guided||{orientation:'',events:[],reorientation:''};
+    const c=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
+    const a=analyzeText(c);
+    const done=Object.values(u.progress||{}).filter(Boolean).length;
+    rows.push([u.profile.name||'-',u.profile.role||'-',done+'/4',(u.badges||[]).length,a.words,a.v2Found.length,u.t4?.published?'Yes':'No']);
+  });
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`recounthub-${Date.now()}.csv`; a.click();
+  URL.revokeObjectURL(url);
+  toast('CSV downloaded','fa-file-csv');
+}
+function exportExcel(){
+  if(typeof XLSX==='undefined') return toast('Library XLSX belum load','fa-triangle-exclamation');
+  const users=Object.values(State.users);
+  const rows=users.map(u=>{
+    const g=u.t3?.guided||{orientation:'',events:['','',''],reorientation:''};
+    const combined=`${g.orientation||''}\n\n${(g.events||[]).filter(e=>e).join('\n\n')}\n\n${g.reorientation||''}`.trim();
+    const a=analyzeText(combined);
+    const done=Object.values(u.progress||{}).filter(Boolean).length;
+    return {
+      'Nama':u.profile.name||'-','Role':u.profile.role==='student'?'Siswa':'Guru',
+      'NIP/NIS':u.profile.nip||'-','Sekolah':u.profile.school||'-','Kelas':u.profile.classes||'-',
+      'Avatar':u.profile.avatar||'','Progress':done+'/4',
+      'Tahap_Temukan':u.progress?.temukan?'✓':'','Tahap_Bayangkan':u.progress?.bayangkan?'✓':'',
+      'Tahap_Lakukan':u.progress?.lakukan?'✓':'','Tahap_Bagikan':u.progress?.bagikan?'✓':'',
+      'Badges':(u.badges||[]).length,'Kata':a.words,'V2_Ditemukan':a.v2Found.length,
+      'Dipublikasikan':u.t4?.published?'Ya':'Belum','Skor_Kuis':(u.quiz?.score)||0,
+      'Skor_DD':(u.t1?.ddScore)||0,'Skor_Conj':(u.t1?.conjScore)||0
+    };
+  });
+  const ws=XLSX.utils.json_to_sheet(rows);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Siswa');
+  const fname=`DigitalRecount_${new Date().toISOString().slice(0,10)}.xlsx`;
+  XLSX.writeFile(wb,fname);
+  toast('✓ Excel downloaded','fa-file-excel');
+}
+function importExcelDialog(){
+  openModal('📥 Import Siswa',`
+    <div class="section-sub">Upload file Excel. Kolom: Nama, NIP/NIS, Kelas, Sekolah, Role.</div>
+    <div class="tense-alert mb-4"><b>📋 Format:</b><br>Kolom minimal: <b>Nama</b> · Baris 1 = header.</div>
+    <div class="flex gap-2 wrap mb-3"><button class="btn btn-ghost btn-sm" onclick="downloadTemplate()"><i class="fa-solid fa-download"></i> Template</button></div>
+    <div class="attach-zone" onclick="document.getElementById('excelInput').click()"><i class="fa-solid fa-file-excel"></i><div style="font-weight:600;">Klik untuk upload Excel</div></div>
+    <input type="file" id="excelInput" accept=".xlsx,.xls" style="display:none;" onchange="handleExcelImport(this.files[0])">
+  `,`<button class="btn btn-ghost" onclick="closeModal()">Batal</button>`);
+}
+function downloadTemplate(){
+  const data=[
+    {'Nama':'Ahmad Fauzi','NIP/NIS':'2024001','Kelas':'8A','Sekolah':'SMPN 1 Jakarta','Role':'student'},
+    {'Nama':'Siti Nurhaliza','NIP/NIS':'2024002','Kelas':'8A','Sekolah':'SMPN 1 Jakarta','Role':'student'}
+  ];
+  const ws=XLSX.utils.json_to_sheet(data);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Template');
+  XLSX.writeFile(wb,'Template_Import_Siswa.xlsx');
+  toast('✓ Template downloaded','fa-file-excel');
+}
+function handleExcelImport(file){
+  if(!file) return;
+  if(typeof XLSX==='undefined') return toast('Library XLSX belum load','fa-triangle-exclamation');
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=new Uint8Array(e.target.result);
+      const wb=XLSX.read(data,{type:'array'});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+      if(!rows.length) throw new Error('File kosong');
+      const keys=Object.keys(rows[0]);
+      const hasNama=keys.some(k=>k.toLowerCase()==='nama');
+      if(!hasNama) throw new Error('Kolom "Nama" tidak ditemukan');
+      let added=0, updated=0;
+      rows.forEach(r=>{
+        const name=(r['Nama']||r['nama']||'').toString().trim();
+        if(!name) return;
+        const nip=(r['NIP/NIS']||r['NIP']||r['NIS']||'').toString().trim();
+        const kelas=(r['Kelas']||r['kelas']||'').toString().trim();
+        const sekolah=(r['Sekolah']||r['sekolah']||'').toString().trim();
+        const role=(r['Role']||r['role']||'student').toString().trim().toLowerCase();
+        const existing=Object.values(State.users).find(u=>u.profile.name.toLowerCase()===name.toLowerCase()&&(!nip||u.profile.nip===nip));
+        if(existing){
+          if(nip) existing.profile.nip=nip;
+          if(kelas) existing.profile.classes=kelas;
+          if(sekolah) existing.profile.school=sekolah;
+          existing.profile.role=(role==='teacher'||role==='guru')?'teacher':'student';
+          updated++;
+        }else{
+          const id=uid();
+          const newUser=safeClone(DEFAULT_USER);
+          newUser.id=id;
+          newUser.profile.name=name;
+          newUser.profile.nip=nip;
+          newUser.profile.classes=kelas;
+          newUser.profile.school=sekolah;
+          newUser.profile.role=(role==='teacher'||role==='guru')?'teacher':'student';
+          newUser.profile.avatar=newUser.profile.role==='teacher'?'👨‍🏫':'🧑‍🎓';
+          State.users[id]=newUser;
+          added++;
+        }
+      });
+      save(); closeModal(); render();
+      toast(`✓ ${added} ditambahkan, ${updated} diupdate`,'fa-file-excel');
+    }catch(err){ toast('Error: '+err.message,'fa-xmark'); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+function viewStudent(id){
+  const u=State.users[id]; if(!u) return;
+  const g=u.t3?.guided||{orientation:'',events:[],reorientation:''};
+  const c=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
+  const a=analyzeText(c);
+  const done=Object.values(u.progress||{}).filter(Boolean).length;
+  openModal(`${u.profile.avatar||'👤'} ${esc(u.profile.name||'No Name')}`,`
+    <div class="flex between center mb-3"><span class="badge badge-primary">${done}/4</span><span class="badge badge-warning">${(u.badges||[]).length} badges</span></div>
+    <div class="text-sm mb-3"><b>Sekolah:</b> ${esc(u.profile.school||'-')}</div>
+    <div class="text-sm mb-3"><b>Kelas:</b> ${esc(u.profile.classes||'-')}</div>
+    <div class="text-sm mb-3"><b>Kata:</b> ${a.words} · <b>V2:</b> ${a.v2Found.length}</div>
+    <div style="background:var(--bg);padding:14px;border-radius:10px;font-size:13px;line-height:1.7;max-height:300px;overflow:auto;white-space:pre-wrap;">${esc(c||'(empty)')}</div>
+  `,`<button class="btn btn-ghost" onclick="closeModal()">Batal</button><button class="btn btn-primary" onclick="switchUser('${id}');closeModal()">Switch</button>`);
+}
+
+/* ============================================================
+   AI GENERATOR HANDLERS
+============================================================ */
+async function generateReading(ev){
+  const topic=document.getElementById('genTopic').value;
+  const words=document.getElementById('genWords').value;
+  const topicLabel={holiday:'holiday/vacation',school:'school event',family:'family moment',funny:'funny experience',competition:'competition'}[topic];
+  const btn=ev.target; btn.disabled=true; const orig=btn.innerHTML; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> ...';
+  try{
+    const prompt=`Write a Recount Text in English about "${topicLabel}" with approximately ${words} words. Structure: Orientation - Events (3+) - Re-orientation. Use SIMPLE PAST TENSE (V2) consistently. Return ONLY the recount text, no title, no markdown.`;
+    const result=await AI.chat(prompt);
+    document.getElementById('genReadingText').value=result.trim();
+    toast('✓ Generated','fa-check');
+  }catch(e){ toast('Error: '+e.message,'fa-xmark'); }
+  finally{ btn.disabled=false; btn.innerHTML=orig; }
+}
+async function saveReading(){
+  const text=document.getElementById('genReadingText').value.trim();
+  if(!text) return toast('Empty','fa-triangle-exclamation');
+  State.materials.readingText=text; save();
+  if(sb){
+    await Supabase.saveMaterials({
+      readingText: text,
+      quizzes: State.aiGenerated?.quizzes || [],
+      videoUrl: State.materials.videoUrl,
+      videoTitle: State.materials.videoTitle
+    });
+  }
+  toast('✓ Saved & synced','fa-cloud-arrow-up'); render();
+}
+function clearReading(){
+  if(!confirm('Hapus teks bacaan?')) return;
+  State.materials.readingText=''; save(); render();
+  toast('Cleared','fa-trash');
+}
+async function generateQuiz(ev){
+  const text=State.materials.readingText;
+  if(!text) return toast('No reading text','fa-triangle-exclamation');
+  const btn=ev.target; btn.disabled=true; const orig=btn.innerHTML; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> ...';
+  try{
+    const prompt=`Based on this Recount Text:\n\n${text}\n\nCreate exactly 5 multiple-choice questions in Indonesian about: (1) structure, (2) past tense verb, (3) comprehension, (4) vocabulary, (5) main idea. Each question 3 options (A/B/C). Return ONLY JSON: [{"q":"...","opts":["A","B","C"],"a":0},...]`;
+    const result=await AI.chat(prompt);
+    let clean=result.trim().replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();
+    const match=clean.match(/\[[\s\S]*\]/);
+    if(!match) throw new Error('Invalid JSON');
+    const parsed=JSON.parse(match[0]);
+    State.aiGenerated=State.aiGenerated||{};
+    State.aiGenerated.quizzes=parsed; save();
+    if(sb){
+      await Supabase.saveMaterials({
+        readingText: State.materials.readingText,
+        quizzes: parsed,
+        videoUrl: State.materials.videoUrl,
+        videoTitle: State.materials.videoTitle
+      });
+    }
+    toast('✓ Quiz generated & synced','fa-check'); render();
+  }catch(e){ toast('Error: '+e.message,'fa-xmark'); }
+  finally{ btn.disabled=false; btn.innerHTML=orig; }
+}
+function updateGeneratedQuestion(i,field,val){
+  const qs=State.aiGenerated.quizzes;
+  if(field==='q') qs[i].q=val;
+  else if(field==='a') qs[i].a=val;
+  else if(field.startsWith('opt')){ const j=parseInt(field.replace('opt','')); qs[i].opts[j]=val; }
+  save();
+}
+function deleteGeneratedQuestion(i){ State.aiGenerated.quizzes.splice(i,1); save(); render(); }
+function clearQuiz(){
+  if(!confirm('Hapus kuis?')) return;
+  State.aiGenerated.quizzes=[]; save(); render();
+  toast('Cleared','fa-trash');
+}
+async function generateVerbs(ev){
+  const btn=ev.target; btn.disabled=true; const orig=btn.innerHTML; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> ...';
+  document.getElementById('genVerbsResult').innerHTML='<div class="text-sm text-muted">⏳ Generating...</div>';
+  try{
+    const prompt=`Give me 10 English verbs commonly used in Recount Text NOT in: go, eat, see, take, come, get, make, do, have, say. Mix 5 regular + 5 irregular. Return ONLY JSON: [{"v1":"base","v2":"past","v3":"participle","type":"Regular"},...]`;
+    const result=await AI.chat(prompt);
+    let clean=result.trim().replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();
+    const match=clean.match(/\[[\s\S]*\]/);
+    if(!match) throw new Error('Invalid JSON');
+    const verbs=JSON.parse(match[0]);
+    State._genVerbBuffer=verbs;
+    document.getElementById('genVerbsResult').innerHTML=`
+      <div class="mb-3"><span class="badge badge-success">${verbs.length} verbs</span></div>
+      ${verbs.map(v=>`<div class="dd-chip" style="margin:4px;">${esc(v.v1)} → <b>${esc(v.v2)}</b> → ${esc(v.v3)}</div>`).join('')}
+      <div class="mt-3"><button class="btn btn-primary btn-sm" onclick="addGeneratedVerbs()"><i class="fa-solid fa-plus"></i> Tambah Semua</button></div>
+    `;
+  }catch(e){
+    document.getElementById('genVerbsResult').innerHTML=`<div class="tense-alert">Error: ${esc(e.message)}</div>`;
+  }finally{ btn.disabled=false; btn.innerHTML=orig; }
+}
+function addGeneratedVerbs(){
+  const verbs=State._genVerbBuffer||[];
+  let added=0;
+  verbs.forEach(v=>{
+    if(!VERBS.find(x=>x[0]===v.v1)){
+      VERBS.push([v.v1,v.v2,v.v3,v.type]);
+      V1_SET.add(v.v1); V2_SET.add(v.v2);
+      added++;
+    }
+  });
+  save();
+  toast(`✓ ${added} verbs added`,'fa-check');
+  document.getElementById('genVerbsResult').innerHTML=`<div class="tense-alert">✅ ${added} verbs ditambahkan.</div>`;
+}
+
+/* ============================================================
+   BINDERS
+============================================================ */
+const Binders={
+  temukan(){
+    document.querySelectorAll('#readText em').forEach(el=>{
+      el.addEventListener('click',()=>{
+        const v1=el.dataset.v1, v2=el.dataset.v2||el.textContent;
+        toast(`V1: ${v1} → V2: ${v2}`,'fa-lightbulb');
+      });
+    });
+  }
+};
+
+/* ============================================================
+   INIT
+============================================================ */
+Theme.apply();
+Router.init();
+setTimeout(()=>{ autoLoadConfig(); }, 1000);
+</script>
+</body>
+</html>
