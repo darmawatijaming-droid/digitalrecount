@@ -125,7 +125,6 @@ a{color:var(--primary);text-decoration:none}
 .lang-toggle button{padding:0 10px;font-size:12px;font-weight:700;color:var(--text-muted);transition:all .2s}
 .lang-toggle button.active{background:var(--grad);color:#fff}
 .lang-toggle button:not(.active):hover{background:var(--primary-soft);color:var(--primary)}
-/* Topbar lang-toggle: tampil di desktop juga (dipindah dari sidebar) */
 @media(min-width:901px){
   .topbar .lang-toggle{display:flex}
 }
@@ -1115,7 +1114,7 @@ guru(){
   const publishedCount=users.filter(u=>u.t4.published).length;
   const totalBadgesCollected=users.reduce((s,u)=>s+u.badges.length,0);
   const tab=State._tabGuru||'overview';
-  return `<div class="flex between center mb-3 wrap gap-2"><div><div class="section-title">📊 ${t('guru')}</div><div class="section-sub" style="margin-bottom:0;">Pantau siswa.</div></div><button class="btn btn-ghost btn-sm" onclick="logoutTeacher()" style="color:var(--danger);border-color:var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Logout</button></div>
+  return `<div class="flex between center mb-3 wrap gap-2"><div><div class="section-title">📊 ${t('guru')}</div><div class="section-sub" style="margin-bottom:0;">Pantau siswa.</div></div><div class="flex gap-2 wrap"><button class="btn btn-primary btn-sm" onclick="reloadUsersFromServer()"><i class="fa-solid fa-cloud-arrow-down"></i> Muat dari Server</button><button class="btn btn-ghost btn-sm" onclick="logoutTeacher()" style="color:var(--danger);border-color:var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Logout</button></div></div>
     <div class="tabs">${[['overview','📊 Overview'],['students','👥 '+t('students')],['materials','🎬 '+t('materials_mgmt')],['aigen','✨ AI Generator'],['reports','📈 '+t('reports')]].map(([k,l])=>`<div class="tab ${tab===k?'active':''}" onclick="setTab('guru','${k}')">${l}</div>`).join('')}</div>
     <div id="tabContent">${renderTabGuru(tab,{users,totalStudents,avgProgress,publishedCount,totalBadgesCollected})}</div>`;
 },
@@ -1937,7 +1936,7 @@ function addNewUser(fromModal){
 
 /* ============================================================
    AUTO-LOAD CONFIG & MATERIALS
-   ⭐ FIX: render() setelah load agar UI auto-refresh
+   ⭐ Auto-load users dari Supabase + render otomatis
 ============================================================ */
 async function autoLoadConfig(){
   if(!sb) return;
@@ -1962,11 +1961,45 @@ async function autoLoadConfig(){
       if(mats.video_title) State.materials.videoTitle = mats.video_title;
       save();
       console.log('[Materials] Loaded:', mats.video_url);
-      // ⭐ FIX: Re-render supaya video terbaru langsung tampil
-      render();
     }
+    // ⭐ Auto-load semua user dari Supabase agar dashboard guru terisi
+    const users = await Supabase.fetchAllUsers();
+    if(users && users.length){
+      users.forEach(u => {
+        if(u.id !== State.activeUserId){
+          State.users[u.id] = u;
+        }
+      });
+      save();
+      console.log(`[Supabase] ${users.length} users loaded dari server`);
+    }
+    render();
   }catch(e){
     console.warn('[Config] Failed:', e.message);
+  }
+}
+
+/* ⭐ Fungsi reload manual dari dashboard guru */
+async function reloadUsersFromServer(){
+  if(!sb) return toast('Supabase belum siap','fa-triangle-exclamation');
+  toast('Memuat data dari server...','fa-spinner');
+  try{
+    const users = await Supabase.fetchAllUsers();
+    if(!users || !users.length){
+      return toast('Belum ada user yang sync ke server','fa-info-circle');
+    }
+    let count = 0;
+    users.forEach(u => {
+      if(u.id !== State.activeUserId){
+        State.users[u.id] = u;
+        count++;
+      }
+    });
+    save();
+    Router.render();
+    toast(`✓ ${count} user dimuat dari server`,'fa-check');
+  }catch(e){
+    toast('Error: '+e.message,'fa-xmark');
   }
 }
 
@@ -2026,13 +2059,12 @@ function resetAll(){
   Router.go('beranda');
 }
 /* ============================================================
-   ⭐ FIX: saveMaterials() — sync ke Supabase
+   ⭐ saveMaterials() — sync ke Supabase
 ============================================================ */
 async function saveMaterials(){
   State.materials.videoUrl=document.getElementById('matVideoUrl').value;
   State.materials.videoTitle=document.getElementById('matVideoTitle').value;
   save();
-  // Sync ke Supabase materials
   if(sb){
     const res = await Supabase.saveMaterials({
       readingText: State.materials.readingText,
