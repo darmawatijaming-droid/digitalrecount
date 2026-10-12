@@ -38,7 +38,7 @@ a{color:var(--primary);text-decoration:none}
 ::-webkit-scrollbar-thumb:hover{background:var(--primary-light)}
 
 /* ============================================================
-   SIDEBAR (desktop only)
+   SIDEBAR
 ============================================================ */
 .sidebar{
   display:none;position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);
@@ -79,11 +79,6 @@ a{color:var(--primary);text-decoration:none}
 .sidebar-footer{
   padding:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px;
 }
-.sidebar-footer-row{display:flex;gap:8px;align-items:center}
-.sidebar-footer-row .lang-toggle{flex:1}
-.sidebar-footer-row .icon-btn{width:36px;height:36px}
-
-/* Sidebar credit */
 .sidebar-credit{
   padding:10px 12px;text-align:center;
   background:var(--grad-soft);border-radius:12px;
@@ -101,7 +96,6 @@ a{color:var(--primary);text-decoration:none}
   font-size:10.5px;color:var(--text-muted);line-height:1.4;
 }
 
-/* Layout wrapping */
 .main-wrap{margin-left:0;transition:margin-left .3s}
 @media(min-width:901px){
   .sidebar{display:flex}
@@ -362,6 +356,138 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
 .check-list li{display:flex;align-items:flex-start;gap:8px}
 .check-list li::before{content:'✓';color:var(--success);font-weight:700;flex-shrink:0}
 
+/* ============================================================
+   Logout & Guest Banner
+============================================================ */
+.logout-btn-topbar{
+  width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:15px;
+  color:var(--danger);background:var(--bg);border:1px solid var(--border);transition:all .2s;
+}
+.logout-btn-topbar:hover{color:#fff;background:var(--danger);border-color:var(--danger);transform:translateY(-2px)}
+.logout-btn-sidebar{
+  width:100%;padding:10px 14px;border-radius:11px;display:flex;align-items:center;justify-content:center;gap:10px;
+  color:var(--danger);background:var(--bg);border:1px solid var(--border);font-weight:600;font-size:13px;transition:all .2s;
+}
+.logout-btn-sidebar:hover{color:#fff;background:var(--danger);border-color:var(--danger)}
+.logout-card{
+  background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(239,68,68,.02));
+  border:1.5px solid rgba(239,68,68,.25);border-radius:var(--radius);padding:20px;
+}
+.guest-banner{
+  background:linear-gradient(135deg,#fef3c7,#fde68a);border-left:4px solid var(--warning);
+  padding:20px 22px;border-radius:var(--radius);color:#78350f;margin-bottom:20px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.guest-banner .gb-icon{font-size:38px;flex-shrink:0}
+.guest-banner .gb-text{flex:1;min-width:200px}
+.guest-banner .gb-title{font-weight:800;font-size:16px;margin-bottom:3px}
+.guest-banner .gb-sub{font-size:13px;line-height:1.5}
+@media(max-width:900px){
+  .guest-banner{padding:16px}
+  .guest-banner .gb-icon{font-size:30px}
+}
+
+/* ============================================================
+   Teacher Login Card (di Beranda)
+============================================================ */
+.teacher-login-card{
+  background:linear-gradient(135deg,#1e1b4b 0%,#4c1d95 50%,#7c3aed 100%);
+  border-radius:var(--radius);padding:22px;color:#fff;margin-bottom:20px;
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  box-shadow:var(--shadow-lg);position:relative;overflow:hidden;
+  border:1px solid rgba(255,255,255,.1);
+}
+.teacher-login-card::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;
+  border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none;
+}
+.teacher-login-card::after{
+  content:'';position:absolute;bottom:-80px;left:-40px;width:180px;height:180px;
+  border-radius:50%;background:rgba(168,85,247,.15);pointer-events:none;
+}
+.teacher-login-card .tlc-icon{
+  width:64px;height:64px;border-radius:16px;
+  background:rgba(255,255,255,.15);backdrop-filter:blur(6px);
+  display:grid;place-items:center;font-size:28px;flex-shrink:0;
+  border:1px solid rgba(255,255,255,.2);
+  position:relative;z-index:1;
+}
+.teacher-login-card .tlc-body{flex:1;min-width:220px;position:relative;z-index:1;}
+.teacher-login-card .tlc-title{
+  font-weight:800;font-size:17px;margin-bottom:4px;letter-spacing:-.01em;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.teacher-login-card .tlc-sub{
+  font-size:13px;opacity:.85;line-height:1.5;
+}
+.teacher-login-card .tlc-status{
+  display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+  padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:700;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+}
+.teacher-login-card .tlc-status.active{background:rgba(16,185,129,.25);border-color:rgba(16,185,129,.4);color:#6ee7b7;}
+.teacher-login-card .tlc-status.locked{background:rgba(239,68,68,.25);border-color:rgba(239,68,68,.45);color:#fecaca;}
+.teacher-login-card .tlc-actions{
+  display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:1;
+}
+.teacher-login-card .btn-white{
+  background:#fff;color:#7c3aed;font-weight:700;
+  padding:10px 18px;border-radius:11px;font-size:13.5px;
+  display:inline-flex;align-items:center;gap:7px;transition:all .2s;
+  box-shadow:0 6px 16px rgba(0,0,0,.15);
+}
+.teacher-login-card .btn-white:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(0,0,0,.25);}
+.teacher-login-card .btn-outline-white{
+  background:rgba(255,255,255,.15);color:#fff;font-weight:600;
+  padding:10px 18px;border-radius:11px;font-size:13.5px;
+  display:inline-flex;align-items:center;gap:7px;transition:all .2s;
+  border:1px solid rgba(255,255,255,.3);
+}
+.teacher-login-card .btn-outline-white:hover{background:rgba(255,255,255,.25);border-color:#fff;}
+.teacher-login-card .btn-locked{
+  background:rgba(239,68,68,.2);color:#fecaca;font-weight:600;
+  padding:10px 18px;border-radius:11px;font-size:13.5px;cursor:not-allowed;
+  display:inline-flex;align-items:center;gap:7px;
+  border:1px solid rgba(239,68,68,.4);
+}
+@media(max-width:600px){
+  .teacher-login-card{padding:18px;}
+  .teacher-login-card .tlc-icon{width:52px;height:52px;font-size:22px;}
+  .teacher-login-card .tlc-title{font-size:15px;}
+}
+
+/* ============================================================
+   Teacher Picker Modal (Opsi C)
+============================================================ */
+.teacher-picker-item{
+  display:flex;align-items:center;gap:14px;padding:14px 16px;
+  background:var(--bg);border:1.5px solid var(--border);border-radius:13px;
+  cursor:pointer;transition:all .2s;margin-bottom:10px;
+}
+.teacher-picker-item:hover{
+  border-color:var(--primary);background:var(--primary-soft);
+  transform:translateY(-2px);box-shadow:var(--shadow);
+}
+.teacher-picker-item .tp-avatar{
+  width:48px;height:48px;border-radius:12px;background:var(--grad-soft);
+  display:grid;place-items:center;font-size:24px;flex-shrink:0;
+}
+.teacher-picker-item .tp-info{flex:1;min-width:0;}
+.teacher-picker-item .tp-name{font-weight:700;font-size:14.5px;margin-bottom:2px;}
+.teacher-picker-item .tp-meta{font-size:12px;color:var(--text-muted);line-height:1.4;}
+.teacher-picker-item .tp-cta{
+  background:var(--grad);color:#fff;padding:8px 14px;border-radius:9px;
+  font-weight:600;font-size:12.5px;display:inline-flex;align-items:center;gap:5px;
+  flex-shrink:0;
+}
+.teacher-picker-empty{
+  text-align:center;padding:30px 20px;
+  background:var(--grad-soft);border-radius:13px;border:1.5px dashed var(--primary-light);
+}
+.teacher-picker-empty .icon{font-size:42px;margin-bottom:10px;}
+.teacher-picker-empty .title{font-weight:700;font-size:15px;margin-bottom:4px;}
+.teacher-picker-empty .sub{font-size:12.5px;color:var(--text-muted);line-height:1.5;}
+
 @media(max-width:900px){
   .mobile-nav{display:block}
   main{padding:18px 14px 105px}
@@ -378,12 +504,12 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
   .brand-icon{width:32px;height:32px;font-size:14px}
   .topbar-inner{padding:10px 12px}
   .hero h1{font-size:20px}
-  .icon-btn,.avatar-btn{width:34px;height:34px;font-size:14px}
+  .icon-btn,.avatar-btn,.logout-btn-topbar{width:34px;height:34px;font-size:14px}
   .lang-toggle{height:34px}
 }
 
 @media print{
-  .topbar,.mobile-nav,.sidebar,.hero-actions,.no-print,.toast,.tabs,.lang-toggle{display:none!important}
+  .topbar,.mobile-nav,.sidebar,.hero-actions,.no-print,.toast,.tabs,.lang-toggle,.teacher-login-card{display:none!important}
   body{background:#fff;color:#000}
   main{padding:0;max-width:100%}
   .main-wrap{margin-left:0!important}
@@ -396,9 +522,7 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
 </head>
 <body>
 
-<!-- ============================================================
-     SIDEBAR (desktop only)
-============================================================ -->
+<!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
     <div class="brand-icon"><i class="fa-solid fa-book-open-reader"></i></div>
@@ -411,12 +535,13 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
       <div class="credit-name">Darmawati, S.Pd., M.Pd.</div>
       <div class="credit-sub">Guru SMPN 1 Anggeraja</div>
     </div>
+    <button class="logout-btn-sidebar" id="logoutBtnSidebar" onclick="logoutUser()" title="Keluar dari Akun">
+      <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
+    </button>
   </div>
 </aside>
 
-<!-- ============================================================
-     MAIN WRAP
-============================================================ -->
+<!-- MAIN WRAP -->
 <div class="main-wrap">
   <header class="topbar">
     <div class="topbar-inner">
@@ -435,6 +560,9 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
         <button class="icon-btn" onclick="Router.go('kelas')" title="Kelas"><i class="fa-solid fa-users"></i></button>
         <button class="icon-btn" onclick="Theme.toggle()" id="themeBtn" title="Ganti Tema"><i class="fa-solid fa-moon"></i></button>
         <button class="avatar-btn" onclick="Router.go('profil')" id="avatarBtn">👨‍🏫</button>
+        <button class="logout-btn-topbar" id="logoutBtnTopbar" onclick="logoutUser()" title="Keluar dari Akun">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
       </div>
     </div>
   </header>
@@ -456,7 +584,7 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
 function safeClone(o){if(typeof structuredClone==='function'){try{return structuredClone(o)}catch(e){}}return JSON.parse(JSON.stringify(o))}
 
 /* ============================================================
-   ⭐ SUPABASE CONFIG — ISI DI SINI
+   SUPABASE CONFIG
 ============================================================ */
 const SUPABASE_URL = 'https://mhtmaikxjxxdxddahanu.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_yCv6K1wPUbvrq1k4EJlUew_IO9f5kQF';
@@ -467,7 +595,7 @@ if (SUPABASE_URL && SUPABASE_ANON_KEY && typeof supabase !== 'undefined') {
 }
 
 /* ============================================================
-   STATE DEFAULT — v3.0 (Supabase)
+   STATE DEFAULT
 ============================================================ */
 const SK='recounthub_v3_supabase';
 const DEFAULT_USER={
@@ -497,8 +625,9 @@ let State=load();
 function deepMerge(t,s){for(const k in s){if(Array.isArray(s[k]))t[k]=s[k];else if(s[k]&&typeof s[k]==='object')t[k]=deepMerge(t[k]||{},s[k]);else t[k]=s[k]}return t}
 function load(){try{const r=localStorage.getItem(SK);if(!r)return safeClone(DEFAULT_STATE);const d=JSON.parse(r);return deepMerge(safeClone(DEFAULT_STATE),d)}catch(e){return safeClone(DEFAULT_STATE)}}
 function save(){try{localStorage.setItem(SK,JSON.stringify(State));Supabase.queueSync()}catch(e){}}
-function U(){return State.users[State.activeUserId]}
-function setU(fn){fn(U());save()}
+function U(){return State.users[State.activeUserId]||null}
+function isGuest(){return !State.activeUserId || !State.users[State.activeUserId]}
+function setU(fn){const u=U(); if(!u) return; fn(u); save()}
 
 /* ============================================================
    I18N
@@ -529,18 +658,19 @@ const I18n={
 function t(k){return I18n.t(k)}
 
 /* ============================================================
-   SUPABASE LAYER — Auto Sync
+   SUPABASE LAYER
 ============================================================ */
 const Supabase={
   queue:null,
   isReady(){ return !!sb; },
   queueSync(){
     if(!sb) return;
+    if(isGuest()) return;
     clearTimeout(this.queue);
     this.queue = setTimeout(() => this.sync(), 1500);
   },
   async sync(){
-    if(!sb) return;
+    if(!sb || isGuest()) return;
     try{
       const u = U();
       const payload = {
@@ -635,7 +765,7 @@ const Sheets = {
 };
 
 /* ============================================================
-   AI — LANGSUNG KE GEMINI/GROQ
+   AI
 ============================================================ */
 const AI={
   async chat(prompt){
@@ -713,6 +843,187 @@ function openModal(title,body,footer=''){
 function closeModal(){document.getElementById('modalRoot').innerHTML=''}
 
 /* ============================================================
+   LOGOUT USER
+============================================================ */
+function logoutUser(){
+  if(isGuest()){
+    toast('Belum ada akun aktif','fa-info-circle');
+    return;
+  }
+  const u = U();
+  const isTeacher = u.profile.role === 'teacher' || TeacherSession.isActive();
+  openModal('🚪 Keluar dari Akun', `
+    <div class="section-sub">Yakin ingin keluar dari akun ini?</div>
+    <div class="card" style="background:var(--bg);margin-top:12px;">
+      <div class="flex center gap-3">
+        <div style="font-size:38px;">${u.profile.avatar||'👤'}</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;">${esc(u.profile.name||'Tanpa Nama')}</div>
+          <div class="text-sm text-muted">${isTeacher?'Guru':'Murid'} · ${esc(u.profile.school||'-')}</div>
+        </div>
+      </div>
+    </div>
+    <div class="tense-alert" style="margin-top:14px;">
+      <b>💾 Data kamu tetap tersimpan.</b><br>
+      Kamu bisa masuk kembali kapan saja dengan memilih akunmu di halaman Beranda.
+      ${isTeacher?'<br><br><b>🔐 Sesi Guru juga akan dikunci ulang.</b>':''}
+    </div>
+  `, `
+    <button class="btn btn-ghost" onclick="closeModal()">Batal</button>
+    <button class="btn btn-danger" onclick="confirmLogoutUser()">
+      <i class="fa-solid fa-right-from-bracket"></i> Keluar
+    </button>
+  `);
+}
+
+function confirmLogoutUser(){
+  const u = U();
+  const wasTeacher = u && (u.profile.role === 'teacher' || TeacherSession.isActive());
+  State.activeUserId = null;
+  if(wasTeacher) TeacherSession.logout();
+  save();
+  closeModal();
+  toast('Berhasil keluar 👋','fa-right-from-bracket');
+  location.hash = 'beranda';
+  Router.render();
+}
+
+/* ============================================================
+   ⭐ TEACHER LOGIN (Opsi C — Modal Pilih Akun)
+============================================================ */
+function openTeacherLoginFromBeranda(){
+  const u = U();
+
+  // Case 1: Mode Guest → buka modal picker
+  if(isGuest()){
+    showTeacherPickerModal();
+    return;
+  }
+
+  // Case 2: User aktif adalah SISWA → tolak
+  if(u.profile.role === 'student'){
+    openModal('🔒 Akses Ditolak', `
+      <div class="flex center gap-3 mb-3">
+        <div style="font-size:44px;">🔒</div>
+        <div style="flex:1;">
+          <div style="font-weight:800;font-size:16px;color:var(--danger);">Hanya Guru yang Bisa Login</div>
+          <div class="text-sm text-muted">Saat ini kamu login sebagai <b>${esc(u.profile.name||'Siswa')}</b> (Murid).</div>
+        </div>
+      </div>
+      <div class="card" style="background:var(--bg);">
+        <div class="text-sm" style="line-height:1.7;">
+          Panel guru dan PIN hanya bisa diakses oleh akun dengan role <b>Guru</b>. 
+          Kalau kamu memang guru, silakan:
+        </div>
+        <ol class="check-list mt-3" style="list-style:decimal;padding-left:20px;">
+          <li>Logout dari akun murid ini</li>
+          <li>Pilih akun <b>Guru</b> di halaman Beranda (atau buat akun baru dengan role Guru)</li>
+          <li>Klik tombol <b>Login Guru</b> lagi</li>
+        </ol>
+      </div>
+    `, `
+      <button class="btn btn-ghost" onclick="closeModal()">Nanti Saja</button>
+      <button class="btn btn-danger" onclick="closeModal();logoutUser();">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout Sekarang
+      </button>
+    `);
+    return;
+  }
+
+  // Case 3: User aktif adalah GURU — buka PIN
+  requireTeacherPin(()=>{
+    toast('✓ Login Guru berhasil','fa-unlock');
+    render();
+  });
+}
+
+/* ⭐ BARU: Modal Pilih Akun Guru (untuk mode guest) */
+function showTeacherPickerModal(){
+  const teachers = Object.values(State.users).filter(u => u.profile.role === 'teacher');
+  // Filter yang punya nama (bukan akun kosong default)
+  const validTeachers = teachers.filter(u => u.profile.name && u.profile.name.trim());
+
+  let bodyHTML = '';
+
+  if(validTeachers.length === 0){
+    // Belum ada akun guru
+    bodyHTML = `
+      <div class="teacher-picker-empty">
+        <div class="icon">👨‍🏫</div>
+        <div class="title">Belum Ada Akun Guru</div>
+        <div class="sub">Kamu belum pernah membuat akun guru di perangkat ini. Klik tombol di bawah untuk membuat akun guru baru.</div>
+      </div>
+    `;
+  } else {
+    // Ada akun guru
+    bodyHTML = `
+      <div class="section-sub" style="margin-bottom:14px;">Pilih akun guru untuk login:</div>
+      ${validTeachers.map(u => `
+        <div class="teacher-picker-item" onclick="selectTeacherAndLogin('${u.id}')">
+          <div class="tp-avatar">${u.profile.avatar||'👨‍🏫'}</div>
+          <div class="tp-info">
+            <div class="tp-name">${esc(u.profile.name)}</div>
+            <div class="tp-meta">${esc(u.profile.school||'Sekolah belum diisi')} · Kelas: ${esc(u.profile.classes||'-')}</div>
+          </div>
+          <div class="tp-cta">Pilih <i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+      `).join('')}
+    `;
+  }
+
+  openModal('👨‍🏫 Login Guru', bodyHTML, `
+    <button class="btn btn-ghost" onclick="closeModal()">Batal</button>
+    <button class="btn btn-primary" onclick="createTeacherAccount()">
+      <i class="fa-solid fa-user-plus"></i> Buat Akun Guru Baru
+    </button>
+  `);
+}
+
+/* ⭐ BARU: Pilih guru & login */
+function selectTeacherAndLogin(userId){
+  const teacher = State.users[userId];
+  if(!teacher){
+    toast('Akun tidak ditemukan','fa-xmark');
+    return;
+  }
+  if(teacher.profile.role !== 'teacher'){
+    toast('Akun ini bukan Guru','fa-triangle-exclamation');
+    return;
+  }
+  // Switch ke akun guru
+  State.activeUserId = userId;
+  save();
+  closeModal();
+  // Langsung minta PIN
+  setTimeout(() => {
+    requireTeacherPin(() => {
+      toast('✓ Login Guru berhasil','fa-unlock');
+      render();
+    });
+  }, 150);
+}
+
+/* ⭐ BARU: Buat akun guru baru */
+function createTeacherAccount(){
+  const id = uid();
+  const newUser = safeClone(DEFAULT_USER);
+  newUser.id = id;
+  newUser.profile.name = 'Guru Baru';
+  newUser.profile.role = 'teacher';
+  newUser.profile.avatar = '👨‍🏫';
+  State.users[id] = newUser;
+  State.activeUserId = id;
+  save();
+  closeModal();
+  toast('✓ Akun guru baru dibuat','fa-user-plus');
+  // Arahkan ke profil untuk lengkapi data
+  Router.go('profil');
+  setTimeout(()=>{
+    toast('💡 Lengkapi nama & sekolahmu dulu','fa-lightbulb');
+  }, 800);
+}
+
+/* ============================================================
    TEACHER SESSION
 ============================================================ */
 const TeacherSession={
@@ -765,7 +1076,9 @@ function doVerifyPin(){
     document.getElementById('pinInput').value='';
   }
 }
-function logoutTeacher(){ TeacherSession.logout(); toast('Logged out','fa-right-from-bracket'); render(); }
+function logoutTeacher(){
+  logoutUser();
+}
 function unlockTeacherConfig(){ requireTeacherPin(()=>{ render(); toast('✓ Panel terbuka','fa-unlock'); }); }
 
 /* ============================================================
@@ -787,6 +1100,7 @@ function fileIcon(name){
 }
 function isStageUnlocked(stage){
   const u = U();
+  if(!u) return false;
   if(stage==='temukan') return true;
   if(stage==='bayangkan') return u.progress.temukan;
   if(stage==='lakukan') return u.progress.bayangkan;
@@ -836,30 +1150,31 @@ function renderVerbRows(list){
    BADGES
 ============================================================ */
 const BADGES=[
-  {id:'starter',emoji:'🚀',name:'Starter',name_en:'Starter',desc:'Buka RecountHub',desc_en:'Open RecountHub',check:()=>true},
-  {id:'reader',emoji:'📖',name:'Pembaca',name_en:'Reader',desc:'Selesai Interactive Reading',desc_en:'Finish Interactive Reading',check:()=>U().t1.readingDone},
-  {id:'watcher',emoji:'🎬',name:'Penonton',name_en:'Watcher',desc:'Tonton Video Discovery',desc_en:'Watch Video Discovery',check:()=>U().t1.videoWatched},
-  {id:'grammar',emoji:'📝',name:'Grammar Guru',name_en:'Grammar Guru',desc:'Selesai Grammar Corner',desc_en:'Finish Grammar Corner',check:()=>U().t1.grammarDone},
-  {id:'verbhunter',emoji:'🎯',name:'Pemburu Verb',name_en:'Verb Hunter',desc:'Skor 80+ Drag & Drop',desc_en:'Score 80+ Drag & Drop',check:()=>U().t1.ddScore>=80},
-  {id:'conjugator',emoji:'⚡',name:'Konjugator',name_en:'Conjugator',desc:'Skor 80+ Conjugation',desc_en:'Score 80+ Conjugation',check:()=>U().t1.conjScore>=80},
-  {id:'quizmaster',emoji:'🏆',name:'Juara Kuis',name_en:'Quiz Master',desc:'Lulus kuis 3/3',desc_en:'Pass quiz 3/3',check:()=>U().quiz.score>=3},
-  {id:'reflector',emoji:'💭',name:'Perenung',name_en:'Reflector',desc:'Isi Refleksi Tahap 1',desc_en:'Fill Reflection',check:()=>U().t1.reflection.length>20},
-  {id:'planner',emoji:'🗺️',name:'Perencana',name_en:'Planner',desc:'Isi Story Mapping',desc_en:'Fill Story Mapping',check:()=>!!U().t2.timeline.orientation&&!!U().t2.timeline.event1},
-  {id:'vocabularist',emoji:'📚',name:'Kosakata',name_en:'Vocabularist',desc:'Simpan 5 kosakata',desc_en:'Save 5 vocab',check:()=>U().t2.vocab.length>=5},
-  {id:'artist',emoji:'🎨',name:'Storyboarder',name_en:'Storyboarder',desc:'Buat 3 panel storyboard',desc_en:'Create 3 storyboard',check:()=>U().t2.storyboard.length>=3},
-  {id:'writer',emoji:'✍️',name:'Penulis',name_en:'Writer',desc:'Selesai Guided Writing',desc_en:'Finish Writing',check:()=>U().t3.guided.orientation.length>20&&U().t3.guided.events.every(e=>e.length>10)&&U().t3.guided.reorientation.length>20},
-  {id:'reviser',emoji:'🔁',name:'Reviser',name_en:'Reviser',desc:'Simpan 3 versi draf',desc_en:'Save 3 drafts',check:()=>U().t3.drafts.length>=3},
-  {id:'selfcheck',emoji:'✅',name:'Self Checker',name_en:'Self Checker',desc:'Centang semua self-check',desc_en:'Check all',check:()=>U().t3.selfCheck.past&&U().t3.selfCheck.order&&U().t3.selfCheck.structure},
-  {id:'publisher',emoji:'📢',name:'Publisher',name_en:'Publisher',desc:'Publikasikan karya',desc_en:'Publish work',check:()=>U().t4.published},
-  {id:'voiceactor',emoji:'🎙️',name:'Voice Actor',name_en:'Voice Actor',desc:'Rekam audio',desc_en:'Record audio',check:()=>!!U().t4.audio},
-  {id:'attach',emoji:'📎',name:'Kolektor',name_en:'Collector',desc:'Upload 1 lampiran',desc_en:'Upload attachment',check:()=>U().t4.attachments&&U().t4.attachments.length>=1},
-  {id:'reflective',emoji:'🌟',name:'Reflektif',name_en:'Reflective',desc:'Isi semua refleksi akhir',desc_en:'Fill all reflection',check:()=>U().t4.reflection.learned&&U().t4.reflection.challenge&&U().t4.reflection.improve},
-  {id:'rebel',emoji:'👑',name:'Rebel',name_en:'Rebel',desc:'Kumpulkan 12+ badge',desc_en:'Collect 12+ badges',check:()=>U().badges.length>=12}
+  {id:'starter',emoji:'🚀',name:'Starter',name_en:'Starter',desc:'Buka RecountHub',desc_en:'Open RecountHub',check:()=>!!U()},
+  {id:'reader',emoji:'📖',name:'Pembaca',name_en:'Reader',desc:'Selesai Interactive Reading',desc_en:'Finish Interactive Reading',check:()=>U()?.t1.readingDone},
+  {id:'watcher',emoji:'🎬',name:'Penonton',name_en:'Watcher',desc:'Tonton Video Discovery',desc_en:'Watch Video Discovery',check:()=>U()?.t1.videoWatched},
+  {id:'grammar',emoji:'📝',name:'Grammar Guru',name_en:'Grammar Guru',desc:'Selesai Grammar Corner',desc_en:'Finish Grammar Corner',check:()=>U()?.t1.grammarDone},
+  {id:'verbhunter',emoji:'🎯',name:'Pemburu Verb',name_en:'Verb Hunter',desc:'Skor 80+ Drag & Drop',desc_en:'Score 80+ Drag & Drop',check:()=>U()?.t1.ddScore>=80},
+  {id:'conjugator',emoji:'⚡',name:'Konjugator',name_en:'Conjugator',desc:'Skor 80+ Conjugation',desc_en:'Score 80+ Conjugation',check:()=>U()?.t1.conjScore>=80},
+  {id:'quizmaster',emoji:'🏆',name:'Juara Kuis',name_en:'Quiz Master',desc:'Lulus kuis 3/3',desc_en:'Pass quiz 3/3',check:()=>U()?.quiz.score>=3},
+  {id:'reflector',emoji:'💭',name:'Perenung',name_en:'Reflector',desc:'Isi Refleksi Tahap 1',desc_en:'Fill Reflection',check:()=>U()?.t1.reflection.length>20},
+  {id:'planner',emoji:'🗺️',name:'Perencana',name_en:'Planner',desc:'Isi Story Mapping',desc_en:'Fill Story Mapping',check:()=>!!U()?.t2.timeline.orientation&&!!U()?.t2.timeline.event1},
+  {id:'vocabularist',emoji:'📚',name:'Kosakata',name_en:'Vocabularist',desc:'Simpan 5 kosakata',desc_en:'Save 5 vocab',check:()=>U()?.t2.vocab.length>=5},
+  {id:'artist',emoji:'🎨',name:'Storyboarder',name_en:'Storyboarder',desc:'Buat 3 panel storyboard',desc_en:'Create 3 storyboard',check:()=>U()?.t2.storyboard.length>=3},
+  {id:'writer',emoji:'✍️',name:'Penulis',name_en:'Writer',desc:'Selesai Guided Writing',desc_en:'Finish Writing',check:()=>U()?.t3.guided.orientation.length>20&&U()?.t3.guided.events.every(e=>e.length>10)&&U()?.t3.guided.reorientation.length>20},
+  {id:'reviser',emoji:'🔁',name:'Reviser',name_en:'Reviser',desc:'Simpan 3 versi draf',desc_en:'Save 3 drafts',check:()=>U()?.t3.drafts.length>=3},
+  {id:'selfcheck',emoji:'✅',name:'Self Checker',name_en:'Self Checker',desc:'Centang semua self-check',desc_en:'Check all',check:()=>U()?.t3.selfCheck.past&&U()?.t3.selfCheck.order&&U()?.t3.selfCheck.structure},
+  {id:'publisher',emoji:'📢',name:'Publisher',name_en:'Publisher',desc:'Publikasikan karya',desc_en:'Publish work',check:()=>U()?.t4.published},
+  {id:'voiceactor',emoji:'🎙️',name:'Voice Actor',name_en:'Voice Actor',desc:'Rekam audio',desc_en:'Record audio',check:()=>!!U()?.t4.audio},
+  {id:'attach',emoji:'📎',name:'Kolektor',name_en:'Collector',desc:'Upload 1 lampiran',desc_en:'Upload attachment',check:()=>U()?.t4.attachments&&U()?.t4.attachments.length>=1},
+  {id:'reflective',emoji:'🌟',name:'Reflektif',name_en:'Reflective',desc:'Isi semua refleksi akhir',desc_en:'Fill all reflection',check:()=>U()?.t4.reflection.learned&&U()?.t4.reflection.challenge&&U()?.t4.reflection.improve},
+  {id:'rebel',emoji:'👑',name:'Rebel',name_en:'Rebel',desc:'Kumpulkan 12+ badge',desc_en:'Collect 12+ badges',check:()=>U()?.badges.length>=12}
 ];
 function badgeName(b){return State.lang==='en'?(b.name_en||b.name):b.name}
 function badgeDesc(b){return State.lang==='en'?(b.desc_en||b.desc):b.desc}
 function checkBadges(){
   const u=U();
+  if(!u) return;
   let newOnes=[];
   BADGES.forEach(b=>{
     if(!u.badges.includes(b.id)&&b.check()){ u.badges.push(b.id); newOnes.push(b); }
@@ -889,7 +1204,6 @@ const NAV_ALL=[...NAV,
   {id:'profil',icon:'fa-user',label:'profil'}
 ];
 
-/* Kelompok untuk sidebar */
 const SIDEBAR_GROUPS=[
   {label:'beranda', ids:['beranda']},
   {label:'section_stages', ids:['temukan','bayangkan','lakukan','bagikan']},
@@ -917,9 +1231,14 @@ function renderNav(cur){
   const main=NAV.slice(0,4);
   document.getElementById('mobileNav').innerHTML=main.map(n=>`<a href="#${n.id}" class="${cur===n.id?'active':''}"><i class="fa-solid ${n.icon}"></i> ${t(n.label)}</a>`).join('')+`<a onclick="showMoreMenu(event)" style="cursor:pointer;"><i class="fa-solid fa-ellipsis"></i> ${t('more')}</a>`;
 
-  const av = U().profile.avatar||'👨‍🏫';
+  const guest = isGuest();
+  const av = guest ? '👤' : (U().profile.avatar||'👨‍🏫');
   const ab = document.getElementById('avatarBtn'); if(ab) ab.textContent = av;
   const abs = document.getElementById('avatarBtnSidebar'); if(abs) abs.textContent = av;
+  const lbT = document.getElementById('logoutBtnTopbar');
+  const lbS = document.getElementById('logoutBtnSidebar');
+  if(lbT) lbT.style.display = guest ? 'none' : 'grid';
+  if(lbS) lbS.style.display = guest ? 'none' : 'flex';
 }
 function showMoreMenu(e){
   if(e) e.preventDefault();
@@ -933,6 +1252,14 @@ const Router={
   resolve(){
     const id=(location.hash||'#beranda').slice(1);
     this.current=NAV_ALL.find(n=>n.id===id)?id:'beranda';
+
+    if(isGuest() && this.current !== 'beranda'){
+      history.replaceState(null,'','#beranda');
+      this.current='beranda';
+      this.render();
+      return;
+    }
+
     if(this.current==='guru'&&!TeacherSession.isActive()){
       history.replaceState(null,'','#beranda');
       this.current='beranda';
@@ -960,18 +1287,160 @@ function render(){ Router.render(); }
 const Views={
 
 beranda(){
+  // ============================================================
+  // CASE 1: GUEST — Tampilkan hero + teacher login card + pilih akun
+  // ============================================================
+  if(isGuest()){
+    const registeredUsers = Object.values(State.users).filter(u=>u.profile.name);
+    return `
+      <div class="hero">
+        <div class="hero-content">
+          <div class="badge" style="background:rgba(255,255,255,.2);color:#fff;margin-bottom:12px;"><i class="fa-solid fa-sparkles"></i> PjBL · Recount Text</div>
+          <h1>👋 Selamat datang!</h1>
+          <p>Pilih akunmu di bawah untuk masuk, atau login sebagai guru untuk mengelola kelas.</p>
+        </div>
+      </div>
+
+      <!-- ⭐ KARTU LOGIN GURU (muncul juga di mode guest) -->
+      <div class="teacher-login-card">
+        <div class="tlc-icon">👨‍🏫</div>
+        <div class="tlc-body">
+          <div class="tlc-title">
+            Login Guru
+            <span class="tlc-status"><i class="fa-solid fa-key"></i> Pilih Akun</span>
+          </div>
+          <div class="tlc-sub">Masuk ke Panel Guru dengan memilih akun guru yang terdaftar di perangkat ini.</div>
+        </div>
+        <div class="tlc-actions">
+          <button class="btn-white" onclick="openTeacherLoginFromBeranda()"><i class="fa-solid fa-unlock"></i> Login Guru</button>
+        </div>
+      </div>
+
+      <div class="guest-banner">
+        <div class="gb-icon">🔓</div>
+        <div class="gb-text">
+          <div class="gb-title">Mode Tamu (Guest)</div>
+          <div class="gb-sub">Data tetap tersimpan di perangkat ini. Pilih akun di bawah atau login sebagai guru di atas.</div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="flex between center mb-3 wrap gap-2">
+          <div>
+            <div class="section-title" style="font-size:17px;">👥 Pilih Akun</div>
+            <div class="section-sub" style="margin-bottom:0;">Klik akun untuk masuk kembali</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="addNewUser()">
+            <i class="fa-solid fa-user-plus"></i> Akun Baru
+          </button>
+        </div>
+        ${registeredUsers.length ? `
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            ${registeredUsers.map(u=>`
+              <div class="student-row" onclick="switchUser('${u.id}')">
+                <div class="avatar">${u.profile.avatar||'👤'}</div>
+                <div class="info">
+                  <div class="name">${esc(u.profile.name)}</div>
+                  <div class="meta">${u.profile.role==='student'?'Murid':'Guru'} · ${esc(u.profile.classes||'-')} · ${esc(u.profile.school||'-')}</div>
+                </div>
+                <span class="badge badge-primary">Masuk <i class="fa-solid fa-arrow-right"></i></span>
+              </div>
+            `).join('')}
+          </div>
+        ` : `
+          <div class="empty">
+            <i class="fa-solid fa-user-slash"></i>
+            <div>Belum ada akun tersimpan</div>
+            <button class="btn btn-primary mt-4" onclick="addNewUser()">
+              <i class="fa-solid fa-user-plus"></i> Buat Akun Pertama
+            </button>
+          </div>
+        `}
+      </div>
+
+      <div class="grid-3">
+        <div class="card text-center"><div style="font-size:32px;">📖</div><div style="font-weight:700;margin-top:6px;">Kamus</div><div class="text-xs text-muted">${VERBS.length} verbs</div></div>
+        <div class="card text-center"><div style="font-size:32px;">🏆</div><div style="font-weight:700;margin-top:6px;">Badge</div><div class="text-xs text-muted">${BADGES.length} badge</div></div>
+        <div class="card text-center"><div style="font-size:32px;">🤖</div><div style="font-weight:700;margin-top:6px;">AI Buddy</div><div class="text-xs text-muted">Bantuan menulis</div></div>
+      </div>
+    `;
+  }
+
+  // ============================================================
+  // CASE 2: USER AKTIF — Tampilan normal + kartu login guru
+  // ============================================================
   const u=U();
   const done=Object.values(u.progress).filter(Boolean).length;
   const pct=Math.round((done/4)*100);
   const circum=2*Math.PI*70;
   const off=circum-(pct/100)*circum;
   const name=u.profile.name||t('role_greeting');
+  const isTeacherRole = u.profile.role === 'teacher';
+  const isTeacherLoggedIn = TeacherSession.isActive();
+  const isStudentRole = u.profile.role === 'student';
+
   const stages=[
     {id:'temukan',icon:'fa-magnifying-glass',num:1},
     {id:'bayangkan',icon:'fa-lightbulb',num:2},
     {id:'lakukan',icon:'fa-pen-to-square',num:3},
     {id:'bagikan',icon:'fa-share-nodes',num:4}
   ];
+
+  // ⭐ Build Teacher Login Card
+  let teacherCard = '';
+  if(isTeacherRole && isTeacherLoggedIn){
+    teacherCard = `
+      <div class="teacher-login-card">
+        <div class="tlc-icon">👨‍🏫</div>
+        <div class="tlc-body">
+          <div class="tlc-title">
+            Mode Guru Aktif
+            <span class="tlc-status active"><i class="fa-solid fa-circle-check"></i> Logged In</span>
+          </div>
+          <div class="tlc-sub">Kamu login sebagai <b>${esc(u.profile.name||'Guru')}</b>. Semua fitur guru terbuka.</div>
+        </div>
+        <div class="tlc-actions">
+          <button class="btn-white" onclick="Router.go('guru')"><i class="fa-solid fa-chart-line"></i> Dashboard</button>
+          <button class="btn-outline-white" onclick="logoutTeacher()"><i class="fa-solid fa-lock"></i> Kunci</button>
+        </div>
+      </div>
+    `;
+  } else if(isTeacherRole && !isTeacherLoggedIn){
+    teacherCard = `
+      <div class="teacher-login-card">
+        <div class="tlc-icon">🔐</div>
+        <div class="tlc-body">
+          <div class="tlc-title">
+            Login Guru
+            <span class="tlc-status"><i class="fa-solid fa-key"></i> PIN Required</span>
+          </div>
+          <div class="tlc-sub">Masuk ke Panel Guru dengan PIN untuk mengelola siswa, materi, dan laporan.</div>
+        </div>
+        <div class="tlc-actions">
+          <button class="btn-white" onclick="openTeacherLoginFromBeranda()"><i class="fa-solid fa-unlock"></i> Login Guru</button>
+        </div>
+      </div>
+    `;
+  } else if(isStudentRole){
+    teacherCard = `
+      <div class="teacher-login-card">
+        <div class="tlc-icon">🔒</div>
+        <div class="tlc-body">
+          <div class="tlc-title">
+            Login Guru
+            <span class="tlc-status locked"><i class="fa-solid fa-lock"></i> Terkunci</span>
+          </div>
+          <div class="tlc-sub">Kamu login sebagai <b>${esc(u.profile.name||'Murid')}</b> (Murid). Panel guru hanya bisa diakses oleh akun Guru.</div>
+        </div>
+        <div class="tlc-actions">
+          <button class="btn-locked" onclick="openTeacherLoginFromBeranda()" style="cursor:pointer;">
+            <i class="fa-solid fa-lock"></i> Terkunci
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
   return `
     <div class="hero">
       <div class="hero-content">
@@ -984,9 +1453,12 @@ beranda(){
         </div>
       </div>
     </div>
+
+    ${teacherCard}
+
     ${!sb?`
     <div class="card mb-4" style="background:#fef3c7;border-color:#f59e0b;color:#78350f;">
-      <div class="flex center gap-3"><i class="fa-solid fa-circle-exclamation" style="font-size:26px;color:#d97706;"></i><div><div style="font-weight:700;">⚠️ Supabase belum di-setup</div><div style="font-size:13px;">Isi SUPABASE_URL & SUPABASE_ANON_KEY di kode HTML.</div></div></div>
+      <div class="flex center gap-3"><i class="fa-solid fa-circle-exclamation" style="font-size:26px;color:#d97706;"></i><div><div style="font-weight:700;">⚠️ Supabase belum di-setup</div><div style="font-size:13px;">Aplikasi tetap berjalan dengan penyimpanan lokal.</div></div></div>
     </div>`:''}
     <div class="progress-wrap">
       <div class="card text-center">
@@ -1139,7 +1611,7 @@ kelas(){
           <i class="fa-solid fa-circle-check" style="font-size:28px;color:${isReady?'var(--success)':'var(--warning)'};"></i>
           <div style="flex:1;">
             <div style="font-weight:700;">${isReady?(State.lang==='en'?'Connected':'Terhubung'):(State.lang==='en'?'Not connected':'Belum terhubung')}</div>
-            <div class="text-sm text-muted">${isReady?'Auto-sync via Supabase':(State.lang==='en'?'Ask admin to setup.':'Hubungi admin.')}</div>
+            <div class="text-sm text-muted">${isReady?'Auto-sync via Supabase':'Data tersimpan lokal di perangkat ini'}</div>
           </div>
         </div>
         ${isReady?`<div class="mt-3"><button class="btn btn-ghost btn-sm" onclick="testBackend()"><i class="fa-solid fa-vial"></i> Test</button></div>`:''}
@@ -1203,19 +1675,36 @@ profil(){
         <div class="flex gap-2 wrap">${avatars.map(a=>`<button onclick="setAvatar('${a}')" style="width:42px;height:42px;border-radius:11px;font-size:20px;background:${p.avatar===a?'var(--grad)':'var(--bg)'};border:1.5px solid ${p.avatar===a?'transparent':'var(--border)'};display:grid;place-items:center;">${a}</button>`).join('')}</div>
       </div>
       <div class="card">
-        <div class="field"><label class="label">Nama Lengkap</label><input class="input" id="pfName" value="${esc(p.name)}"></div>
+        <div class="field"><label class="label">Nama Lengkap</label><input class="input" id="pfName" value="${esc(p.name)}" placeholder="Nama lengkap"></div>
         <div class="field"><label class="label">Role</label><select class="select" id="pfRole"><option value="teacher" ${p.role==='teacher'?'selected':''}>Guru</option><option value="student" ${p.role==='student'?'selected':''}>Siswa</option></select></div>
-        <div class="field"><label class="label">NIP / NIS</label><input class="input" id="pfNip" value="${esc(p.nip)}"></div>
-        <div class="field"><label class="label">Sekolah</label><input class="input" id="pfSchool" value="${esc(p.school)}"></div>
-        <div class="field"><label class="label">Mata Pelajaran</label><input class="input" id="pfSubject" value="${esc(p.subject)}"></div>
-        <div class="field"><label class="label">Kelas</label><input class="input" id="pfClasses" value="${esc(p.classes)}"></div>
+        <div class="field"><label class="label">NIP / NIS</label><input class="input" id="pfNip" value="${esc(p.nip)}" placeholder="Nomor induk"></div>
+        <div class="field"><label class="label">Sekolah</label><input class="input" id="pfSchool" value="${esc(p.school)}" placeholder="Nama sekolah"></div>
+        <div class="field"><label class="label">Mata Pelajaran</label><input class="input" id="pfSubject" value="${esc(p.subject)}" placeholder="Bahasa Inggris"></div>
+        <div class="field"><label class="label">Kelas</label><input class="input" id="pfClasses" value="${esc(p.classes)}" placeholder="Contoh: 8A, 8B, 8C"><div class="hint">Pisahkan dengan koma jika mengampu lebih dari 1 kelas</div></div>
         <div class="flex gap-2 wrap mt-3">
           <button class="btn btn-primary" onclick="saveProfile()"><i class="fa-solid fa-save"></i> ${t('save')}</button>
           <button class="btn btn-ghost" onclick="printReport()"><i class="fa-solid fa-print"></i> Cetak</button>
           <button class="btn btn-ghost" onclick="resetAll()" style="color:var(--danger);border-color:var(--danger);"><i class="fa-solid fa-trash"></i> Reset</button>
         </div>
       </div>
-    </div>`;
+    </div>
+    <div class="logout-card mt-4" style="margin-top:20px;">
+      <div class="flex between center wrap gap-3">
+        <div style="flex:1;min-width:220px;">
+          <div class="flex center gap-2 mb-2">
+            <i class="fa-solid fa-right-from-bracket" style="color:var(--danger);font-size:18px;"></i>
+            <div style="font-weight:800;font-size:15px;">Keluar dari Akun</div>
+          </div>
+          <div class="text-sm text-muted" style="line-height:1.6;">
+            Keluar dari akun <b>${esc(p.name||'-')}</b>. Data kamu tetap tersimpan, dan kamu bisa masuk kembali kapan saja dari halaman Beranda.
+          </div>
+        </div>
+        <button class="btn btn-danger" onclick="logoutUser()" style="flex-shrink:0;">
+          <i class="fa-solid fa-right-from-bracket"></i> Keluar Sekarang
+        </button>
+      </div>
+    </div>
+  `;
 }
 };
 
@@ -1935,8 +2424,7 @@ function addNewUser(fromModal){
 }
 
 /* ============================================================
-   AUTO-LOAD CONFIG & MATERIALS
-   ⭐ Auto-load users dari Supabase + render otomatis
+   AUTO-LOAD CONFIG
 ============================================================ */
 async function autoLoadConfig(){
   if(!sb) return;
@@ -1962,7 +2450,6 @@ async function autoLoadConfig(){
       save();
       console.log('[Materials] Loaded:', mats.video_url);
     }
-    // ⭐ Auto-load semua user dari Supabase agar dashboard guru terisi
     const users = await Supabase.fetchAllUsers();
     if(users && users.length){
       users.forEach(u => {
@@ -1979,7 +2466,6 @@ async function autoLoadConfig(){
   }
 }
 
-/* ⭐ Fungsi reload manual dari dashboard guru */
 async function reloadUsersFromServer(){
   if(!sb) return toast('Supabase belum siap','fa-triangle-exclamation');
   toast('Memuat data dari server...','fa-spinner');
@@ -2015,7 +2501,7 @@ async function testBackend(){ await Supabase.test(); }
 /* ============================================================
    PROFIL HANDLERS
 ============================================================ */
-function setAvatar(a){ U().profile.avatar=a; save(); render(); }
+function setAvatar(a){ setU(u=>u.profile.avatar=a); save(); render(); }
 function saveProfile(){
   setU(u=>{
     u.profile.name=document.getElementById('pfName').value;
@@ -2058,9 +2544,7 @@ function resetAll(){
   save(); Theme.apply(); toast('Reset','fa-trash');
   Router.go('beranda');
 }
-/* ============================================================
-   ⭐ saveMaterials() — sync ke Supabase
-============================================================ */
+
 async function saveMaterials(){
   State.materials.videoUrl=document.getElementById('matVideoUrl').value;
   State.materials.videoTitle=document.getElementById('matVideoTitle').value;
