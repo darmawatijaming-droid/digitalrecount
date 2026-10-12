@@ -37,64 +37,23 @@ a{color:var(--primary);text-decoration:none}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px}
 ::-webkit-scrollbar-thumb:hover{background:var(--primary-light)}
 
-/* ============================================================
-   SIDEBAR
-============================================================ */
-.sidebar{
-  display:none;position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);
-  background:var(--bg-2);border-right:1px solid var(--border);z-index:150;
-  flex-direction:column;transition:transform .3s,background .3s,border-color .3s;
-}
-.sidebar-brand{
-  display:flex;align-items:center;gap:10px;padding:16px 18px;
-  border-bottom:1px solid var(--border);flex-shrink:0;
-}
-.sidebar-brand .brand-icon{
-  width:38px;height:38px;border-radius:11px;background:var(--grad);
-  display:grid;place-items:center;color:#fff;font-size:16px;
-  box-shadow:0 6px 16px rgba(124,58,237,.3);flex-shrink:0;
-}
-.sidebar-brand .brand-text{
-  font-weight:800;font-size:17px;letter-spacing:-.02em;
-  background:var(--grad);-webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;cursor:pointer;
-}
-.sidebar-nav{
-  flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:3px;
-}
+.sidebar{display:none;position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);background:var(--bg-2);border-right:1px solid var(--border);z-index:150;flex-direction:column;transition:transform .3s,background .3s,border-color .3s}
+.sidebar-brand{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sidebar-brand .brand-icon{width:38px;height:38px;border-radius:11px;background:var(--grad);display:grid;place-items:center;color:#fff;font-size:16px;box-shadow:0 6px 16px rgba(124,58,237,.3);flex-shrink:0}
+.sidebar-brand .brand-text{font-weight:800;font-size:17px;letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:3px}
 .sidebar-nav::-webkit-scrollbar{width:6px}
-.sidebar-nav a{
-  display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:11px;
-  color:var(--text-muted);font-weight:500;font-size:14px;transition:all .2s;
-  white-space:nowrap;
-}
+.sidebar-nav a{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:11px;color:var(--text-muted);font-weight:500;font-size:14px;transition:all .2s;white-space:nowrap}
 .sidebar-nav a i{width:18px;text-align:center;font-size:15px}
 .sidebar-nav a:hover{background:var(--primary-soft);color:var(--primary)}
 .sidebar-nav a.active{background:var(--grad);color:#fff;box-shadow:0 4px 14px rgba(124,58,237,.3);font-weight:600}
 .sidebar-nav a.active i{color:#fff}
-.sidebar-section-label{
-  font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--text-muted);padding:12px 14px 6px;opacity:.7;
-}
-.sidebar-footer{
-  padding:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px;
-}
-.sidebar-credit{
-  padding:10px 12px;text-align:center;
-  background:var(--grad-soft);border-radius:12px;
-  border:1px solid var(--border);
-}
-.sidebar-credit .credit-label{
-  font-size:10px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px;
-}
-.sidebar-credit .credit-name{
-  font-size:12.5px;font-weight:800;color:var(--primary);
-  line-height:1.3;margin-bottom:2px;
-}
-.sidebar-credit .credit-sub{
-  font-size:10.5px;color:var(--text-muted);line-height:1.4;
-}
+.sidebar-section-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);padding:12px 14px 6px;opacity:.7}
+.sidebar-footer{padding:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.sidebar-credit{padding:10px 12px;text-align:center;background:var(--grad-soft);border-radius:12px;border:1px solid var(--border)}
+.sidebar-credit .credit-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px}
+.sidebar-credit .credit-name{font-size:12.5px;font-weight:800;color:var(--primary);line-height:1.3;margin-bottom:2px}
+.sidebar-credit .credit-sub{font-size:10.5px;color:var(--text-muted);line-height:1.4}
 
 .main-wrap{margin-left:0;transition:margin-left .3s}
 @media(min-width:901px){
@@ -102,9 +61,6 @@ a{color:var(--primary);text-decoration:none}
   .main-wrap{margin-left:var(--sidebar-w)}
 }
 
-/* ============================================================
-   TOPBAR
-============================================================ */
 .topbar{position:sticky;top:0;z-index:100;background:var(--bg-2);border-bottom:1px solid var(--border);backdrop-filter:blur(10px)}
 .topbar-inner{max-width:1280px;margin:0 auto;padding:11px 16px;display:flex;align-items:center;gap:10px}
 .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px;letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;flex-shrink:0}
@@ -119,12 +75,8 @@ a{color:var(--primary);text-decoration:none}
 .lang-toggle button{padding:0 10px;font-size:12px;font-weight:700;color:var(--text-muted);transition:all .2s}
 .lang-toggle button.active{background:var(--grad);color:#fff}
 .lang-toggle button:not(.active):hover{background:var(--primary-soft);color:var(--primary)}
-@media(min-width:901px){
-  .topbar .lang-toggle{display:flex}
-}
-@media(max-width:900px){
-  .topbar .brand{display:flex}
-}
+@media(min-width:901px){.topbar .lang-toggle{display:flex}}
+@media(max-width:900px){.topbar .brand{display:flex}}
 
 main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100vh - 62px);animation:fadeIn .4s}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -356,9 +308,6 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
 .check-list li{display:flex;align-items:flex-start;gap:8px}
 .check-list li::before{content:'✓';color:var(--success);font-weight:700;flex-shrink:0}
 
-/* ============================================================
-   Logout & Guest Banner
-============================================================ */
 .logout-btn-topbar{
   width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:15px;
   color:var(--danger);background:var(--bg);border:1px solid var(--border);transition:all .2s;
@@ -387,9 +336,6 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
   .guest-banner .gb-icon{font-size:30px}
 }
 
-/* ============================================================
-   Teacher Login Card (di Beranda)
-============================================================ */
 .teacher-login-card{
   background:linear-gradient(135deg,#1e1b4b 0%,#4c1d95 50%,#7c3aed 100%);
   border-radius:var(--radius);padding:22px;color:#fff;margin-bottom:20px;
@@ -397,93 +343,39 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
   box-shadow:var(--shadow-lg);position:relative;overflow:hidden;
   border:1px solid rgba(255,255,255,.1);
 }
-.teacher-login-card::before{
-  content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;
-  border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none;
-}
-.teacher-login-card::after{
-  content:'';position:absolute;bottom:-80px;left:-40px;width:180px;height:180px;
-  border-radius:50%;background:rgba(168,85,247,.15);pointer-events:none;
-}
-.teacher-login-card .tlc-icon{
-  width:64px;height:64px;border-radius:16px;
-  background:rgba(255,255,255,.15);backdrop-filter:blur(6px);
-  display:grid;place-items:center;font-size:28px;flex-shrink:0;
-  border:1px solid rgba(255,255,255,.2);
-  position:relative;z-index:1;
-}
+.teacher-login-card::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none}
+.teacher-login-card::after{content:'';position:absolute;bottom:-80px;left:-40px;width:180px;height:180px;border-radius:50%;background:rgba(168,85,247,.15);pointer-events:none}
+.teacher-login-card .tlc-icon{width:64px;height:64px;border-radius:16px;background:rgba(255,255,255,.15);backdrop-filter:blur(6px);display:grid;place-items:center;font-size:28px;flex-shrink:0;border:1px solid rgba(255,255,255,.2);position:relative;z-index:1}
 .teacher-login-card .tlc-body{flex:1;min-width:220px;position:relative;z-index:1;}
-.teacher-login-card .tlc-title{
-  font-weight:800;font-size:17px;margin-bottom:4px;letter-spacing:-.01em;
-  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-}
-.teacher-login-card .tlc-sub{
-  font-size:13px;opacity:.85;line-height:1.5;
-}
-.teacher-login-card .tlc-status{
-  display:inline-flex;align-items:center;gap:6px;margin-top:8px;
-  padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:700;
-  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
-}
+.teacher-login-card .tlc-title{font-weight:800;font-size:17px;margin-bottom:4px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.teacher-login-card .tlc-sub{font-size:13px;opacity:.85;line-height:1.5}
+.teacher-login-card .tlc-status{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:700;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
 .teacher-login-card .tlc-status.active{background:rgba(16,185,129,.25);border-color:rgba(16,185,129,.4);color:#6ee7b7;}
 .teacher-login-card .tlc-status.locked{background:rgba(239,68,68,.25);border-color:rgba(239,68,68,.45);color:#fecaca;}
-.teacher-login-card .tlc-actions{
-  display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:1;
-}
-.teacher-login-card .btn-white{
-  background:#fff;color:#7c3aed;font-weight:700;
-  padding:10px 18px;border-radius:11px;font-size:13.5px;
-  display:inline-flex;align-items:center;gap:7px;transition:all .2s;
-  box-shadow:0 6px 16px rgba(0,0,0,.15);
-}
+.teacher-login-card .tlc-actions{display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:1}
+.teacher-login-card .btn-white{background:#fff;color:#7c3aed;font-weight:700;padding:10px 18px;border-radius:11px;font-size:13.5px;display:inline-flex;align-items:center;gap:7px;transition:all .2s;box-shadow:0 6px 16px rgba(0,0,0,.15)}
 .teacher-login-card .btn-white:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(0,0,0,.25);}
-.teacher-login-card .btn-outline-white{
-  background:rgba(255,255,255,.15);color:#fff;font-weight:600;
-  padding:10px 18px;border-radius:11px;font-size:13.5px;
-  display:inline-flex;align-items:center;gap:7px;transition:all .2s;
-  border:1px solid rgba(255,255,255,.3);
-}
+.teacher-login-card .btn-outline-white{background:rgba(255,255,255,.15);color:#fff;font-weight:600;padding:10px 18px;border-radius:11px;font-size:13.5px;display:inline-flex;align-items:center;gap:7px;transition:all .2s;border:1px solid rgba(255,255,255,.3)}
 .teacher-login-card .btn-outline-white:hover{background:rgba(255,255,255,.25);border-color:#fff;}
-.teacher-login-card .btn-locked{
-  background:rgba(239,68,68,.2);color:#fecaca;font-weight:600;
-  padding:10px 18px;border-radius:11px;font-size:13.5px;cursor:not-allowed;
-  display:inline-flex;align-items:center;gap:7px;
-  border:1px solid rgba(239,68,68,.4);
-}
+.teacher-login-card .btn-locked{background:rgba(239,68,68,.2);color:#fecaca;font-weight:600;padding:10px 18px;border-radius:11px;font-size:13.5px;cursor:not-allowed;display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(239,68,68,.4)}
 @media(max-width:600px){
   .teacher-login-card{padding:18px;}
   .teacher-login-card .tlc-icon{width:52px;height:52px;font-size:22px;}
   .teacher-login-card .tlc-title{font-size:15px;}
 }
 
-/* ============================================================
-   Teacher Picker Modal (Opsi C)
-============================================================ */
 .teacher-picker-item{
   display:flex;align-items:center;gap:14px;padding:14px 16px;
   background:var(--bg);border:1.5px solid var(--border);border-radius:13px;
   cursor:pointer;transition:all .2s;margin-bottom:10px;
 }
-.teacher-picker-item:hover{
-  border-color:var(--primary);background:var(--primary-soft);
-  transform:translateY(-2px);box-shadow:var(--shadow);
-}
-.teacher-picker-item .tp-avatar{
-  width:48px;height:48px;border-radius:12px;background:var(--grad-soft);
-  display:grid;place-items:center;font-size:24px;flex-shrink:0;
-}
+.teacher-picker-item:hover{border-color:var(--primary);background:var(--primary-soft);transform:translateY(-2px);box-shadow:var(--shadow)}
+.teacher-picker-item .tp-avatar{width:48px;height:48px;border-radius:12px;background:var(--grad-soft);display:grid;place-items:center;font-size:24px;flex-shrink:0}
 .teacher-picker-item .tp-info{flex:1;min-width:0;}
 .teacher-picker-item .tp-name{font-weight:700;font-size:14.5px;margin-bottom:2px;}
 .teacher-picker-item .tp-meta{font-size:12px;color:var(--text-muted);line-height:1.4;}
-.teacher-picker-item .tp-cta{
-  background:var(--grad);color:#fff;padding:8px 14px;border-radius:9px;
-  font-weight:600;font-size:12.5px;display:inline-flex;align-items:center;gap:5px;
-  flex-shrink:0;
-}
-.teacher-picker-empty{
-  text-align:center;padding:30px 20px;
-  background:var(--grad-soft);border-radius:13px;border:1.5px dashed var(--primary-light);
-}
+.teacher-picker-item .tp-cta{background:var(--grad);color:#fff;padding:8px 14px;border-radius:9px;font-weight:600;font-size:12.5px;display:inline-flex;align-items:center;gap:5px;flex-shrink:0}
+.teacher-picker-empty{text-align:center;padding:30px 20px;background:var(--grad-soft);border-radius:13px;border:1.5px dashed var(--primary-light);}
 .teacher-picker-empty .icon{font-size:42px;margin-bottom:10px;}
 .teacher-picker-empty .title{font-weight:700;font-size:15px;margin-bottom:4px;}
 .teacher-picker-empty .sub{font-size:12.5px;color:var(--text-muted);line-height:1.5;}
@@ -522,7 +414,6 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
     <div class="brand-icon"><i class="fa-solid fa-book-open-reader"></i></div>
@@ -541,7 +432,6 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
   </div>
 </aside>
 
-<!-- MAIN WRAP -->
 <div class="main-wrap">
   <header class="topbar">
     <div class="topbar-inner">
@@ -557,7 +447,6 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
         </div>
         <button class="icon-btn" onclick="Router.go('guru')" title="Dashboard Guru"><i class="fa-solid fa-chart-line"></i></button>
         <button class="icon-btn" onclick="Router.go('ai')" title="AI Buddy"><i class="fa-solid fa-robot"></i></button>
-        <button class="icon-btn" onclick="Router.go('kelas')" title="Kelas"><i class="fa-solid fa-users"></i></button>
         <button class="icon-btn" onclick="Theme.toggle()" id="themeBtn" title="Ganti Tema"><i class="fa-solid fa-moon"></i></button>
         <button class="avatar-btn" onclick="Router.go('profil')" id="avatarBtn">👨‍🏫</button>
         <button class="logout-btn-topbar" id="logoutBtnTopbar" onclick="logoutUser()" title="Keluar dari Akun">
@@ -599,7 +488,9 @@ if (SUPABASE_URL && SUPABASE_ANON_KEY && typeof supabase !== 'undefined') {
 ============================================================ */
 const SK='recounthub_v3_supabase';
 const DEFAULT_USER={
-  id:'',profile:{name:'',nip:'',school:'',subject:'Bahasa Inggris',classes:'',avatar:'👨‍🏫',role:'teacher'},
+  id:'',
+  profile:{name:'',nip:'',school:'',subject:'Bahasa Inggris',classes:'',avatar:'👨‍🏫',role:'teacher'},
+  pin:'',  /* ⭐ BARU: PIN per-user (murid & guru) */
   progress:{temukan:false,bayangkan:false,lakukan:false,bagikan:false},
   quiz:{answers:[],passed:false,score:0},
   t1:{readingDone:false,videoWatched:false,grammarDone:false,ddScore:0,conjScore:0,reflection:'',experiences:['','','','',''],_videoNote:''},
@@ -617,9 +508,8 @@ const DEFAULT_STATE={
   },
   materials:{videoUrl:'https://www.youtube.com/embed/aqz-KE-bpKQ',videoTitle:'Video Discovery',readingText:''},
   aiGenerated:{quizzes:[]},
-  activeUserId:'u1',users:{'u1':safeClone(DEFAULT_USER)}
+  activeUserId:null,users:{}
 };
-DEFAULT_STATE.users.u1.id='u1';
 
 let State=load();
 function deepMerge(t,s){for(const k in s){if(Array.isArray(s[k]))t[k]=s[k];else if(s[k]&&typeof s[k]==='object')t[k]=deepMerge(t[k]||{},s[k]);else t[k]=s[k]}return t}
@@ -641,15 +531,39 @@ const I18n={
       students:'Daftar Siswa',materials_mgmt:'Kelola Materi',reports:'Rekap Nilai',
       greeting:'Hi',role_greeting:'Murid',welcome:'Selamat datang',
       stage1:'Temukan',stage2:'Bayangkan',stage3:'Lakukan',stage4:'Bagikan',
-      section_stages:'Tahapan Proyek',section_tools:'Alat Bantu',section_account:'Akun'},
+      section_stages:'Tahapan Proyek',section_tools:'Alat Bantu',section_account:'Akun',
+      edit:'Edit',close:'Tutup',back:'Kembali',next:'Lanjut',prev:'Sebelumnya',
+      yes:'Ya',no:'Tidak',search:'Cari',reset:'Reset',submit:'Kirim',confirm:'Konfirmasi',
+      name:'Nama',role:'Role',school:'Sekolah',classes:'Kelas',subject:'Mata Pelajaran',
+      teacher:'Guru',student:'Murid',avatar:'Avatar',login:'Masuk',register:'Daftar',logout:'Keluar',
+      login_student:'Login Murid',login_teacher:'Login Guru',register_account:'Daftar Akun Baru',
+      register_as_student:'Daftar sebagai Murid',register_as_teacher:'Daftar sebagai Guru',
+      guest_mode:'Mode Tamu (Guest)',
+      overview:'Overview',dashboard:'Dashboard',
+      col_name:'Nama',col_role:'Role',col_progress:'Progress',col_badges:'Badge',col_words:'Kata',col_v2:'V2',col_status:'Status',
+      no_students_yet:'Belum ada siswa',
+      no_teachers_yet:'Belum ada akun guru',
+      no_students_registered:'Belum ada akun murid'},
     en:{beranda:'Home',temukan:'Discover',bayangkan:'Imagine',lakukan:'Do',bagikan:'Share',kamus:'Dictionary',badges:'Badges',ai:'AI Buddy',kelas:'Class',profil:'Profile',guru:'Dashboard',
       start:'Start',continue:'Continue',open:'Open',view:'View',fill:'Fill',save:'Save',cancel:'Cancel',delete:'Delete',add:'Add',more:'More',
       locked:'Locked',done:'Done',
       total_students:'Total Students',avg_progress:'Average',published_works:'Published',total_badges:'Total Badges',
-      students:'Students',materials_mgmt:'Materials',reports:'Reports',
+      students:'Students',materials_mgmt:'Materials',reports:'Grade Report',
       greeting:'Hi',role_greeting:'Student',welcome:'Welcome',
       stage1:'Discover',stage2:'Imagine',stage3:'Do',stage4:'Share',
-      section_stages:'Project Stages',section_tools:'Tools',section_account:'Account'}
+      section_stages:'Project Stages',section_tools:'Tools',section_account:'Account',
+      edit:'Edit',close:'Close',back:'Back',next:'Next',prev:'Previous',
+      yes:'Yes',no:'No',search:'Search',reset:'Reset',submit:'Submit',confirm:'Confirm',
+      name:'Name',role:'Role',school:'School',classes:'Class',subject:'Subject',
+      teacher:'Teacher',student:'Student',avatar:'Avatar',login:'Login',register:'Register',logout:'Logout',
+      login_student:'Login Student',login_teacher:'Login Teacher',register_account:'Register New Account',
+      register_as_student:'Register as Student',register_as_teacher:'Register as Teacher',
+      guest_mode:'Guest Mode',
+      overview:'Overview',dashboard:'Dashboard',
+      col_name:'Name',col_role:'Role',col_progress:'Progress',col_badges:'Badges',col_words:'Words',col_v2:'V2',col_status:'Status',
+      no_students_yet:'No students yet',
+      no_teachers_yet:'No teacher accounts yet',
+      no_students_registered:'No student accounts yet'}
   },
   t(k){const d=this.dict[State.lang||'id'];return d[k]||this.dict.id[k]||k},
   set(lang){State.lang=lang;save();this.applyButtons();render()},
@@ -846,181 +760,650 @@ function closeModal(){document.getElementById('modalRoot').innerHTML=''}
    LOGOUT USER
 ============================================================ */
 function logoutUser(){
+  const L = State.lang;
   if(isGuest()){
-    toast('Belum ada akun aktif','fa-info-circle');
+    toast(L==='en'?'No active account':'Belum ada akun aktif','fa-info-circle');
     return;
   }
   const u = U();
   const isTeacher = u.profile.role === 'teacher' || TeacherSession.isActive();
-  openModal('🚪 Keluar dari Akun', `
-    <div class="section-sub">Yakin ingin keluar dari akun ini?</div>
+  openModal('🚪 '+(L==='en'?'Logout':'Keluar dari Akun'), `
+    <div class="section-sub">${L==='en'?'Are you sure you want to logout?':'Yakin ingin keluar dari akun ini?'}</div>
     <div class="card" style="background:var(--bg);margin-top:12px;">
       <div class="flex center gap-3">
         <div style="font-size:38px;">${u.profile.avatar||'👤'}</div>
         <div style="flex:1;">
-          <div style="font-weight:700;">${esc(u.profile.name||'Tanpa Nama')}</div>
-          <div class="text-sm text-muted">${isTeacher?'Guru':'Murid'} · ${esc(u.profile.school||'-')}</div>
+          <div style="font-weight:700;">${esc(u.profile.name||(L==='en'?'No Name':'Tanpa Nama'))}</div>
+          <div class="text-sm text-muted">${isTeacher?(L==='en'?'Teacher':'Guru'):(L==='en'?'Student':'Murid')} · ${esc(u.profile.school||'-')}</div>
         </div>
       </div>
     </div>
     <div class="tense-alert" style="margin-top:14px;">
-      <b>💾 Data kamu tetap tersimpan.</b><br>
-      Kamu bisa masuk kembali kapan saja dengan memilih akunmu di halaman Beranda.
-      ${isTeacher?'<br><br><b>🔐 Sesi Guru juga akan dikunci ulang.</b>':''}
+      <b>🔐 ${L==='en'?'PIN will be required on next login.':'PIN akan diminta saat login berikutnya.'}</b><br>
+      ${L==='en'?'This keeps your account safe from other students.':'Ini menjaga akunmu aman dari siswa lain.'}
     </div>
   `, `
-    <button class="btn btn-ghost" onclick="closeModal()">Batal</button>
+    <button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Cancel':'Batal'}</button>
     <button class="btn btn-danger" onclick="confirmLogoutUser()">
-      <i class="fa-solid fa-right-from-bracket"></i> Keluar
+      <i class="fa-solid fa-right-from-bracket"></i> ${L==='en'?'Logout':'Keluar'}
     </button>
   `);
 }
 
 function confirmLogoutUser(){
+  const L = State.lang;
   const u = U();
   const wasTeacher = u && (u.profile.role === 'teacher' || TeacherSession.isActive());
+  const wasStudent = u && (u.profile.role === 'student');
   State.activeUserId = null;
   if(wasTeacher) TeacherSession.logout();
+  if(wasStudent) StudentSession.logout();  /* ⭐ Kunci sesi murid */
   save();
   closeModal();
-  toast('Berhasil keluar 👋','fa-right-from-bracket');
+  toast(L==='en'?'Logged out successfully 👋':'Berhasil keluar 👋','fa-right-from-bracket');
   location.hash = 'beranda';
   Router.render();
 }
 
 /* ============================================================
-   ⭐ TEACHER LOGIN (Opsi C — Modal Pilih Akun)
+   TEACHER LOGIN
 ============================================================ */
 function openTeacherLoginFromBeranda(){
   const u = U();
+  const L = State.lang;
 
-  // Case 1: Mode Guest → buka modal picker
   if(isGuest()){
     showTeacherPickerModal();
     return;
   }
 
-  // Case 2: User aktif adalah SISWA → tolak
   if(u.profile.role === 'student'){
-    openModal('🔒 Akses Ditolak', `
+    openModal('🔒 '+(L==='en'?'Access Denied':'Akses Ditolak'), `
       <div class="flex center gap-3 mb-3">
         <div style="font-size:44px;">🔒</div>
         <div style="flex:1;">
-          <div style="font-weight:800;font-size:16px;color:var(--danger);">Hanya Guru yang Bisa Login</div>
-          <div class="text-sm text-muted">Saat ini kamu login sebagai <b>${esc(u.profile.name||'Siswa')}</b> (Murid).</div>
+          <div style="font-weight:800;font-size:16px;color:var(--danger);">${L==='en'?'Only Teachers Can Login':'Hanya Guru yang Bisa Login'}</div>
+          <div class="text-sm text-muted">${L==='en'?'You are currently logged in as':'Saat ini kamu login sebagai'} <b>${esc(u.profile.name||'Student')}</b> (${L==='en'?'Student':'Murid'}).</div>
         </div>
       </div>
       <div class="card" style="background:var(--bg);">
         <div class="text-sm" style="line-height:1.7;">
-          Panel guru dan PIN hanya bisa diakses oleh akun dengan role <b>Guru</b>. 
-          Kalau kamu memang guru, silakan:
+          ${L==='en'?'The teacher panel and PIN can only be accessed by accounts with Teacher role. If you are a teacher, please:':'Panel guru dan PIN hanya bisa diakses oleh akun dengan role <b>Guru</b>. Kalau kamu memang guru, silakan:'}
         </div>
         <ol class="check-list mt-3" style="list-style:decimal;padding-left:20px;">
-          <li>Logout dari akun murid ini</li>
-          <li>Pilih akun <b>Guru</b> di halaman Beranda (atau buat akun baru dengan role Guru)</li>
-          <li>Klik tombol <b>Login Guru</b> lagi</li>
+          <li>${L==='en'?'Logout from this student account':'Logout dari akun murid ini'}</li>
+          <li>${L==='en'?'Select a Teacher account on the Home page (or create a new account with Teacher role)':'Pilih akun <b>Guru</b> di halaman Beranda (atau buat akun baru dengan role Guru)'}</li>
+          <li>${L==='en'?'Click the Teacher Login button again':'Klik tombol <b>Login Guru</b> lagi'}</li>
         </ol>
       </div>
     `, `
-      <button class="btn btn-ghost" onclick="closeModal()">Nanti Saja</button>
+      <button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Later':'Nanti Saja'}</button>
       <button class="btn btn-danger" onclick="closeModal();logoutUser();">
-        <i class="fa-solid fa-right-from-bracket"></i> Logout Sekarang
+        <i class="fa-solid fa-right-from-bracket"></i> ${L==='en'?'Logout Now':'Logout Sekarang'}
       </button>
     `);
     return;
   }
 
-  // Case 3: User aktif adalah GURU — buka PIN
   requireTeacherPin(()=>{
-    toast('✓ Login Guru berhasil','fa-unlock');
+    toast('✓ '+(L==='en'?'Teacher login successful':'Login Guru berhasil'),'fa-unlock');
     render();
   });
 }
 
-/* ⭐ BARU: Modal Pilih Akun Guru (untuk mode guest) */
 function showTeacherPickerModal(){
+  const L = State.lang;
   const teachers = Object.values(State.users).filter(u => u.profile.role === 'teacher');
-  // Filter yang punya nama (bukan akun kosong default)
   const validTeachers = teachers.filter(u => u.profile.name && u.profile.name.trim());
 
   let bodyHTML = '';
 
   if(validTeachers.length === 0){
-    // Belum ada akun guru
     bodyHTML = `
       <div class="teacher-picker-empty">
         <div class="icon">👨‍🏫</div>
-        <div class="title">Belum Ada Akun Guru</div>
-        <div class="sub">Kamu belum pernah membuat akun guru di perangkat ini. Klik tombol di bawah untuk membuat akun guru baru.</div>
+        <div class="title">${L==='en'?'No Teacher Accounts Yet':'Belum Ada Akun Guru'}</div>
+        <div class="sub">${L==='en'?'You have not created any teacher account on this device yet. Click the button below to create a new teacher account.':'Kamu belum pernah membuat akun guru di perangkat ini. Klik tombol di bawah untuk membuat akun guru baru.'}</div>
       </div>
     `;
   } else {
-    // Ada akun guru
     bodyHTML = `
-      <div class="section-sub" style="margin-bottom:14px;">Pilih akun guru untuk login:</div>
+      <div class="section-sub" style="margin-bottom:14px;">${L==='en'?'Select a teacher account to login:':'Pilih akun guru untuk login:'}</div>
       ${validTeachers.map(u => `
         <div class="teacher-picker-item" onclick="selectTeacherAndLogin('${u.id}')">
           <div class="tp-avatar">${u.profile.avatar||'👨‍🏫'}</div>
           <div class="tp-info">
             <div class="tp-name">${esc(u.profile.name)}</div>
-            <div class="tp-meta">${esc(u.profile.school||'Sekolah belum diisi')} · Kelas: ${esc(u.profile.classes||'-')}</div>
+            <div class="tp-meta">${esc(u.profile.school||(L==='en'?'School not set':'Sekolah belum diisi'))} · ${L==='en'?'Class':'Kelas'}: ${esc(u.profile.classes||'-')}</div>
           </div>
-          <div class="tp-cta">Pilih <i class="fa-solid fa-arrow-right"></i></div>
+          <div class="tp-cta">${L==='en'?'Select':'Pilih'} <i class="fa-solid fa-arrow-right"></i></div>
         </div>
       `).join('')}
     `;
   }
 
-  openModal('👨‍🏫 Login Guru', bodyHTML, `
-    <button class="btn btn-ghost" onclick="closeModal()">Batal</button>
-    <button class="btn btn-primary" onclick="createTeacherAccount()">
-      <i class="fa-solid fa-user-plus"></i> Buat Akun Guru Baru
+  openModal('👨‍🏫 '+t('login_teacher'), bodyHTML, `
+    <button class="btn btn-ghost" onclick="closeModal()">${t('cancel')}</button>
+    <button class="btn btn-primary" onclick="openRegisterModal('teacher')">
+      <i class="fa-solid fa-user-plus"></i> ${L==='en'?'Create New Teacher Account':'Buat Akun Guru Baru'}
     </button>
   `);
 }
 
-/* ⭐ BARU: Pilih guru & login */
 function selectTeacherAndLogin(userId){
+  const L = State.lang;
   const teacher = State.users[userId];
   if(!teacher){
-    toast('Akun tidak ditemukan','fa-xmark');
+    toast(L==='en'?'Account not found':'Akun tidak ditemukan','fa-xmark');
     return;
   }
   if(teacher.profile.role !== 'teacher'){
-    toast('Akun ini bukan Guru','fa-triangle-exclamation');
+    toast(L==='en'?'This is not a Teacher account':'Akun ini bukan Guru','fa-triangle-exclamation');
     return;
   }
-  // Switch ke akun guru
   State.activeUserId = userId;
   save();
   closeModal();
-  // Langsung minta PIN
   setTimeout(() => {
     requireTeacherPin(() => {
-      toast('✓ Login Guru berhasil','fa-unlock');
+      toast('✓ '+(L==='en'?'Teacher login successful':'Login Guru berhasil'),'fa-unlock');
       render();
     });
   }, 150);
 }
 
-/* ⭐ BARU: Buat akun guru baru */
-function createTeacherAccount(){
+/* ============================================================
+   ⭐ STUDENT SESSION (PIN per-akun murid)
+============================================================ */
+const StudentSession={
+  _key:'recounthub_student_session_sb',
+  /** Menyimpan map { userId: timestamp } untuk sesi aktif */
+  _get(){
+    try{ return JSON.parse(sessionStorage.getItem(this._key)||'{}'); }catch(e){ return {}; }
+  },
+  _set(obj){ sessionStorage.setItem(this._key, JSON.stringify(obj)); },
+  isActive(userId){
+    if(!userId) return false;
+    const map = this._get();
+    const ts = map[userId];
+    if(!ts) return false;
+    // Sesi murid berlaku 30 menit
+    if(Date.now() - ts > 30*60*1000){
+      delete map[userId];
+      this._set(map);
+      return false;
+    }
+    return true;
+  },
+  login(userId){
+    const map = this._get();
+    map[userId] = Date.now();
+    this._set(map);
+  },
+  logout(userId){
+    if(userId){
+      const map = this._get();
+      delete map[userId];
+      this._set(map);
+    } else {
+      sessionStorage.removeItem(this._key);
+    }
+  },
+  refresh(userId){
+    if(this.isActive(userId)) this.login(userId);
+  },
+  clearAll(){ sessionStorage.removeItem(this._key); }
+};
+
+/* ============================================================
+   ⭐ STUDENT LOGIN (dengan PIN)
+============================================================ */
+function openStudentLoginFromBeranda(){
+  const u = U();
+  const L = State.lang;
+
+  if(isGuest()){
+    showStudentPickerModal();
+    return;
+  }
+
+  if(u.profile.role === 'teacher'){
+    openModal('🔒 '+(L==='en'?'Access Denied':'Akses Ditolak'), `
+      <div class="flex center gap-3 mb-3">
+        <div style="font-size:44px;">🔒</div>
+        <div style="flex:1;">
+          <div style="font-weight:800;font-size:16px;color:var(--danger);">${L==='en'?'Only Students Can Login Here':'Hanya Murid yang Bisa Login di Sini'}</div>
+          <div class="text-sm text-muted">${L==='en'?'You are currently logged in as':'Saat ini kamu login sebagai'} <b>${esc(u.profile.name||'Teacher')}</b> (${L==='en'?'Teacher':'Guru'}).</div>
+        </div>
+      </div>
+      <div class="card" style="background:var(--bg);">
+        <div class="text-sm" style="line-height:1.7;">
+          ${L==='en'?'This menu is for students only. If you want to login as a student, please:':'Menu ini khusus untuk murid. Kalau kamu ingin masuk sebagai murid, silakan:'}
+        </div>
+        <ol class="check-list mt-3" style="list-style:decimal;padding-left:20px;">
+          <li>${L==='en'?'Logout from this teacher account':'Logout dari akun guru ini'}</li>
+          <li>${L==='en'?'Select a Student account on the Home page':'Pilih akun <b>Murid</b> di halaman Beranda'}</li>
+          <li>${L==='en'?'Click the Student Login button again':'Klik tombol <b>Login Murid</b> lagi'}</li>
+        </ol>
+      </div>
+    `, `
+      <button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Later':'Nanti Saja'}</button>
+      <button class="btn btn-danger" onclick="closeModal();logoutUser();">
+        <i class="fa-solid fa-right-from-bracket"></i> ${L==='en'?'Logout Now':'Logout Sekarang'}
+      </button>
+    `);
+    return;
+  }
+
+  /* User aktif adalah murid → cek PIN */
+  if(StudentSession.isActive(u.id)){
+    StudentSession.refresh(u.id);
+    toast('✓ '+(L==='en'?'Student login successful':'Login Murid berhasil'),'fa-unlock');
+    render();
+    return;
+  }
+  requireStudentPin(u.id, ()=>{
+    toast('✓ '+(L==='en'?'Student login successful':'Login Murid berhasil'),'fa-unlock');
+    render();
+  });
+}
+
+function showStudentPickerModal(){
+  const L = State.lang;
+  const students = Object.values(State.users).filter(u => u.profile.role === 'student');
+  const validStudents = students.filter(u => u.profile.name && u.profile.name.trim());
+
+  let bodyHTML = '';
+
+  if(validStudents.length === 0){
+    bodyHTML = `
+      <div class="teacher-picker-empty">
+        <div class="icon">🎓</div>
+        <div class="title">${L==='en'?'No Student Accounts Yet':'Belum Ada Akun Murid'}</div>
+        <div class="sub">${L==='en'?'You have not created any student account on this device yet. Click the button below to register as a new student.':'Kamu belum pernah membuat akun murid di perangkat ini. Klik tombol di bawah untuk mendaftar sebagai murid baru.'}</div>
+      </div>
+    `;
+  } else {
+    bodyHTML = `
+      <div class="section-sub" style="margin-bottom:14px;">${L==='en'?'Select a student account to login:':'Pilih akun murid untuk login:'}</div>
+      ${validStudents.map(u => `
+        <div class="teacher-picker-item" onclick="selectStudentAndLogin('${u.id}')">
+          <div class="tp-avatar">${u.profile.avatar||'🎓'}</div>
+          <div class="tp-info">
+            <div class="tp-name">${esc(u.profile.name)}</div>
+            <div class="tp-meta">${esc(u.profile.school||(L==='en'?'School not set':'Sekolah belum diisi'))} · ${L==='en'?'Class':'Kelas'}: ${esc(u.profile.classes||'-')} · 🔐 PIN</div>
+          </div>
+          <div class="tp-cta">${L==='en'?'Select':'Pilih'} <i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+      `).join('')}
+    `;
+  }
+
+  openModal('🎓 '+t('login_student'), bodyHTML, `
+    <button class="btn btn-ghost" onclick="closeModal()">${t('cancel')}</button>
+    <button class="btn btn-primary" onclick="openRegisterModal('student')">
+      <i class="fa-solid fa-user-plus"></i> ${L==='en'?'Register New Student':'Daftar Murid Baru'}
+    </button>
+  `);
+}
+
+function selectStudentAndLogin(userId){
+  const L = State.lang;
+  const student = State.users[userId];
+  if(!student){
+    toast(L==='en'?'Account not found':'Akun tidak ditemukan','fa-xmark');
+    return;
+  }
+  if(student.profile.role !== 'student'){
+    toast(L==='en'?'This is not a Student account':'Akun ini bukan Murid','fa-triangle-exclamation');
+    return;
+  }
+  State.activeUserId = userId;
+  save();
+  closeModal();
+
+  /* ⭐ Cek sesi murid & minta PIN */
+  setTimeout(() => {
+    if(StudentSession.isActive(userId)){
+      StudentSession.refresh(userId);
+      toast('✓ '+(L==='en'?'Student login successful':'Login Murid berhasil'),'fa-unlock');
+      render();
+      return;
+    }
+    requireStudentPin(userId, ()=>{
+      toast('✓ '+(L==='en'?'Student login successful':'Login Murid berhasil'),'fa-unlock');
+      render();
+    });
+  }, 150);
+}
+
+/* ⭐ FUNGSI: Minta PIN murid */
+function requireStudentPin(userId, callback){
+  const L = State.lang;
+  const student = State.users[userId];
+  if(!student){
+    toast(L==='en'?'Account not found':'Akun tidak ditemukan','fa-xmark');
+    return;
+  }
+
+  /* Murid belum punya PIN → minta buat PIN dulu */
+  if(!student.pin || student.pin.length < 4){
+    openModal('🔐 '+(L==='en'?'Create Student PIN':'Buat PIN Murid'),`
+      <div class="section-sub">${L==='en'?`Hello <b>${esc(student.profile.name)}</b>! Create a 4-6 digit PIN to protect your account.`:`Halo <b>${esc(student.profile.name)}</b>! Buat PIN 4-6 digit untuk melindungi akunmu.`}</div>
+      <div class="field"><label class="label">${L==='en'?'New PIN':'PIN Baru'}</label><input class="input" type="password" id="studentPin1" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+      <div class="field"><label class="label">${L==='en'?'Confirm PIN':'Konfirmasi PIN'}</label><input class="input" type="password" id="studentPin2" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+      <div class="tense-alert"><b>💡 ${L==='en'?'Tip:':'Tips:'}</b> ${L==='en'?'Remember this PIN! It prevents other students from accessing your account.':'Ingat PIN ini! Untuk mencegah siswa lain mengakses akunmu.'}</div>
+    `,`
+      <button class="btn btn-ghost" onclick="closeModal();State.activeUserId=null;save();Router.render()">${t('cancel')}</button>
+      <button class="btn btn-primary" onclick="doSetupStudentPin('${userId}',()=>{${callback.toString().match(/\{([\s\S]*)\}/)?.[1]||''}})">${t('save')}</button>
+    `);
+    /* Simpan callback global sementara karena string function */
+    window._studentPinCallback = callback;
+    return;
+  }
+
+  /* Murid sudah punya PIN → verifikasi */
+  openModal('🔐 '+(L==='en'?'Student PIN':'PIN Murid'),`
+    <div class="section-sub">${L==='en'?`Enter PIN for <b>${esc(student.profile.name)}</b>:`:`Masukkan PIN untuk <b>${esc(student.profile.name)}</b>:`}</div>
+    <input class="input" type="password" id="studentPinInput" inputmode="numeric" maxlength="6" placeholder="••••" autofocus onkeydown="if(event.key==='Enter')doVerifyStudentPin('${userId}')">
+  `,`<button class="btn btn-ghost" onclick="closeModal();State.activeUserId=null;save();Router.render()">${t('cancel')}</button><button class="btn btn-primary" onclick="doVerifyStudentPin('${userId}')">${L==='en'?'Login':'Masuk'}</button>`);
+  window._studentPinCallback = callback;
+  setTimeout(()=>document.getElementById('studentPinInput')?.focus(),100);
+}
+
+/* ⭐ Simpan PIN murid baru */
+function doSetupStudentPin(userId, cbStr){
+  const L = State.lang;
+  const p1=(document.getElementById('studentPin1')?.value||'').trim();
+  const p2=(document.getElementById('studentPin2')?.value||'').trim();
+  if(p1.length<4||p1.length>6) return toast(L==='en'?'PIN must be 4-6 digits':'PIN 4-6 digit','fa-triangle-exclamation');
+  if(p1!==p2) return toast(L==='en'?'PIN does not match':'PIN tidak cocok','fa-triangle-exclamation');
+  const student = State.users[userId];
+  if(!student) return;
+  student.pin = p1;
+  save();
+  StudentSession.login(userId);
+  closeModal();
+  toast('✓ '+(L==='en'?'PIN saved':'PIN tersimpan'),'fa-lock');
+  if(window._studentPinCallback){ const cb = window._studentPinCallback; window._studentPinCallback = null; cb(); }
+  else render();
+}
+
+/* ⭐ Verifikasi PIN murid */
+function doVerifyStudentPin(userId){
+  const L = State.lang;
+  const pin = (document.getElementById('studentPinInput')?.value||'').trim();
+  const student = State.users[userId];
+  if(!student) return;
+  if(pin === student.pin){
+    StudentSession.login(userId);
+    closeModal();
+    toast('✓','fa-unlock');
+    if(window._studentPinCallback){ const cb = window._studentPinCallback; window._studentPinCallback = null; cb(); }
+    else render();
+  } else {
+    toast(L==='en'?'Wrong PIN':'PIN salah','fa-xmark');
+    document.getElementById('studentPinInput').value='';
+  }
+}
+
+/* ============================================================
+   REGISTER / DAFTAR AKUN BARU
+============================================================ */
+function openRegisterModal(defaultRole){
+  const role = defaultRole || 'student';
+  const L = State.lang;
+
+  openModal('✨ '+(L==='en'?'Register New Account':'Daftar Akun Baru'), `
+    <div class="section-sub mb-4">${L==='en'?'Fill in the data below to create a new account.':'Isi data di bawah untuk membuat akun baru.'}</div>
+
+    <div class="field">
+      <label class="label">${L==='en'?'Register As':'Daftar Sebagai'}</label>
+      <div class="grid-2">
+        <div class="teacher-picker-item" style="margin:0;cursor:pointer;" id="regRoleStudent" onclick="selectRegisterRole('student')">
+          <div class="tp-avatar">🎓</div>
+          <div class="tp-info">
+            <div class="tp-name">${L==='en'?'Student':'Murid'}</div>
+            <div class="tp-meta">${L==='en'?'Student working on project':'Siswa yang mengerjakan proyek'}</div>
+          </div>
+          <input type="radio" name="regRole" value="student" ${role==='student'?'checked':''} style="width:18px;height:18px;accent-color:var(--primary);">
+        </div>
+        <div class="teacher-picker-item" style="margin:0;cursor:pointer;" id="regRoleTeacher" onclick="selectRegisterRole('teacher')">
+          <div class="tp-avatar">👨‍🏫</div>
+          <div class="tp-info">
+            <div class="tp-name">${L==='en'?'Teacher':'Guru'}</div>
+            <div class="tp-meta">${L==='en'?'Teacher managing classes':'Guru yang mengelola kelas'}</div>
+          </div>
+          <input type="radio" name="regRole" value="teacher" ${role==='teacher'?'checked':''} style="width:18px;height:18px;accent-color:var(--primary);">
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">${L==='en'?'Full Name *':'Nama Lengkap *'}</label>
+      <input class="input" id="regName" placeholder="${L==='en'?'Example: Ahmad Fauzi':'Contoh: Ahmad Fauzi'}" required>
+    </div>
+
+    <div class="field">
+      <label class="label">${L==='en'?'ID Number':'NIP / NIS'}</label>
+      <input class="input" id="regNip" placeholder="${L==='en'?'ID number (optional)':'Nomor induk (opsional)'}">
+    </div>
+
+    <div class="field">
+      <label class="label">${L==='en'?'School':'Sekolah'}</label>
+      <input class="input" id="regSchool" placeholder="${L==='en'?'Example: SMPN 1 Anggeraja':'Contoh: SMPN 1 Anggeraja'}">
+    </div>
+
+    <div class="field">
+      <label class="label">${L==='en'?'Class':'Kelas'}</label>
+      <input class="input" id="regClasses" placeholder="${L==='en'?'Example: 8A':'Contoh: 8A'}">
+    </div>
+
+    <div class="field">
+      <label class="label">${L==='en'?'Subject':'Mata Pelajaran'}</label>
+      <input class="input" id="regSubject" placeholder="English" value="${L==='en'?'English':'Bahasa Inggris'}">
+    </div>
+
+    <div class="field">
+      <label class="label">${L==='en'?'Choose Avatar':'Pilih Avatar'}</label>
+      <div class="flex gap-2 wrap" id="regAvatarGrid">
+        ${['🎓','🧑‍🎓','👨‍🎓','👩‍🎓','👨‍🏫','👩‍🏫','🧑‍🏫','📚','✨','🌟','👨‍💼','👩‍💼'].map(a=>`
+          <button type="button" onclick="selectRegisterAvatar('${a}')" data-avatar="${a}"
+            style="width:42px;height:42px;border-radius:11px;font-size:20px;background:var(--bg);border:1.5px solid var(--border);display:grid;place-items:center;">
+            ${a}
+          </button>
+        `).join('')}
+      </div>
+      <input type="hidden" id="regAvatar" value="${role==='teacher'?'👨‍🏫':'🎓'}">
+    </div>
+
+    <div class="tense-alert" id="regInfo" style="margin-top:14px;">
+      <b>🔐 ${L==='en'?'Info:':'Info:'}</b> ${role==='teacher'
+        ? (L==='en'?'Teacher accounts are protected by PIN. You will be asked to create a PIN on first login.':'Akun Guru akan dilindungi PIN. Kamu akan diminta membuat PIN saat pertama kali login.')
+        : (L==='en'?'Student accounts are protected by PIN. You will be asked to create a PIN after registration.':'Akun Murid juga dilindungi PIN. Kamu akan diminta membuat PIN setelah mendaftar.')}
+    </div>
+  `, `
+    <button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Cancel':'Batal'}</button>
+    <button class="btn btn-primary" onclick="submitRegister()">
+      <i class="fa-solid fa-user-plus"></i> ${L==='en'?'Register Now':'Daftar Sekarang'}
+    </button>
+  `);
+
+  setTimeout(()=>{
+    const current = document.getElementById('regAvatar')?.value;
+    document.querySelectorAll('#regAvatarGrid button').forEach(b=>{
+      if(b.dataset.avatar === current){
+        b.style.background = 'var(--grad)';
+        b.style.borderColor = 'transparent';
+        b.style.color = '#fff';
+      }
+    });
+  }, 50);
+}
+
+function selectRegisterRole(role){
+  const L = State.lang;
+  document.querySelectorAll('input[name="regRole"]').forEach(r=>{ r.checked = (r.value === role); });
+  const av = document.getElementById('regAvatar');
+  if(av) av.value = role === 'teacher' ? '👨‍🏫' : '🎓';
+  document.querySelectorAll('#regAvatarGrid button').forEach(b=>{
+    if(b.dataset.avatar === (role === 'teacher' ? '👨‍🏫' : '🎓')){
+      b.style.background = 'var(--grad)';
+      b.style.borderColor = 'transparent';
+      b.style.color = '#fff';
+    } else {
+      b.style.background = 'var(--bg)';
+      b.style.borderColor = 'var(--border)';
+      b.style.color = '';
+    }
+  });
+  const info = document.getElementById('regInfo');
+  if(info){
+    info.innerHTML = `<b>🔐 ${L==='en'?'Info:':'Info:'}</b> ${role==='teacher'
+      ? (L==='en'?'Teacher accounts are protected by PIN. You will be asked to create a PIN on first login.':'Akun Guru akan dilindungi PIN. Kamu akan diminta membuat PIN saat pertama kali login.')
+      : (L==='en'?'Student accounts are protected by PIN. You will be asked to create a PIN after registration.':'Akun Murid juga dilindungi PIN. Kamu akan diminta membuat PIN setelah mendaftar.')}`;
+  }
+}
+
+function selectRegisterAvatar(a){
+  const av = document.getElementById('regAvatar');
+  if(av) av.value = a;
+  document.querySelectorAll('#regAvatarGrid button').forEach(b=>{
+    if(b.dataset.avatar === a){
+      b.style.background = 'var(--grad)';
+      b.style.borderColor = 'transparent';
+      b.style.color = '#fff';
+    } else {
+      b.style.background = 'var(--bg)';
+      b.style.borderColor = 'var(--border)';
+      b.style.color = '';
+    }
+  });
+}
+
+function submitRegister(){
+  const L = State.lang;
+  const roleInput = document.querySelector('input[name="regRole"]:checked');
+  const role = roleInput ? roleInput.value : 'student';
+  const name = (document.getElementById('regName')?.value || '').trim();
+  const nip = (document.getElementById('regNip')?.value || '').trim();
+  const school = (document.getElementById('regSchool')?.value || '').trim();
+  const classes = (document.getElementById('regClasses')?.value || '').trim();
+  const subject = (document.getElementById('regSubject')?.value || 'Bahasa Inggris').trim();
+  const avatar = document.getElementById('regAvatar')?.value || (role==='teacher'?'👨‍🏫':'🎓');
+
+  if(!name){
+    toast(L==='en'?'Name is required':'Nama wajib diisi','fa-triangle-exclamation');
+    return;
+  }
+  if(name.length < 3){
+    toast(L==='en'?'Name must be at least 3 characters':'Nama minimal 3 karakter','fa-triangle-exclamation');
+    return;
+  }
+
+  const exists = Object.values(State.users).some(u =>
+    u.profile.name && u.profile.name.toLowerCase() === name.toLowerCase()
+  );
+  if(exists){
+    toast(L==='en'?'Name already registered, use another name':'Nama sudah terdaftar, gunakan nama lain','fa-triangle-exclamation');
+    return;
+  }
+
   const id = uid();
   const newUser = safeClone(DEFAULT_USER);
   newUser.id = id;
-  newUser.profile.name = 'Guru Baru';
-  newUser.profile.role = 'teacher';
-  newUser.profile.avatar = '👨‍🏫';
+  newUser.profile.name = name;
+  newUser.profile.role = role;
+  newUser.profile.nip = nip;
+  newUser.profile.school = school;
+  newUser.profile.classes = classes;
+  newUser.profile.subject = subject || 'Bahasa Inggris';
+  newUser.profile.avatar = avatar;
+  newUser.pin = ''; /* akan diisi di langkah berikut */
+
   State.users[id] = newUser;
   State.activeUserId = id;
   save();
   closeModal();
-  toast('✓ Akun guru baru dibuat','fa-user-plus');
-  // Arahkan ke profil untuk lengkapi data
+
+  if(role === 'teacher'){
+    toast('✓ '+(L==='en'?'Teacher account created':'Akun Guru berhasil dibuat'),'fa-user-plus');
+    setTimeout(()=>{
+      openModal('🔐 '+(L==='en'?'Create Teacher PIN':'Buat PIN Guru'), `
+        <div class="section-sub">${L==='en'?'Teacher account created! Now create a 4-6 digit PIN to protect the teacher panel.':'Akun Guru berhasil dibuat! Sekarang buat PIN 4-6 digit untuk melindungi panel guru.'}</div>
+        <div class="field"><label class="label">${L==='en'?'New PIN':'PIN Baru'}</label><input class="input" type="password" id="regPin1" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+        <div class="field"><label class="label">${L==='en'?'Confirm PIN':'Konfirmasi PIN'}</label><input class="input" type="password" id="regPin2" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+        <div class="tense-alert"><b>💡 ${L==='en'?'Tip:':'Tips:'}</b> ${L==='en'?'Remember this PIN well. It is needed every time you login as a teacher.':'Ingat baik-baik PIN ini. Diperlukan setiap kali login sebagai guru.'}</div>
+      `, `
+        <button class="btn btn-ghost" onclick="closeModal();Router.go('profil')">${L==='en'?'Later':'Nanti Saja'}</button>
+        <button class="btn btn-primary" onclick="submitRegisterTeacherPin()">
+          <i class="fa-solid fa-lock"></i> ${L==='en'?'Save PIN':'Simpan PIN'}
+        </button>
+      `);
+    }, 400);
+  } else {
+    /* ⭐ MURID: langsung minta buat PIN */
+    toast('✓ '+(L==='en'?'Student account created':'Akun Murid berhasil dibuat'),'fa-user-plus');
+    setTimeout(()=>{
+      openModal('🔐 '+(L==='en'?'Create Student PIN':'Buat PIN Murid'), `
+        <div class="section-sub">${L==='en'?'Student account created! Now create a 4-6 digit PIN to protect your account.':'Akun Murid berhasil dibuat! Sekarang buat PIN 4-6 digit untuk melindungi akunmu.'}</div>
+        <div class="field"><label class="label">${L==='en'?'New PIN':'PIN Baru'}</label><input class="input" type="password" id="studentRegPin1" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+        <div class="field"><label class="label">${L==='en'?'Confirm PIN':'Konfirmasi PIN'}</label><input class="input" type="password" id="studentRegPin2" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+        <div class="tense-alert"><b>💡 ${L==='en'?'Tip:':'Tips:'}</b> ${L==='en'?'Remember this PIN! It prevents other students from accessing your account.':'Ingat PIN ini! Untuk mencegah siswa lain mengakses akunmu.'}</div>
+      `, `
+        <button class="btn btn-ghost" onclick="closeModal();Router.go('profil')">${L==='en'?'Set Later':'Atur Nanti'}</button>
+        <button class="btn btn-primary" onclick="submitRegisterStudentPin()">
+          <i class="fa-solid fa-lock"></i> ${L==='en'?'Save PIN':'Simpan PIN'}
+        </button>
+      `);
+    }, 400);
+  }
+}
+
+function submitRegisterTeacherPin(){
+  const L = State.lang;
+  const p1 = (document.getElementById('regPin1')?.value || '').trim();
+  const p2 = (document.getElementById('regPin2')?.value || '').trim();
+  if(p1.length < 4 || p1.length > 6){
+    toast(L==='en'?'PIN must be 4-6 digits':'PIN harus 4-6 digit','fa-triangle-exclamation');
+    return;
+  }
+  if(p1 !== p2){
+    toast(L==='en'?'PIN does not match':'PIN tidak cocok','fa-triangle-exclamation');
+    return;
+  }
+  const u = U();
+  if(u){ u.pin = p1; }
+  State.settings.teacherPin = p1;
+  save();
+  TeacherSession.login();
+  closeModal();
+  toast('✓ '+(L==='en'?'PIN saved, Teacher logged in!':'PIN tersimpan, Guru login!'),'fa-unlock');
+  Router.go('guru');
+}
+
+/* ⭐ BARU: Simpan PIN murid setelah daftar */
+function submitRegisterStudentPin(){
+  const L = State.lang;
+  const p1 = (document.getElementById('studentRegPin1')?.value || '').trim();
+  const p2 = (document.getElementById('studentRegPin2')?.value || '').trim();
+  if(p1.length < 4 || p1.length > 6){
+    toast(L==='en'?'PIN must be 4-6 digits':'PIN harus 4-6 digit','fa-triangle-exclamation');
+    return;
+  }
+  if(p1 !== p2){
+    toast(L==='en'?'PIN does not match':'PIN tidak cocok','fa-triangle-exclamation');
+    return;
+  }
+  const u = U();
+  if(!u) return;
+  u.pin = p1;
+  save();
+  /* ⭐ Aktifkan sesi murid agar tidak langsung diminta PIN saat login */
+  StudentSession.login(u.id);
+  closeModal();
+  toast('✓ '+(L==='en'?'PIN saved, Student logged in!':'PIN tersimpan, Murid login!'),'fa-unlock');
   Router.go('profil');
-  setTimeout(()=>{
-    toast('💡 Lengkapi nama & sekolahmu dulu','fa-lightbulb');
-  }, 800);
 }
 
 /* ============================================================
@@ -1042,44 +1425,52 @@ const TeacherSession={
 };
 
 function requireTeacherPin(callback){
+  const L = State.lang;
   if(!State.settings.teacherPin){
-    openModal('🔐 Set PIN Guru',`
-      <div class="section-sub">Buat PIN 4-6 digit untuk melindungi fitur Guru.</div>
-      <div class="field"><label class="label">PIN Baru</label><input class="input" type="password" id="setupPin1" inputmode="numeric" maxlength="6" placeholder="••••"></div>
-      <div class="field"><label class="label">Konfirmasi PIN</label><input class="input" type="password" id="setupPin2" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+    openModal('🔐 '+(L==='en'?'Set Teacher PIN':'Set PIN Guru'),`
+      <div class="section-sub">${L==='en'?'Create a 4-6 digit PIN to protect Teacher features.':'Buat PIN 4-6 digit untuk melindungi fitur Guru.'}</div>
+      <div class="field"><label class="label">${L==='en'?'New PIN':'PIN Baru'}</label><input class="input" type="password" id="setupPin1" inputmode="numeric" maxlength="6" placeholder="••••"></div>
+      <div class="field"><label class="label">${L==='en'?'Confirm PIN':'Konfirmasi PIN'}</label><input class="input" type="password" id="setupPin2" inputmode="numeric" maxlength="6" placeholder="••••"></div>
     `,`<button class="btn btn-ghost" onclick="closeModal()">${t('cancel')}</button><button class="btn btn-primary" onclick="doSetupPin()">${t('save')}</button>`);
     return;
   }
   if(TeacherSession.isActive()){ TeacherSession.refresh(); callback(); return; }
-  openModal('🔐 PIN Guru',`
-    <div class="section-sub">Masukkan PIN guru.</div>
+  openModal('🔐 '+(L==='en'?'Teacher PIN':'PIN Guru'),`
+    <div class="section-sub">${L==='en'?'Enter teacher PIN.':'Masukkan PIN guru.'}</div>
     <input class="input" type="password" id="pinInput" inputmode="numeric" maxlength="6" placeholder="••••" autofocus onkeydown="if(event.key==='Enter')doVerifyPin()">
-  `,`<button class="btn btn-ghost" onclick="closeModal()">${t('cancel')}</button><button class="btn btn-primary" onclick="doVerifyPin()">Masuk</button>`);
+  `,`<button class="btn btn-ghost" onclick="closeModal()">${t('cancel')}</button><button class="btn btn-primary" onclick="doVerifyPin()">${L==='en'?'Login':'Masuk'}</button>`);
   setTimeout(()=>document.getElementById('pinInput')?.focus(),100);
 }
 function doSetupPin(){
+  const L = State.lang;
   const p1=document.getElementById('setupPin1').value.trim();
   const p2=document.getElementById('setupPin2').value.trim();
-  if(p1.length<4||p1.length>6) return toast('PIN 4-6 digit','fa-triangle-exclamation');
-  if(p1!==p2) return toast('PIN tidak cocok','fa-triangle-exclamation');
-  State.settings.teacherPin = p1; save();
+  if(p1.length<4||p1.length>6) return toast(L==='en'?'PIN must be 4-6 digits':'PIN 4-6 digit','fa-triangle-exclamation');
+  if(p1!==p2) return toast(L==='en'?'PIN does not match':'PIN tidak cocok','fa-triangle-exclamation');
+  State.settings.teacherPin = p1;
+  const u = U(); if(u) u.pin = p1;
+  save();
   TeacherSession.login();
-  closeModal(); toast('✓ PIN tersimpan','fa-lock'); render();
+  closeModal(); toast('✓ '+(L==='en'?'PIN saved':'PIN tersimpan'),'fa-lock'); render();
 }
 function doVerifyPin(){
+  const L = State.lang;
   const pin = document.getElementById('pinInput').value.trim();
-  if(pin === State.settings.teacherPin){
+  /* ⭐ Cek dari akun user aktif dulu, fallback ke settings.teacherPin */
+  const u = U();
+  const validPin = (u && u.pin) ? u.pin : State.settings.teacherPin;
+  if(pin === validPin){
     TeacherSession.login();
     closeModal(); toast('✓','fa-unlock'); render();
   } else {
-    toast('PIN salah','fa-xmark');
+    toast(L==='en'?'Wrong PIN':'PIN salah','fa-xmark');
     document.getElementById('pinInput').value='';
   }
 }
 function logoutTeacher(){
   logoutUser();
 }
-function unlockTeacherConfig(){ requireTeacherPin(()=>{ render(); toast('✓ Panel terbuka','fa-unlock'); }); }
+function unlockTeacherConfig(){ requireTeacherPin(()=>{ render(); toast('✓ '+(State.lang==='en'?'Panel unlocked':'Panel terbuka'),'fa-unlock'); }); }
 
 /* ============================================================
    HELPERS
@@ -1200,7 +1591,6 @@ const NAV_ALL=[...NAV,
   {id:'badges',icon:'fa-award',label:'badges'},
   {id:'ai',icon:'fa-robot',label:'ai'},
   {id:'guru',icon:'fa-chart-line',label:'guru'},
-  {id:'kelas',icon:'fa-users',label:'kelas'},
   {id:'profil',icon:'fa-user',label:'profil'}
 ];
 
@@ -1208,7 +1598,7 @@ const SIDEBAR_GROUPS=[
   {label:'beranda', ids:['beranda']},
   {label:'section_stages', ids:['temukan','bayangkan','lakukan','bagikan']},
   {label:'section_tools', ids:['kamus','badges','ai']},
-  {label:'section_account', ids:['guru','kelas','profil']}
+  {label:'section_account', ids:['guru','profil']}
 ];
 
 function renderNav(cur){
@@ -1234,7 +1624,6 @@ function renderNav(cur){
   const guest = isGuest();
   const av = guest ? '👤' : (U().profile.avatar||'👨‍🏫');
   const ab = document.getElementById('avatarBtn'); if(ab) ab.textContent = av;
-  const abs = document.getElementById('avatarBtnSidebar'); if(abs) abs.textContent = av;
   const lbT = document.getElementById('logoutBtnTopbar');
   const lbS = document.getElementById('logoutBtnSidebar');
   if(lbT) lbT.style.display = guest ? 'none' : 'grid';
@@ -1287,88 +1676,86 @@ function render(){ Router.render(); }
 const Views={
 
 beranda(){
-  // ============================================================
-  // CASE 1: GUEST — Tampilkan hero + teacher login card + pilih akun
-  // ============================================================
+  const L = State.lang;
   if(isGuest()){
-    const registeredUsers = Object.values(State.users).filter(u=>u.profile.name);
     return `
       <div class="hero">
         <div class="hero-content">
           <div class="badge" style="background:rgba(255,255,255,.2);color:#fff;margin-bottom:12px;"><i class="fa-solid fa-sparkles"></i> PjBL · Recount Text</div>
-          <h1>👋 Selamat datang!</h1>
-          <p>Pilih akunmu di bawah untuk masuk, atau login sebagai guru untuk mengelola kelas.</p>
+          <h1>👋 ${L==='en'?'Welcome!':'Selamat datang!'}</h1>
+          <p>${L==='en'?'Login as a student or teacher to start learning Recount Text, or register a new account below.':'Login sebagai murid atau guru untuk mulai belajar Recount Text, atau daftar akun baru di bawah.'}</p>
         </div>
       </div>
 
-      <!-- ⭐ KARTU LOGIN GURU (muncul juga di mode guest) -->
+      <div class="teacher-login-card" style="background:linear-gradient(135deg,#0ea5e9 0%,#3b82f6 50%,#6366f1 100%);">
+        <div class="tlc-icon">🎓</div>
+        <div class="tlc-body">
+          <div class="tlc-title">
+            ${L==='en'?'Student Login':'Login Murid'}
+            <span class="tlc-status"><i class="fa-solid fa-lock"></i> ${L==='en'?'PIN Protected':'Dilindungi PIN'}</span>
+          </div>
+          <div class="tlc-sub">${L==='en'?'Login as a student with PIN to start working on the Recount Text project.':'Masuk sebagai murid dengan PIN untuk mulai mengerjakan proyek Recount Text.'}</div>
+        </div>
+        <div class="tlc-actions">
+          <button class="btn-white" onclick="openStudentLoginFromBeranda()"><i class="fa-solid fa-unlock"></i> ${L==='en'?'Student Login':'Login Murid'}</button>
+        </div>
+      </div>
+
       <div class="teacher-login-card">
         <div class="tlc-icon">👨‍🏫</div>
         <div class="tlc-body">
           <div class="tlc-title">
-            Login Guru
-            <span class="tlc-status"><i class="fa-solid fa-key"></i> Pilih Akun</span>
+            ${L==='en'?'Teacher Login':'Login Guru'}
+            <span class="tlc-status"><i class="fa-solid fa-key"></i> ${L==='en'?'Select Account':'Pilih Akun'}</span>
           </div>
-          <div class="tlc-sub">Masuk ke Panel Guru dengan memilih akun guru yang terdaftar di perangkat ini.</div>
+          <div class="tlc-sub">${L==='en'?'Login to the Teacher Panel by selecting a registered teacher account on this device.':'Masuk ke Panel Guru dengan memilih akun guru yang terdaftar di perangkat ini.'}</div>
         </div>
         <div class="tlc-actions">
-          <button class="btn-white" onclick="openTeacherLoginFromBeranda()"><i class="fa-solid fa-unlock"></i> Login Guru</button>
+          <button class="btn-white" onclick="openTeacherLoginFromBeranda()"><i class="fa-solid fa-unlock"></i> ${L==='en'?'Teacher Login':'Login Guru'}</button>
         </div>
       </div>
 
       <div class="guest-banner">
         <div class="gb-icon">🔓</div>
         <div class="gb-text">
-          <div class="gb-title">Mode Tamu (Guest)</div>
-          <div class="gb-sub">Data tetap tersimpan di perangkat ini. Pilih akun di bawah atau login sebagai guru di atas.</div>
+          <div class="gb-title">${L==='en'?'Guest Mode':'Mode Tamu (Guest)'}</div>
+          <div class="gb-sub">${L==='en'?'Data is saved on this device. Login as a student/teacher above, or register a new account below.':'Data tetap tersimpan di perangkat ini. Login sebagai murid/guru di atas, atau daftar akun baru di bawah.'}</div>
         </div>
       </div>
 
       <div class="card mb-4">
         <div class="flex between center mb-3 wrap gap-2">
           <div>
-            <div class="section-title" style="font-size:17px;">👥 Pilih Akun</div>
-            <div class="section-sub" style="margin-bottom:0;">Klik akun untuk masuk kembali</div>
+            <div class="section-title" style="font-size:17px;">✨ ${L==='en'?'Register New Account':'Daftar Akun Baru'}</div>
+            <div class="section-sub" style="margin-bottom:0;">${L==='en'?'No account yet? Create one now':'Belum punya akun? Buat sekarang'}</div>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="addNewUser()">
-            <i class="fa-solid fa-user-plus"></i> Akun Baru
+        </div>
+        <div class="grid-2">
+          <button class="btn btn-ghost" style="justify-content:flex-start;padding:16px;text-align:left;" onclick="openRegisterModal('student')">
+            <span style="font-size:22px;margin-right:10px;">🎓</span>
+            <span>
+              <span style="display:block;font-weight:700;">${L==='en'?'Register as Student':'Daftar sebagai Murid'}</span>
+              <span class="text-xs text-muted">${L==='en'?'For students working on the project':'Untuk siswa yang akan mengerjakan proyek'}</span>
+            </span>
+          </button>
+          <button class="btn btn-ghost" style="justify-content:flex-start;padding:16px;text-align:left;" onclick="openRegisterModal('teacher')">
+            <span style="font-size:22px;margin-right:10px;">👨‍🏫</span>
+            <span>
+              <span style="display:block;font-weight:700;">${L==='en'?'Register as Teacher':'Daftar sebagai Guru'}</span>
+              <span class="text-xs text-muted">${L==='en'?'For teachers managing classes':'Untuk guru yang akan mengelola kelas'}</span>
+            </span>
           </button>
         </div>
-        ${registeredUsers.length ? `
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            ${registeredUsers.map(u=>`
-              <div class="student-row" onclick="switchUser('${u.id}')">
-                <div class="avatar">${u.profile.avatar||'👤'}</div>
-                <div class="info">
-                  <div class="name">${esc(u.profile.name)}</div>
-                  <div class="meta">${u.profile.role==='student'?'Murid':'Guru'} · ${esc(u.profile.classes||'-')} · ${esc(u.profile.school||'-')}</div>
-                </div>
-                <span class="badge badge-primary">Masuk <i class="fa-solid fa-arrow-right"></i></span>
-              </div>
-            `).join('')}
-          </div>
-        ` : `
-          <div class="empty">
-            <i class="fa-solid fa-user-slash"></i>
-            <div>Belum ada akun tersimpan</div>
-            <button class="btn btn-primary mt-4" onclick="addNewUser()">
-              <i class="fa-solid fa-user-plus"></i> Buat Akun Pertama
-            </button>
-          </div>
-        `}
       </div>
 
       <div class="grid-3">
-        <div class="card text-center"><div style="font-size:32px;">📖</div><div style="font-weight:700;margin-top:6px;">Kamus</div><div class="text-xs text-muted">${VERBS.length} verbs</div></div>
-        <div class="card text-center"><div style="font-size:32px;">🏆</div><div style="font-weight:700;margin-top:6px;">Badge</div><div class="text-xs text-muted">${BADGES.length} badge</div></div>
-        <div class="card text-center"><div style="font-size:32px;">🤖</div><div style="font-weight:700;margin-top:6px;">AI Buddy</div><div class="text-xs text-muted">Bantuan menulis</div></div>
+        <div class="card text-center"><div style="font-size:32px;">📖</div><div style="font-weight:700;margin-top:6px;">${L==='en'?'Dictionary':'Kamus'}</div><div class="text-xs text-muted">${VERBS.length} verbs</div></div>
+        <div class="card text-center"><div style="font-size:32px;">🏆</div><div style="font-weight:700;margin-top:6px;">${L==='en'?'Badges':'Badge'}</div><div class="text-xs text-muted">${BADGES.length} badges</div></div>
+        <div class="card text-center"><div style="font-size:32px;">🤖</div><div style="font-weight:700;margin-top:6px;">AI Buddy</div><div class="text-xs text-muted">${L==='en'?'Writing help':'Bantuan menulis'}</div></div>
       </div>
     `;
   }
 
-  // ============================================================
-  // CASE 2: USER AKTIF — Tampilan normal + kartu login guru
-  // ============================================================
   const u=U();
   const done=Object.values(u.progress).filter(Boolean).length;
   const pct=Math.round((done/4)*100);
@@ -1386,7 +1773,6 @@ beranda(){
     {id:'bagikan',icon:'fa-share-nodes',num:4}
   ];
 
-  // ⭐ Build Teacher Login Card
   let teacherCard = '';
   if(isTeacherRole && isTeacherLoggedIn){
     teacherCard = `
@@ -1394,14 +1780,14 @@ beranda(){
         <div class="tlc-icon">👨‍🏫</div>
         <div class="tlc-body">
           <div class="tlc-title">
-            Mode Guru Aktif
+            ${L==='en'?'Teacher Mode Active':'Mode Guru Aktif'}
             <span class="tlc-status active"><i class="fa-solid fa-circle-check"></i> Logged In</span>
           </div>
-          <div class="tlc-sub">Kamu login sebagai <b>${esc(u.profile.name||'Guru')}</b>. Semua fitur guru terbuka.</div>
+          <div class="tlc-sub">${L==='en'?'You are logged in as':'Kamu login sebagai'} <b>${esc(u.profile.name||(L==='en'?'Teacher':'Guru'))}</b>. ${L==='en'?'All teacher features are unlocked.':'Semua fitur guru terbuka.'}</div>
         </div>
         <div class="tlc-actions">
           <button class="btn-white" onclick="Router.go('guru')"><i class="fa-solid fa-chart-line"></i> Dashboard</button>
-          <button class="btn-outline-white" onclick="logoutTeacher()"><i class="fa-solid fa-lock"></i> Kunci</button>
+          <button class="btn-outline-white" onclick="logoutTeacher()"><i class="fa-solid fa-lock"></i> ${L==='en'?'Lock':'Kunci'}</button>
         </div>
       </div>
     `;
@@ -1411,34 +1797,51 @@ beranda(){
         <div class="tlc-icon">🔐</div>
         <div class="tlc-body">
           <div class="tlc-title">
-            Login Guru
+            ${L==='en'?'Teacher Login':'Login Guru'}
             <span class="tlc-status"><i class="fa-solid fa-key"></i> PIN Required</span>
           </div>
-          <div class="tlc-sub">Masuk ke Panel Guru dengan PIN untuk mengelola siswa, materi, dan laporan.</div>
+          <div class="tlc-sub">${L==='en'?'Login to the Teacher Panel with PIN to manage students, materials, and reports.':'Masuk ke Panel Guru dengan PIN untuk mengelola siswa, materi, dan laporan.'}</div>
         </div>
         <div class="tlc-actions">
-          <button class="btn-white" onclick="openTeacherLoginFromBeranda()"><i class="fa-solid fa-unlock"></i> Login Guru</button>
+          <button class="btn-white" onclick="openTeacherLoginFromBeranda()"><i class="fa-solid fa-unlock"></i> ${L==='en'?'Teacher Login':'Login Guru'}</button>
         </div>
       </div>
     `;
   } else if(isStudentRole){
-    teacherCard = `
-      <div class="teacher-login-card">
-        <div class="tlc-icon">🔒</div>
-        <div class="tlc-body">
-          <div class="tlc-title">
-            Login Guru
-            <span class="tlc-status locked"><i class="fa-solid fa-lock"></i> Terkunci</span>
+    const studentLoggedIn = StudentSession.isActive(u.id);
+    if(studentLoggedIn){
+      teacherCard = `
+        <div class="teacher-login-card" style="background:linear-gradient(135deg,#0ea5e9 0%,#3b82f6 50%,#6366f1 100%);">
+          <div class="tlc-icon">🎓</div>
+          <div class="tlc-body">
+            <div class="tlc-title">
+              ${L==='en'?'Student Mode Active':'Mode Murid Aktif'}
+              <span class="tlc-status active"><i class="fa-solid fa-circle-check"></i> Logged In</span>
+            </div>
+            <div class="tlc-sub">${L==='en'?'You are logged in as':'Kamu login sebagai'} <b>${esc(u.profile.name||(L==='en'?'Student':'Murid'))}</b>. ${L==='en'?'Happy working on the project!':'Selamat mengerjakan proyek!'}</div>
           </div>
-          <div class="tlc-sub">Kamu login sebagai <b>${esc(u.profile.name||'Murid')}</b> (Murid). Panel guru hanya bisa diakses oleh akun Guru.</div>
+          <div class="tlc-actions">
+            <button class="btn-white" onclick="Router.go('temukan')"><i class="fa-solid fa-play"></i> ${L==='en'?'Start':'Mulai'}</button>
+          </div>
         </div>
-        <div class="tlc-actions">
-          <button class="btn-locked" onclick="openTeacherLoginFromBeranda()" style="cursor:pointer;">
-            <i class="fa-solid fa-lock"></i> Terkunci
-          </button>
+      `;
+    } else {
+      teacherCard = `
+        <div class="teacher-login-card" style="background:linear-gradient(135deg,#0ea5e9 0%,#3b82f6 50%,#6366f1 100%);">
+          <div class="tlc-icon">🔐</div>
+          <div class="tlc-body">
+            <div class="tlc-title">
+              ${L==='en'?'Student Login':'Login Murid'}
+              <span class="tlc-status"><i class="fa-solid fa-lock"></i> PIN Required</span>
+            </div>
+            <div class="tlc-sub">${L==='en'?'Enter your PIN to continue.':'Masukkan PIN kamu untuk melanjutkan.'}</div>
+          </div>
+          <div class="tlc-actions">
+            <button class="btn-white" onclick="openStudentLoginFromBeranda()"><i class="fa-solid fa-unlock"></i> ${L==='en'?'Student Login':'Login Murid'}</button>
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
   }
 
   return `
@@ -1458,7 +1861,7 @@ beranda(){
 
     ${!sb?`
     <div class="card mb-4" style="background:#fef3c7;border-color:#f59e0b;color:#78350f;">
-      <div class="flex center gap-3"><i class="fa-solid fa-circle-exclamation" style="font-size:26px;color:#d97706;"></i><div><div style="font-weight:700;">⚠️ Supabase belum di-setup</div><div style="font-size:13px;">Aplikasi tetap berjalan dengan penyimpanan lokal.</div></div></div>
+      <div class="flex center gap-3"><i class="fa-solid fa-circle-exclamation" style="font-size:26px;color:#d97706;"></i><div><div style="font-weight:700;">⚠️ ${L==='en'?'Supabase not set up':'Supabase belum di-setup'}</div><div style="font-size:13px;">${L==='en'?'The app runs with local storage.':'Aplikasi tetap berjalan dengan penyimpanan lokal.'}</div></div></div>
     </div>`:''}
     <div class="progress-wrap">
       <div class="card text-center">
@@ -1547,7 +1950,7 @@ bagikan(){
 kamus(){
   return `<div class="section-title">📖 ${t('kamus')}</div><div class="section-sub">${VERBS.length} verbs.</div>
     <div class="card mb-4">
-      <div style="position:relative;"><i class="fa-solid fa-magnifying-glass" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--text-muted);"></i><input class="input" id="verbSearch" placeholder="Cari..." style="padding-left:42px;" oninput="filterVerbs(this.value,State._verbType||'all')"></div>
+      <div style="position:relative;"><i class="fa-solid fa-magnifying-glass" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--text-muted);"></i><input class="input" id="verbSearch" placeholder="${State.lang==='en'?'Search...':'Cari...'}" style="padding-left:42px;" oninput="filterVerbs(this.value,State._verbType||'all')"></div>
       <div class="flex gap-2 mt-3 wrap">
         <button class="btn ${!State._verbType||State._verbType==='all'?'btn-primary':'btn-ghost'} btn-sm" onclick="filterVerbs('','all')">${State.lang==='en'?'All':'Semua'}</button>
         <button class="btn ${State._verbType==='Regular'?'btn-primary':'btn-ghost'} btn-sm" onclick="filterVerbs('','Regular')">Regular</button>
@@ -1570,100 +1973,34 @@ ai(){
     <div class="chat-wrap">
       <div class="chat-head"><div class="avatar"><i class="fa-solid fa-robot"></i></div><div style="flex:1;"><div style="font-weight:700;font-size:14px;">${t('ai')}</div><div class="text-xs text-muted">${State.settings.aiProvider==='gemini'?'Gemini':'Groq'} · ${esc(State.settings.aiModel||'-')}</div></div><button class="btn btn-ghost btn-sm" onclick="clearChat()"><i class="fa-solid fa-rotate"></i> Reset</button></div>
       <div class="chat-body" id="chatBody">${renderChat()}</div>
-      <div class="chat-input"><textarea class="input" id="chatInput" placeholder="Tanya..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea><button class="chat-send" onclick="sendChat()"><i class="fa-solid fa-paper-plane"></i></button></div>
+      <div class="chat-input"><textarea class="input" id="chatInput" placeholder="${State.lang==='en'?'Ask...':'Tanya...'}" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea><button class="chat-send" onclick="sendChat()"><i class="fa-solid fa-paper-plane"></i></button></div>
     </div>
     <div class="card mt-4" style="background:var(--grad-soft);border-color:var(--primary-light);">
-      <div style="font-weight:700;margin-bottom:8px;"><i class="fa-solid fa-lightbulb"></i> Contoh</div>
-      <div class="flex gap-2 wrap">${['Apa V2 dari eat?','Perbaiki: I go to Bali last week','Buat 1 kalimat dengan "went"','Beda Regular & Irregular?'].map(q=>`<button class="btn btn-ghost btn-sm" onclick="document.getElementById('chatInput').value='${q}';sendChat()">${q}</button>`).join('')}</div>
+      <div style="font-weight:700;margin-bottom:8px;"><i class="fa-solid fa-lightbulb"></i> ${State.lang==='en'?'Examples':'Contoh'}</div>
+      <div class="flex gap-2 wrap">${(State.lang==='en'?['What is V2 of eat?','Fix: I go to Bali last week','Make 1 sentence with "went"','Difference between Regular & Irregular?']:['Apa V2 dari eat?','Perbaiki: I go to Bali last week','Buat 1 kalimat dengan "went"','Beda Regular & Irregular?']).map(q=>`<button class="btn btn-ghost btn-sm" onclick="document.getElementById('chatInput').value='${q}';sendChat()">${q}</button>`).join('')}</div>
     </div>`;
 },
 
 guru(){
   const users=Object.values(State.users);
-  const totalStudents=users.filter(u=>u.profile.role==='student').length||users.length;
-  const totalProgress=users.reduce((s,u)=>s+Object.values(u.progress).filter(Boolean).length,0);
-  const avgProgress=users.length?Math.round(totalProgress/(users.length*4)*100):0;
-  const publishedCount=users.filter(u=>u.t4.published).length;
-  const totalBadgesCollected=users.reduce((s,u)=>s+u.badges.length,0);
+  const studentUsers = users.filter(u=>u.profile.role==='student');
+  const totalStudents=studentUsers.length;
+  const totalProgress=studentUsers.reduce((s,u)=>s+Object.values(u.progress).filter(Boolean).length,0);
+  const avgProgress=totalStudents?Math.round(totalProgress/(totalStudents*4)*100):0;
+  const publishedCount=studentUsers.filter(u=>u.t4.published).length;
+  const totalBadgesCollected=studentUsers.reduce((s,u)=>s+u.badges.length,0);
   const tab=State._tabGuru||'overview';
-  return `<div class="flex between center mb-3 wrap gap-2"><div><div class="section-title">📊 ${t('guru')}</div><div class="section-sub" style="margin-bottom:0;">Pantau siswa.</div></div><div class="flex gap-2 wrap"><button class="btn btn-primary btn-sm" onclick="reloadUsersFromServer()"><i class="fa-solid fa-cloud-arrow-down"></i> Muat dari Server</button><button class="btn btn-ghost btn-sm" onclick="logoutTeacher()" style="color:var(--danger);border-color:var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Logout</button></div></div>
-    <div class="tabs">${[['overview','📊 Overview'],['students','👥 '+t('students')],['materials','🎬 '+t('materials_mgmt')],['aigen','✨ AI Generator'],['reports','📈 '+t('reports')]].map(([k,l])=>`<div class="tab ${tab===k?'active':''}" onclick="setTab('guru','${k}')">${l}</div>`).join('')}</div>
-    <div id="tabContent">${renderTabGuru(tab,{users,totalStudents,avgProgress,publishedCount,totalBadgesCollected})}</div>`;
-},
-
-kelas(){
-  const isTeacher=TeacherSession.isActive();
-  const isReady = !!sb;
-  return `<div class="section-title">👥 ${t('kelas')}</div><div class="section-sub">${State.lang==='en'?'Manage users.':'Kelola pengguna.'}</div>
-    <div class="grid-2 mb-4">
-      <div class="card">
-        <div class="badge badge-primary mb-3"><i class="fa-solid fa-users"></i> ${State.lang==='en'?'Active User':'Pengguna Aktif'}</div>
-        <div style="font-size:28px;text-align:center;margin:10px 0;">${U().profile.avatar}</div>
-        <div class="text-center" style="font-weight:700;">${esc(U().profile.name||'-')}</div>
-        <div class="text-center text-sm text-muted mb-3">${U().profile.role==='student'?'Siswa':'Guru'}</div>
-        <div class="flex gap-2 wrap">
-          <button class="btn btn-ghost btn-sm" onclick="showUserSwitcher()"><i class="fa-solid fa-arrows-rotate"></i> Ganti</button>
-          <button class="btn btn-primary btn-sm" onclick="addNewUser()"><i class="fa-solid fa-user-plus"></i> Baru</button>
-        </div>
-      </div>
-      <div class="card" style="background:var(--grad-soft);border-color:var(--primary-light);">
-        <div class="flex center gap-3">
-          <i class="fa-solid fa-circle-check" style="font-size:28px;color:${isReady?'var(--success)':'var(--warning)'};"></i>
-          <div style="flex:1;">
-            <div style="font-weight:700;">${isReady?(State.lang==='en'?'Connected':'Terhubung'):(State.lang==='en'?'Not connected':'Belum terhubung')}</div>
-            <div class="text-sm text-muted">${isReady?'Auto-sync via Supabase':'Data tersimpan lokal di perangkat ini'}</div>
-          </div>
-        </div>
-        ${isReady?`<div class="mt-3"><button class="btn btn-ghost btn-sm" onclick="testBackend()"><i class="fa-solid fa-vial"></i> Test</button></div>`:''}
-      </div>
-    </div>
-    <div class="card" style="border:2px solid ${isTeacher?'var(--success)':'var(--warning)'};">
-      <div class="flex between center wrap gap-2 mb-3">
-        <div>
-          <div class="badge ${isTeacher?'badge-success':'badge-warning'} mb-2"><i class="fa-solid ${isTeacher?'fa-lock-open':'fa-lock'}"></i> ${State.lang==='en'?'Teacher Only':'Khusus Guru'}</div>
-          <div style="font-weight:700;">${State.lang==='en'?'Teacher Panel':'Panel Guru'}</div>
-        </div>
-        ${isTeacher?`<button class="btn btn-ghost btn-sm" onclick="logoutTeacher()"><i class="fa-solid fa-lock"></i> Lock</button>`:`<button class="btn btn-primary btn-sm" onclick="unlockTeacherConfig()"><i class="fa-solid fa-unlock"></i> Buka</button>`}
-      </div>
-      ${isTeacher?`
-        <div class="card mb-4" style="background:var(--bg);">
-          <div class="badge badge-success mb-3"><i class="fa-solid fa-robot"></i> AI Buddy</div>
-          <div class="flex center gap-3">
-            <i class="fa-solid fa-circle-check" style="font-size:28px;color:var(--success);"></i>
-            <div style="flex:1;">
-              <div style="font-weight:700;">${State.lang==='en'?'AI Ready':'AI Siap'}</div>
-              <div class="text-sm text-muted">${State.lang==='en'?'Provided by admin.':'Disediakan admin.'}</div>
-            </div>
-          </div>
-          <div class="mt-3 flex gap-2 wrap">
-            <span class="badge badge-primary">${(State.settings.aiProvider||'gemini')==='gemini'?'Gemini':'Groq'}</span>
-            <span class="badge badge-muted">${esc(State.settings.aiModel||'default')}</span>
-          </div>
-          <div class="mt-3"><button class="btn btn-ghost btn-sm" onclick="testAIConnection()"><i class="fa-solid fa-vial"></i> Test AI</button></div>
-        </div>
-        <div class="card" style="background:var(--bg);">
-          <div class="badge badge-warning mb-3"><i class="fa-solid fa-lock"></i> PIN Guru</div>
-          <div class="grid-2">
-            <div class="field"><label class="label">PIN Baru</label><input class="input" type="password" id="newPinInput" inputmode="numeric" maxlength="6" placeholder="••••"></div>
-            <div class="field"><label class="label">Konfirmasi</label><input class="input" type="password" id="confirmPinInput" inputmode="numeric" maxlength="6" placeholder="••••"></div>
-          </div>
-          <button class="btn btn-primary" onclick="saveTeacherPin()"><i class="fa-solid fa-save"></i> Update PIN</button>
-        </div>
-      `:`
-        <div style="text-align:center;padding:30px;color:var(--text-muted);">
-          <i class="fa-solid fa-user-lock" style="font-size:40px;opacity:.3;margin-bottom:12px;display:block;"></i>
-          <div class="text-sm">Bagian ini untuk guru.</div>
-          <div class="text-xs mt-2">Masukkan PIN untuk akses.</div>
-        </div>
-      `}
-    </div>
-  `;
+  const L=State.lang;
+  return `<div class="flex between center mb-3 wrap gap-2"><div><div class="section-title">📊 ${t('guru')}</div><div class="section-sub" style="margin-bottom:0;">${L==='en'?'Monitor students.':'Pantau siswa.'}</div></div><div class="flex gap-2 wrap"><button class="btn btn-primary btn-sm" onclick="reloadUsersFromServer()"><i class="fa-solid fa-cloud-arrow-down"></i> ${L==='en'?'Load from Server':'Muat dari Server'}</button><button class="btn btn-ghost btn-sm" onclick="logoutTeacher()" style="color:var(--danger);border-color:var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Logout</button></div></div>
+    <div class="tabs">${[['overview','📊 '+t('overview')],['students','👥 '+t('students')],['materials','🎬 '+t('materials_mgmt')],['aigen','✨ AI Generator'],['reports','📈 '+t('reports')]].map(([k,l])=>`<div class="tab ${tab===k?'active':''}" onclick="setTab('guru','${k}')">${l}</div>`).join('')}</div>
+    <div id="tabContent">${renderTabGuru(tab,{users,studentUsers,totalStudents,avgProgress,publishedCount,totalBadgesCollected})}</div>`;
 },
 
 profil(){
+  const L=State.lang;
   const p=U().profile;
   const avatars=['👨‍🏫','👩‍🏫','🧑‍🏫','👨‍💼','👩‍💼','🧑‍💻','📚','🎓','✨','🌟','🧑‍🎓','👨‍🎓','👩‍🎓'];
-  return `<div class="section-title">👤 ${t('profil')}</div><div class="section-sub">Lengkapi data.</div>
+  return `<div class="section-title">👤 ${t('profil')}</div><div class="section-sub">${L==='en'?'Complete your data.':'Lengkapi data.'}</div>
     <div class="grid-2">
       <div class="card">
         <div class="text-center mb-4">
@@ -1671,19 +2008,19 @@ profil(){
           <div style="font-weight:700;font-size:17px;">${esc(p.name||'-')}</div>
           <div class="text-sm text-muted">${esc(p.subject||'-')} · ${esc(p.school||'-')}</div>
         </div>
-        <div class="label mb-3">Avatar</div>
+        <div class="label mb-3">${L==='en'?'Avatar':'Avatar'}</div>
         <div class="flex gap-2 wrap">${avatars.map(a=>`<button onclick="setAvatar('${a}')" style="width:42px;height:42px;border-radius:11px;font-size:20px;background:${p.avatar===a?'var(--grad)':'var(--bg)'};border:1.5px solid ${p.avatar===a?'transparent':'var(--border)'};display:grid;place-items:center;">${a}</button>`).join('')}</div>
       </div>
       <div class="card">
-        <div class="field"><label class="label">Nama Lengkap</label><input class="input" id="pfName" value="${esc(p.name)}" placeholder="Nama lengkap"></div>
-        <div class="field"><label class="label">Role</label><select class="select" id="pfRole"><option value="teacher" ${p.role==='teacher'?'selected':''}>Guru</option><option value="student" ${p.role==='student'?'selected':''}>Siswa</option></select></div>
-        <div class="field"><label class="label">NIP / NIS</label><input class="input" id="pfNip" value="${esc(p.nip)}" placeholder="Nomor induk"></div>
-        <div class="field"><label class="label">Sekolah</label><input class="input" id="pfSchool" value="${esc(p.school)}" placeholder="Nama sekolah"></div>
-        <div class="field"><label class="label">Mata Pelajaran</label><input class="input" id="pfSubject" value="${esc(p.subject)}" placeholder="Bahasa Inggris"></div>
-        <div class="field"><label class="label">Kelas</label><input class="input" id="pfClasses" value="${esc(p.classes)}" placeholder="Contoh: 8A, 8B, 8C"><div class="hint">Pisahkan dengan koma jika mengampu lebih dari 1 kelas</div></div>
+        <div class="field"><label class="label">${L==='en'?'Full Name':'Nama Lengkap'}</label><input class="input" id="pfName" value="${esc(p.name)}" placeholder="${L==='en'?'Full name':'Nama lengkap'}"></div>
+        <div class="field"><label class="label">Role</label><select class="select" id="pfRole"><option value="teacher" ${p.role==='teacher'?'selected':''}>${L==='en'?'Teacher':'Guru'}</option><option value="student" ${p.role==='student'?'selected':''}>${L==='en'?'Student':'Siswa'}</option></select></div>
+        <div class="field"><label class="label">${L==='en'?'ID Number':'NIP / NIS'}</label><input class="input" id="pfNip" value="${esc(p.nip)}" placeholder="${L==='en'?'ID number':'Nomor induk'}"></div>
+        <div class="field"><label class="label">${L==='en'?'School':'Sekolah'}</label><input class="input" id="pfSchool" value="${esc(p.school)}" placeholder="${L==='en'?'School name':'Nama sekolah'}"></div>
+        <div class="field"><label class="label">${L==='en'?'Subject':'Mata Pelajaran'}</label><input class="input" id="pfSubject" value="${esc(p.subject)}" placeholder="${L==='en'?'English':'Bahasa Inggris'}"></div>
+        <div class="field"><label class="label">${L==='en'?'Class':'Kelas'}</label><input class="input" id="pfClasses" value="${esc(p.classes)}" placeholder="${L==='en'?'Example: 8A, 8B, 8C':'Contoh: 8A, 8B, 8C'}"><div class="hint">${L==='en'?'Separate with comma for multiple classes':'Pisahkan dengan koma jika mengampu lebih dari 1 kelas'}</div></div>
         <div class="flex gap-2 wrap mt-3">
           <button class="btn btn-primary" onclick="saveProfile()"><i class="fa-solid fa-save"></i> ${t('save')}</button>
-          <button class="btn btn-ghost" onclick="printReport()"><i class="fa-solid fa-print"></i> Cetak</button>
+          <button class="btn btn-ghost" onclick="printReport()"><i class="fa-solid fa-print"></i> ${L==='en'?'Print':'Cetak'}</button>
           <button class="btn btn-ghost" onclick="resetAll()" style="color:var(--danger);border-color:var(--danger);"><i class="fa-solid fa-trash"></i> Reset</button>
         </div>
       </div>
@@ -1693,14 +2030,14 @@ profil(){
         <div style="flex:1;min-width:220px;">
           <div class="flex center gap-2 mb-2">
             <i class="fa-solid fa-right-from-bracket" style="color:var(--danger);font-size:18px;"></i>
-            <div style="font-weight:800;font-size:15px;">Keluar dari Akun</div>
+            <div style="font-weight:800;font-size:15px;">${L==='en'?'Logout':'Keluar dari Akun'}</div>
           </div>
           <div class="text-sm text-muted" style="line-height:1.6;">
-            Keluar dari akun <b>${esc(p.name||'-')}</b>. Data kamu tetap tersimpan, dan kamu bisa masuk kembali kapan saja dari halaman Beranda.
+            ${L==='en'?`Logout from account <b>${esc(p.name||'-')}</b>. Your data is saved, and you can login again anytime from the Home page.`:`Keluar dari akun <b>${esc(p.name||'-')}</b>. Data kamu tetap tersimpan, dan kamu bisa masuk kembali kapan saja dari halaman Beranda.`}
           </div>
         </div>
         <button class="btn btn-danger" onclick="logoutUser()" style="flex-shrink:0;">
-          <i class="fa-solid fa-right-from-bracket"></i> Keluar Sekarang
+          <i class="fa-solid fa-right-from-bracket"></i> ${L==='en'?'Logout Now':'Keluar Sekarang'}
         </button>
       </div>
     </div>
@@ -1709,32 +2046,31 @@ profil(){
 };
 
 /* ============================================================
-   TAB RENDERERS
+   TAB RENDERERS (dipersingkat - fungsi sama seperti versi sebelumnya)
 ============================================================ */
 function setTab(page,tab){ State['_tab'+page.charAt(0).toUpperCase()+page.slice(1)]=tab; render(); }
 
 function renderTabTemukan(tab,t1){
-  const L=State.lang;
   if(tab==='reading') return `<div class="card mb-4">
       <div class="flex between center mb-3 wrap gap-2"><div class="badge badge-primary"><i class="fa-solid fa-book-open"></i> Interactive Reading</div>${t1.readingDone?'<span class="badge badge-success"><i class="fa-solid fa-check"></i> '+t('done')+'</span>':''}</div>
       <div class="quiz-text" id="readText">${State.materials.readingText?renderHighlightedText(State.materials.readingText):`<em data-v1="go" data-v2="went">Last holiday</em>, my family <em data-v1="go" data-v2="went">went</em> to Bali. We <em data-v1="stay" data-v2="stayed">stayed</em> at a small hotel near Kuta Beach.<br><br>On the first day, we <em data-v1="visit" data-v2="visited">visited</em> Tanah Lot Temple and <em data-v1="watch" data-v2="watched">watched</em> the beautiful sunset. The next morning, I <em data-v1="swim" data-v2="swam">swam</em> in the sea. We <em data-v1="eat" data-v2="ate">ate</em> delicious seafood.<br><br>It <em data-v1="be" data-v2="was">was</em> an unforgettable trip. I <em data-v1="feel" data-v2="felt">felt</em> so happy.`}</div>
-      <button class="btn ${t1.readingDone?'btn-ghost':'btn-primary'} btn-sm" onclick="markReading()"><i class="fa-solid fa-check"></i> ${t1.readingDone?t('done'):'Tandai Selesai'}</button>
+      <button class="btn ${t1.readingDone?'btn-ghost':'btn-primary'} btn-sm" onclick="markReading()"><i class="fa-solid fa-check"></i> ${t1.readingDone?t('done'):(State.lang==='en'?'Mark as Done':'Tandai Selesai')}</button>
     </div>
     <div class="grid-2 mb-4">
-      <div class="card"><div class="badge badge-primary mb-3"><i class="fa-solid fa-info-circle"></i> Apa itu Recount Text?</div><p class="text-sm mb-3">Teks yang menceritakan pengalaman lampau.</p><ul class="check-list"><li><b>Orientation</b> — Siapa, kapan, di mana</li><li><b>Events</b> — Urutan kejadian</li><li><b>Re-orientation</b> — Penutup/kesan</li></ul></div>
-      <div class="card"><div class="badge badge-primary mb-3"><i class="fa-solid fa-clock-rotate-left"></i> Simple Past Tense</div><ul class="check-list"><li><b>Regular</b>: +ed → <em>play → played</em></li><li><b>Irregular</b>: berubah → <em>go → went</em></li><li><b>Was/Were</b> for to be</li></ul></div>
+      <div class="card"><div class="badge badge-primary mb-3"><i class="fa-solid fa-info-circle"></i> ${State.lang==='en'?'What is Recount Text?':'Apa itu Recount Text?'}</div><p class="text-sm mb-3">${State.lang==='en'?'A text that tells past experiences.':'Teks yang menceritakan pengalaman lampau.'}</p><ul class="check-list"><li><b>Orientation</b> — ${State.lang==='en'?'Who, when, where':'Siapa, kapan, di mana'}</li><li><b>Events</b> — ${State.lang==='en'?'Sequence of events':'Urutan kejadian'}</li><li><b>Re-orientation</b> — ${State.lang==='en'?'Closing/impression':'Penutup/kesan'}</li></ul></div>
+      <div class="card"><div class="badge badge-primary mb-3"><i class="fa-solid fa-clock-rotate-left"></i> Simple Past Tense</div><ul class="check-list"><li><b>Regular</b>: +ed → <em>play → played</em></li><li><b>Irregular</b>: ${State.lang==='en'?'changes':'berubah'} → <em>go → went</em></li><li><b>Was/Were</b> for to be</li></ul></div>
     </div>
     <div class="card">
-      <div class="section-title" style="font-size:17px;">🎯 Kuis Pemahaman</div>
-      <div class="section-sub">Skor minimal 2/3 untuk unlock Tahap 2.</div>
+      <div class="section-title" style="font-size:17px;">🎯 ${State.lang==='en'?'Comprehension Quiz':'Kuis Pemahaman'}</div>
+      <div class="section-sub">${State.lang==='en'?'Minimum score 2/3 to unlock Stage 2.':'Skor minimal 2/3 untuk unlock Tahap 2.'}</div>
       <div id="quizArea">${renderQuiz()}</div>
-      ${U().quiz.passed?`<div class="card" style="background:var(--grad-soft);border-color:var(--primary-light);margin-top:14px;"><div class="flex center gap-3"><i class="fa-solid fa-trophy" style="font-size:26px;color:var(--primary)"></i><div><div style="font-weight:700;">Selamat, kamu lulus! 🎉</div><div class="text-sm text-muted">Score: ${U().quiz.score}/3</div></div></div></div><div class="mt-4 flex gap-2 wrap"><button class="btn btn-primary" onclick="Router.go('bayangkan')">Lanjut Tahap 2 <i class="fa-solid fa-arrow-right"></i></button><button class="btn btn-ghost" onclick="resetQuiz()"><i class="fa-solid fa-rotate"></i> Ulangi</button></div>`:''}
+      ${U().quiz.passed?`<div class="card" style="background:var(--grad-soft);border-color:var(--primary-light);margin-top:14px;"><div class="flex center gap-3"><i class="fa-solid fa-trophy" style="font-size:26px;color:var(--primary)"></i><div><div style="font-weight:700;">${State.lang==='en'?'Congratulations, you passed! 🎉':'Selamat, kamu lulus! 🎉'}</div><div class="text-sm text-muted">Score: ${U().quiz.score}/3</div></div></div></div><div class="mt-4 flex gap-2 wrap"><button class="btn btn-primary" onclick="Router.go('bayangkan')">${State.lang==='en'?'Continue Stage 2':'Lanjut Tahap 2'} <i class="fa-solid fa-arrow-right"></i></button><button class="btn btn-ghost" onclick="resetQuiz()"><i class="fa-solid fa-rotate"></i> ${State.lang==='en'?'Retry':'Ulangi'}</button></div>`:''}
     </div>`;
   if(tab==='video') return `<div class="card mb-4">
       <div class="flex between center mb-3 wrap gap-2"><div class="badge badge-primary"><i class="fa-solid fa-video"></i> Video Discovery</div>${t1.videoWatched?'<span class="badge badge-success"><i class="fa-solid fa-check"></i> '+t('done')+'</span>':''}</div>
       <div style="position:relative;padding-bottom:56.25%;border-radius:14px;overflow:hidden;background:#000;"><iframe style="position:absolute;inset:0;width:100%;height:100%;border:0;" src="${esc(State.materials.videoUrl)}" allowfullscreen></iframe></div>
-      <div class="mt-4"><label class="label">1 hal menarik yang kamu pelajari?</label><textarea class="textarea" id="videoNote">${esc(t1._videoNote||'')}</textarea></div>
-      <div class="mt-3"><button class="btn ${t1.videoWatched?'btn-ghost':'btn-primary'}" onclick="markVideo()"><i class="fa-solid fa-check"></i> ${t1.videoWatched?t('done'):'Tandai Selesai'}</button></div>
+      <div class="mt-4"><label class="label">${State.lang==='en'?'1 interesting thing you learned?':'1 hal menarik yang kamu pelajari?'}</label><textarea class="textarea" id="videoNote">${esc(t1._videoNote||'')}</textarea></div>
+      <div class="mt-3"><button class="btn ${t1.videoWatched?'btn-ghost':'btn-primary'}" onclick="markVideo()"><i class="fa-solid fa-check"></i> ${t1.videoWatched?t('done'):(State.lang==='en'?'Mark as Done':'Tandai Selesai')}</button></div>
     </div>`;
   if(tab==='grammar') return `<div class="card mb-4">
       <div class="flex between center mb-3 wrap gap-2"><div class="badge badge-primary"><i class="fa-solid fa-spell-check"></i> Grammar</div>${t1.grammarDone?'<span class="badge badge-success"><i class="fa-solid fa-check"></i> '+t('done')+'</span>':''}</div>
@@ -1743,8 +2079,8 @@ function renderTabTemukan(tab,t1){
         <div class="card" style="background:var(--grad-soft);"><div style="font-weight:700;margin-bottom:8px;">🟧 Irregular Verb</div><div class="text-sm">go → <b style="color:var(--warning)">went</b></div><div class="text-sm">eat → <b style="color:var(--warning)">ate</b></div><div class="text-sm">see → <b style="color:var(--warning)">saw</b></div></div>
       </div>
       <div class="card mb-4" style="border:1.5px solid var(--primary);">
-        <div class="flex center gap-2 mb-3"><div class="step-num" style="margin:0;width:34px;height:34px;font-size:14px;">📐</div><div style="font-weight:800;font-size:15px;color:var(--primary);">Rumus Simple Past Tense</div></div>
-        <div style="overflow-x:auto;"><table class="tense-table"><thead><tr><th>Bentuk</th><th>Rumus</th><th>Contoh</th></tr></thead><tbody>
+        <div class="flex center gap-2 mb-3"><div class="step-num" style="margin:0;width:34px;height:34px;font-size:14px;">📐</div><div style="font-weight:800;font-size:15px;color:var(--primary);">${State.lang==='en'?'Simple Past Tense Formula':'Rumus Simple Past Tense'}</div></div>
+        <div style="overflow-x:auto;"><table class="tense-table"><thead><tr><th>${State.lang==='en'?'Form':'Bentuk'}</th><th>${State.lang==='en'?'Formula':'Rumus'}</th><th>${State.lang==='en'?'Example':'Contoh'}</th></tr></thead><tbody>
           <tr><td><b style="color:var(--success);">(+)</b></td><td>S + V2 + O</td><td>I <b>visited</b> Bali last year.</td></tr>
           <tr><td><b style="color:var(--danger);">(–)</b></td><td>S + did not + V1 + O</td><td>I <b>did not visit</b> Bali.</td></tr>
           <tr><td><b style="color:var(--info);">(?)</b></td><td>Did + S + V1 + O?</td><td><b>Did</b> you <b>visit</b>?</td></tr>
@@ -1753,44 +2089,45 @@ function renderTabTemukan(tab,t1){
           <tr><td><b>(–)</b></td><td>S + was/were + not + C</td><td>She <b>was not</b> happy.</td></tr>
           <tr><td><b>(?)</b></td><td>Was/Were + S + C?</td><td><b>Was</b> she happy?</td></tr>
         </tbody></table></div>
-        <div class="tense-alert"><b>⚠️ Penting!</b> Setelah DID / DID NOT, verb kembali ke V1.<br>✅ <i>I <b>did not go</b>.</i> ❌ <i>I did not <b>went</b>.</i></div>
+        <div class="tense-alert"><b>⚠️ ${State.lang==='en'?'Important!':'Penting!'}</b> ${State.lang==='en'?'After DID / DID NOT, verb returns to V1.':'Setelah DID / DID NOT, verb kembali ke V1.'}<br>✅ <i>I <b>did not go</b>.</i> ❌ <i>I did not <b>went</b>.</i></div>
       </div>
-      <div class="mt-4"><button class="btn ${t1.grammarDone?'btn-ghost':'btn-primary'}" onclick="markGrammar()"><i class="fa-solid fa-check"></i> ${t1.grammarDone?t('done'):'Tandai Selesai'}</button></div>
+      <div class="mt-4"><button class="btn ${t1.grammarDone?'btn-ghost':'btn-primary'}" onclick="markGrammar()"><i class="fa-solid fa-check"></i> ${t1.grammarDone?t('done'):(State.lang==='en'?'Mark as Done':'Tandai Selesai')}</button></div>
     </div>`;
   if(tab==='game') return renderDragDrop(t1);
   if(tab==='conjugation') return renderConjugation(t1);
   if(tab==='reflection') return `<div class="card mb-4">
       <div class="badge badge-primary mb-3"><i class="fa-solid fa-mirror"></i> Reflection Journal</div>
-      <label class="label">Pengalaman menarik yang ingin kamu tulis?</label>
+      <label class="label">${State.lang==='en'?'An interesting experience you want to write about?':'Pengalaman menarik yang ingin kamu tulis?'}</label>
       <textarea class="textarea" id="reflectionInput">${esc(t1.reflection)}</textarea>
       <button class="btn btn-primary mt-3" onclick="saveReflection()"><i class="fa-solid fa-save"></i> ${t('save')}</button>
     </div>
     <div class="card">
-      <div class="badge badge-primary mb-3"><i class="fa-solid fa-list-check"></i> Misi Tahap 1</div>
-      <div class="section-sub">Kumpulkan 5 pengalaman (min 5 kata).</div>
-      ${[0,1,2,3,4].map(i=>`<div class="flex center gap-2 mb-3"><div style="width:32px;height:32px;border-radius:8px;background:var(--grad-soft);color:var(--primary);font-weight:700;display:grid;place-items:center;flex-shrink:0;">${i+1}</div><input class="input" id="exp${i}" value="${esc(t1.experiences[i]||'')}" placeholder="Pengalaman ${i+1}..." oninput="saveExperience(${i},this.value)"></div>`).join('')}
+      <div class="badge badge-primary mb-3"><i class="fa-solid fa-list-check"></i> ${State.lang==='en'?'Stage 1 Mission':'Misi Tahap 1'}</div>
+      <div class="section-sub">${State.lang==='en'?'Collect 5 experiences (min 5 words).':'Kumpulkan 5 pengalaman (min 5 kata).'}</div>
+      ${[0,1,2,3,4].map(i=>`<div class="flex center gap-2 mb-3"><div style="width:32px;height:32px;border-radius:8px;background:var(--grad-soft);color:var(--primary);font-weight:700;display:grid;place-items:center;flex-shrink:0;">${i+1}</div><input class="input" id="exp${i}" value="${esc(t1.experiences[i]||'')}" placeholder="${State.lang==='en'?'Experience':'Pengalaman'} ${i+1}..." oninput="saveExperience(${i},this.value)"></div>`).join('')}
       <div class="mt-3"><span class="badge ${t1.experiences.filter(e=>e&&e.trim().length>4).length>=5?'badge-success':'badge-muted'}"><i class="fa-solid fa-check"></i> ${t1.experiences.filter(e=>e&&e.trim().length>4).length}/5</span></div>
     </div>`;
   return '';
 }
 
 function renderTabBayangkan(tab,t2){
+  const L=State.lang;
   if(tab==='timeline'){ const tl=t2.timeline; return `<div class="card mb-4">
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-timeline"></i> Story Mapping Timeline</div>
     <div class="timeline">
-      <div class="tl-item"><h4>1. ORIENTATION</h4><textarea class="textarea" placeholder="Siapa, kapan, di mana..." style="min-height:70px;" oninput="saveTimeline('orientation',this.value)">${esc(tl.orientation)}</textarea></div>
-      <div class="tl-item"><h4>2. EVENT 1</h4><textarea class="textarea" placeholder="Kejadian pertama..." style="min-height:70px;" oninput="saveTimeline('event1',this.value)">${esc(tl.event1)}</textarea></div>
-      <div class="tl-item"><h4>3. EVENT 2</h4><textarea class="textarea" placeholder="Kejadian kedua..." style="min-height:70px;" oninput="saveTimeline('event2',this.value)">${esc(tl.event2)}</textarea></div>
-      <div class="tl-item"><h4>4. EVENT 3</h4><textarea class="textarea" placeholder="Kejadian ketiga..." style="min-height:70px;" oninput="saveTimeline('event3',this.value)">${esc(tl.event3)}</textarea></div>
-      <div class="tl-item"><h4>5. RE-ORIENTATION</h4><textarea class="textarea" placeholder="Kesan/pesan..." style="min-height:70px;" oninput="saveTimeline('reorientation',this.value)">${esc(tl.reorientation)}</textarea></div>
+      <div class="tl-item"><h4>1. ORIENTATION</h4><textarea class="textarea" placeholder="${L==='en'?'Who, when, where...':'Siapa, kapan, di mana...'}" style="min-height:70px;" oninput="saveTimeline('orientation',this.value)">${esc(tl.orientation)}</textarea></div>
+      <div class="tl-item"><h4>2. EVENT 1</h4><textarea class="textarea" placeholder="${L==='en'?'First event...':'Kejadian pertama...'}" style="min-height:70px;" oninput="saveTimeline('event1',this.value)">${esc(tl.event1)}</textarea></div>
+      <div class="tl-item"><h4>3. EVENT 2</h4><textarea class="textarea" placeholder="${L==='en'?'Second event...':'Kejadian kedua...'}" style="min-height:70px;" oninput="saveTimeline('event2',this.value)">${esc(tl.event2)}</textarea></div>
+      <div class="tl-item"><h4>4. EVENT 3</h4><textarea class="textarea" placeholder="${L==='en'?'Third event...':'Kejadian ketiga...'}" style="min-height:70px;" oninput="saveTimeline('event3',this.value)">${esc(tl.event3)}</textarea></div>
+      <div class="tl-item"><h4>5. RE-ORIENTATION</h4><textarea class="textarea" placeholder="${L==='en'?'Impression/message...':'Kesan/pesan...'}" style="min-height:70px;" oninput="saveTimeline('reorientation',this.value)">${esc(tl.reorientation)}</textarea></div>
     </div>
-    <div class="mt-3 flex gap-2 wrap"><button class="btn btn-primary" onclick="saveTimelineFinal()"><i class="fa-solid fa-check"></i> Tandai Selesai</button><button class="btn btn-ghost" onclick="Router.go('lakukan')">Lanjut Tahap 3 <i class="fa-solid fa-arrow-right"></i></button></div>
+    <div class="mt-3 flex gap-2 wrap"><button class="btn btn-primary" onclick="saveTimelineFinal()"><i class="fa-solid fa-check"></i> ${L==='en'?'Mark as Done':'Tandai Selesai'}</button><button class="btn btn-ghost" onclick="Router.go('lakukan')">${L==='en'?'Continue Stage 3':'Lanjut Tahap 3'} <i class="fa-solid fa-arrow-right"></i></button></div>
   </div>`; }
   if(tab==='vocab') return `<div class="card mb-4">
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-book-bookmark"></i> Vocabulary Builder</div>
     <div class="grid-3 mb-3"><input class="input" id="vV1" placeholder="V1 (go)"><input class="input" id="vV2" placeholder="V2 (went)"><select class="select" id="vType"><option>Irregular</option><option>Regular</option></select></div>
-    <button class="btn btn-primary" onclick="addVocab()"><i class="fa-solid fa-plus"></i> Tambah</button>
-    <div class="mt-4">${t2.vocab.length?`<div class="flex gap-2 wrap">${t2.vocab.map((v,i)=>`<div class="dd-chip">${esc(v.v1)} → <b>${esc(v.v2)}</b> <button onclick="removeVocab(${i})" style="color:var(--danger);margin-left:4px;"><i class="fa-solid fa-xmark"></i></button></div>`).join('')}</div>`:`<div class="text-sm text-muted text-center" style="padding:20px;">Belum ada kosakata</div>`}</div>
+    <button class="btn btn-primary" onclick="addVocab()"><i class="fa-solid fa-plus"></i> ${L==='en'?'Add':'Tambah'}</button>
+    <div class="mt-4">${t2.vocab.length?`<div class="flex gap-2 wrap">${t2.vocab.map((v,i)=>`<div class="dd-chip">${esc(v.v1)} → <b>${esc(v.v2)}</b> <button onclick="removeVocab(${i})" style="color:var(--danger);margin-left:4px;"><i class="fa-solid fa-xmark"></i></button></div>`).join('')}</div>`:`<div class="text-sm text-muted text-center" style="padding:20px;">${L==='en'?'No vocabulary yet':'Belum ada kosakata'}</div>`}</div>
   </div>`;
   if(tab==='mindmap'){ const m=t2.mindMap; return `<div class="card mb-4">
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-brain"></i> Mind Mapping (5W+1H)</div>
@@ -1805,19 +2142,20 @@ function renderTabBayangkan(tab,t2){
   </div>`; }
   if(tab==='storyboard') return `<div class="card mb-4">
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-images"></i> Storyboard Creator</div>
-    <div class="grid-2 mb-3"><div><label class="label">Upload Gambar</label><input type="file" accept="image/*" class="input" onchange="uploadStoryboard(this)"></div>
-    <div><label class="label">Atau emoji</label><div class="flex gap-2 wrap">${['🏖️','🏔️','🏫','🏠','🚗','✈️','🎉','😄','😢','🌅','🍽️','⚽'].map(e=>`<button class="btn btn-ghost btn-sm" style="font-size:20px;padding:6px 10px;" onclick="addStoryboardEmoji('${e}')">${e}</button>`).join('')}</div></div></div>
+    <div class="grid-2 mb-3"><div><label class="label">${L==='en'?'Upload Image':'Upload Gambar'}</label><input type="file" accept="image/*" class="input" onchange="uploadStoryboard(this)"></div>
+    <div><label class="label">${L==='en'?'Or emoji':'Atau emoji'}</label><div class="flex gap-2 wrap">${['🏖️','🏔️','🏫','🏠','🚗','✈️','🎉','😄','😢','🌅','🍽️','⚽'].map(e=>`<button class="btn btn-ghost btn-sm" style="font-size:20px;padding:6px 10px;" onclick="addStoryboardEmoji('${e}')">${e}</button>`).join('')}</div></div></div>
     <div class="storyboard-grid">${t2.storyboard.map((s,i)=>`<div class="sb-card"><div class="sb-del" onclick="removeStoryboard(${i})"><i class="fa-solid fa-xmark"></i></div><div class="sb-thumb">${s.img.startsWith('data:')?`<img src="${s.img}">`:s.img}</div><div class="sb-cap"><input class="input" value="${esc(s.caption)}" placeholder="Caption..." style="padding:6px 8px;font-size:12px;" oninput="updateStoryboardCaption(${i},this.value)"></div></div>`).join('')}</div>
   </div>`;
   if(tab==='brainstorm') return `<div class="card mb-4">
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-comments"></i> Peer Brainstorm</div>
     <textarea class="textarea" style="min-height:200px;" oninput="saveBrainstorm(this.value)">${esc(t2.brainstorm)}</textarea>
-    <div class="flex gap-2 wrap mt-3"><button class="btn btn-primary" onclick="toast('Tersimpan 💾')"><i class="fa-solid fa-save"></i> ${t('save')}</button><button class="btn btn-ghost" onclick="copyBrainstorm()"><i class="fa-solid fa-copy"></i> Copy</button></div>
+    <div class="flex gap-2 wrap mt-3"><button class="btn btn-primary" onclick="toast('${L==='en'?'Saved 💾':'Tersimpan 💾'}')"><i class="fa-solid fa-save"></i> ${t('save')}</button><button class="btn btn-ghost" onclick="copyBrainstorm()"><i class="fa-solid fa-copy"></i> Copy</button></div>
   </div>`;
   return '';
 }
 
 function renderTabLakukan(tab,t3){
+  const L=State.lang;
   if(tab==='guided'){ const g=t3.guided;
     const combined=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
     const a=analyzeText(combined);
@@ -1825,141 +2163,143 @@ function renderTabLakukan(tab,t3){
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-shoe-prints"></i> Guided Writing</div>
     <div class="card mb-3" style="background:var(--grad-soft);">
       <div class="flex center gap-2 mb-2"><div class="step-num" style="margin:0;width:32px;height:32px;font-size:14px;">1</div><b>Orientation</b></div>
-      <div class="text-xs text-muted mb-2">Siapa, kapan, di mana. <em>Last week, my family and I went to...</em></div>
+      <div class="text-xs text-muted mb-2">${L==='en'?'Who, when, where.':'Siapa, kapan, di mana.'} <em>Last week, my family and I went to...</em></div>
       <textarea class="textarea" oninput="saveGuided('orientation',this.value)">${esc(g.orientation)}</textarea>
     </div>
     <div class="card mb-3" style="background:var(--grad-soft);">
       <div class="flex center gap-2 mb-2"><div class="step-num" style="margin:0;width:32px;height:32px;font-size:14px;">2</div><b>Events (min 3)</b></div>
-      <div class="text-xs text-muted mb-2">Kronologis. Pakai V2.</div>
-      ${[0,1,2].map(i=>`<textarea class="textarea mb-2" style="min-height:60px;" placeholder="Kejadian ${i+1}..." oninput="saveGuidedEvent(${i},this.value)">${esc(g.events[i]||'')}</textarea>`).join('')}
+      <div class="text-xs text-muted mb-2">${L==='en'?'Chronological. Use V2.':'Kronologis. Pakai V2.'}</div>
+      ${[0,1,2].map(i=>`<textarea class="textarea mb-2" style="min-height:60px;" placeholder="${L==='en'?'Event':'Kejadian'} ${i+1}..." oninput="saveGuidedEvent(${i},this.value)">${esc(g.events[i]||'')}</textarea>`).join('')}
     </div>
     <div class="card mb-3" style="background:var(--grad-soft);">
       <div class="flex center gap-2 mb-2"><div class="step-num" style="margin:0;width:32px;height:32px;font-size:14px;">3</div><b>Re-orientation</b></div>
-      <div class="text-xs text-muted mb-2">Kesan, perasaan, penutup.</div>
+      <div class="text-xs text-muted mb-2">${L==='en'?'Impression, feeling, closing.':'Kesan, perasaan, penutup.'}</div>
       <textarea class="textarea" oninput="saveGuided('reorientation',this.value)">${esc(g.reorientation)}</textarea>
     </div>
     <div id="grammarReport">${renderGrammarReport(a)}</div>
-    <div class="mt-3 flex gap-2 wrap"><button class="btn btn-primary" onclick="finishGuided()"><i class="fa-solid fa-check"></i> Selesai & Lanjut</button><button class="btn btn-ghost" onclick="saveCurrentDraft()"><i class="fa-solid fa-floppy-disk"></i> Simpan Draft</button></div>
+    <div class="mt-3 flex gap-2 wrap"><button class="btn btn-primary" onclick="finishGuided()"><i class="fa-solid fa-check"></i> ${L==='en'?'Finish & Continue':'Selesai & Lanjut'}</button><button class="btn btn-ghost" onclick="saveCurrentDraft()"><i class="fa-solid fa-floppy-disk"></i> ${L==='en'?'Save Draft':'Simpan Draft'}</button></div>
   </div>`; }
   if(tab==='drafts') return `<div class="card mb-4">
-    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-box-archive"></i> Draft Manager</div><div style="font-weight:700;">Riwayat Versi</div></div><button class="btn btn-primary btn-sm" onclick="saveCurrentDraft()"><i class="fa-solid fa-plus"></i> Simpan Baru</button></div>
+    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-box-archive"></i> Draft Manager</div><div style="font-weight:700;">${L==='en'?'Version History':'Riwayat Versi'}</div></div><button class="btn btn-primary btn-sm" onclick="saveCurrentDraft()"><i class="fa-solid fa-plus"></i> ${L==='en'?'Save New':'Simpan Baru'}</button></div>
     ${t3.drafts.length?`<div class="grid-2">${t3.drafts.slice().reverse().map((d,i)=>{
       const realIdx=t3.drafts.length-1-i;
       return `<div class="card" style="background:var(--bg);border-style:dashed;">
-      <div class="flex between center mb-2"><b>Versi ${realIdx+1}</b><span class="badge badge-muted">${new Date(d.ts).toLocaleString()}</span></div>
-      <div class="text-xs text-muted mb-2">${d.words} kata</div>
+      <div class="flex between center mb-2"><b>${L==='en'?'Version':'Versi'} ${realIdx+1}</b><span class="badge badge-muted">${new Date(d.ts).toLocaleString()}</span></div>
+      <div class="text-xs text-muted mb-2">${d.words} ${L==='en'?'words':'kata'}</div>
       <div style="font-size:12.5px;max-height:100px;overflow:hidden;">${esc(d.content.slice(0,180))}...</div>
       <div class="flex gap-2 mt-3 wrap"><button class="btn btn-ghost btn-sm" onclick="viewDraft(${realIdx})"><i class="fa-solid fa-eye"></i></button><button class="btn btn-ghost btn-sm" onclick="restoreDraft(${realIdx})"><i class="fa-solid fa-rotate-left"></i></button><button class="btn btn-ghost btn-sm" onclick="deleteDraft(${realIdx})" style="color:var(--danger);"><i class="fa-solid fa-trash"></i></button></div>
-    </div>`; }).join('')}</div>`:`<div class="empty"><i class="fa-solid fa-box-open"></i><div>Belum ada draf</div></div>`}
+    </div>`; }).join('')}</div>`:`<div class="empty"><i class="fa-solid fa-box-open"></i><div>${L==='en'?'No drafts yet':'Belum ada draf'}</div></div>`}
   </div>`;
   if(tab==='selfcheck'){ const sc=t3.selfCheck; return `<div class="card mb-4">
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-clipboard-check"></i> Self-Assessment</div>
-    <div class="field"><label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;"><input type="checkbox" ${sc.past?'checked':''} onchange="toggleSelfCheck('past',this.checked)" style="width:20px;height:20px;accent-color:var(--primary);margin-top:3px;"><span>Sudah pakai Simple Past Tense (V2)?</span></label></div>
-    <div class="field"><label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;"><input type="checkbox" ${sc.order?'checked':''} onchange="toggleSelfCheck('order',this.checked)" style="width:20px;height:20px;accent-color:var(--primary);margin-top:3px;"><span>Urutan waktu jelas (kronologis)?</span></label></div>
-    <div class="field"><label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;"><input type="checkbox" ${sc.structure?'checked':''} onchange="toggleSelfCheck('structure',this.checked)" style="width:20px;height:20px;accent-color:var(--primary);margin-top:3px;"><span>3 struktur lengkap (O-E-R)?</span></label></div>
-    <div class="mt-4"><button class="btn btn-primary" onclick="Router.go('bagikan')">Lanjut Tahap 4 <i class="fa-solid fa-arrow-right"></i></button></div>
+    <div class="field"><label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;"><input type="checkbox" ${sc.past?'checked':''} onchange="toggleSelfCheck('past',this.checked)" style="width:20px;height:20px;accent-color:var(--primary);margin-top:3px;"><span>${L==='en'?'Already using Simple Past Tense (V2)?':'Sudah pakai Simple Past Tense (V2)?'}</span></label></div>
+    <div class="field"><label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;"><input type="checkbox" ${sc.order?'checked':''} onchange="toggleSelfCheck('order',this.checked)" style="width:20px;height:20px;accent-color:var(--primary);margin-top:3px;"><span>${L==='en'?'Clear chronological order?':'Urutan waktu jelas (kronologis)?'}</span></label></div>
+    <div class="field"><label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;"><input type="checkbox" ${sc.structure?'checked':''} onchange="toggleSelfCheck('structure',this.checked)" style="width:20px;height:20px;accent-color:var(--primary);margin-top:3px;"><span>${L==='en'?'3 complete structures (O-E-R)?':'3 struktur lengkap (O-E-R)?'}</span></label></div>
+    <div class="mt-4"><button class="btn btn-primary" onclick="Router.go('bagikan')">${L==='en'?'Continue Stage 4':'Lanjut Tahap 4'} <i class="fa-solid fa-arrow-right"></i></button></div>
   </div>`; }
   return '';
 }
 
 function renderTabBagikan(tab,u,combined){
+  const L=State.lang;
   const g=u.t3.guided;
   const a=analyzeText(combined);
   const prof=u.profile;
   if(tab==='publish') return `<div class="card mb-4">
-    <div class="flex between center mb-4 wrap gap-2"><div><div class="badge badge-success mb-3"><i class="fa-solid fa-check"></i> ${u.t4.published?'Dipublikasikan':'Siap'}</div><h2 style="font-size:22px;font-weight:800;">${esc(prof.name||'Karyamu')}</h2><div class="text-sm text-muted">${fmtDate()}</div></div><button class="btn btn-primary no-print" onclick="printStory()"><i class="fa-solid fa-print"></i> Cetak</button></div>
-    <div class="print-header"><h1>${esc(prof.name||'Karya')}</h1><div>Recount Text · ${esc(prof.school||'')} · ${fmtDate()}</div></div>
+    <div class="flex between center mb-4 wrap gap-2"><div><div class="badge badge-success mb-3"><i class="fa-solid fa-check"></i> ${u.t4.published?(L==='en'?'Published':'Dipublikasikan'):(L==='en'?'Ready':'Siap')}</div><h2 style="font-size:22px;font-weight:800;">${esc(prof.name||(L==='en'?'Your Work':'Karyamu'))}</h2><div class="text-sm text-muted">${fmtDate()}</div></div><button class="btn btn-primary no-print" onclick="printStory()"><i class="fa-solid fa-print"></i> ${L==='en'?'Print':'Cetak'}</button></div>
+    <div class="print-header"><h1>${esc(prof.name||(L==='en'?'Work':'Karya'))}</h1><div>Recount Text · ${esc(prof.school||'')} · ${fmtDate()}</div></div>
     <div style="font-size:15px;line-height:2;white-space:pre-wrap;">${esc(combined)}</div>
-    <div class="grid-3 mt-4"><div class="text-center"><div style="font-size:22px;font-weight:800;color:var(--primary);">${a.words}</div><div class="text-xs text-muted">Kata</div></div><div class="text-center"><div style="font-size:22px;font-weight:800;color:var(--success);">${a.v2Found.length}</div><div class="text-xs text-muted">V2</div></div><div class="text-center"><div style="font-size:22px;font-weight:800;color:var(--warning);">${u.badges.length}</div><div class="text-xs text-muted">Badge</div></div></div>
-    ${!u.t4.published?`<button class="btn btn-primary mt-4" onclick="publishWork()"><i class="fa-solid fa-bullhorn"></i> Publikasikan Sekarang</button>`:`<div class="badge badge-success mt-4"><i class="fa-solid fa-check"></i> Sudah dipublikasikan</div>`}
+    <div class="grid-3 mt-4"><div class="text-center"><div style="font-size:22px;font-weight:800;color:var(--primary);">${a.words}</div><div class="text-xs text-muted">${L==='en'?'Words':'Kata'}</div></div><div class="text-center"><div style="font-size:22px;font-weight:800;color:var(--success);">${a.v2Found.length}</div><div class="text-xs text-muted">V2</div></div><div class="text-center"><div style="font-size:22px;font-weight:800;color:var(--warning);">${u.badges.length}</div><div class="text-xs text-muted">${L==='en'?'Badges':'Badge'}</div></div></div>
+    ${!u.t4.published?`<button class="btn btn-primary mt-4" onclick="publishWork()"><i class="fa-solid fa-bullhorn"></i> ${L==='en'?'Publish Now':'Publikasikan Sekarang'}</button>`:`<div class="badge badge-success mt-4"><i class="fa-solid fa-check"></i> ${L==='en'?'Already published':'Sudah dipublikasikan'}</div>`}
   </div>`;
   if(tab==='audio') return `<div class="card mb-4">
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-microphone"></i> Audio Recording</div>
     <div class="audio-rec"><button class="rec-btn ${State._recording?'recording':''}" id="recBtn" onclick="toggleRecord()"><i class="fa-solid ${State._recording?'fa-stop':'fa-microphone'}"></i></button>
-    <div class="rec-info"><div class="title">${State._recording?'🔴 Merekam...':(u.t4.audio?'Tersimpan':'Klik merekam')}</div><div class="sub" id="recTime">${State._recording?'00:00':(u.t4.audio?'Duration: '+(u.t4.audioDur||'-')+'s':'Max 3 min')}</div></div></div>
-    ${u.t4.audio?`<audio controls src="${u.t4.audio}" style="width:100%;margin-top:14px;"></audio><button class="btn btn-danger btn-sm mt-3" onclick="deleteAudio()"><i class="fa-solid fa-trash"></i> Hapus</button>`:''}
+    <div class="rec-info"><div class="title">${State._recording?(L==='en'?'🔴 Recording...':'🔴 Merekam...'):(u.t4.audio?(L==='en'?'Saved':'Tersimpan'):(L==='en'?'Click to record':'Klik merekam'))}</div><div class="sub" id="recTime">${State._recording?'00:00':(u.t4.audio?'Duration: '+(u.t4.audioDur||'-')+'s':'Max 3 min')}</div></div></div>
+    ${u.t4.audio?`<audio controls src="${u.t4.audio}" style="width:100%;margin-top:14px;"></audio><button class="btn btn-danger btn-sm mt-3" onclick="deleteAudio()"><i class="fa-solid fa-trash"></i> ${L==='en'?'Delete':'Hapus'}</button>`:''}
   </div>`;
   if(tab==='attach') return `<div class="card mb-4">
-    <div class="badge badge-primary mb-3"><i class="fa-solid fa-paperclip"></i> Lampiran</div>
-    <div class="section-sub">Max 3 file, 2MB tiap file.</div>
-    <div class="attach-zone" onclick="document.getElementById('attachInput').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleAttachDrop(event)"><i class="fa-solid fa-cloud-arrow-up"></i><div style="font-weight:600;">Klik atau drag & drop</div></div>
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-paperclip"></i> ${L==='en'?'Attachments':'Lampiran'}</div>
+    <div class="section-sub">${L==='en'?'Max 3 files, 2MB each.':'Max 3 file, 2MB tiap file.'}</div>
+    <div class="attach-zone" onclick="document.getElementById('attachInput').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleAttachDrop(event)"><i class="fa-solid fa-cloud-arrow-up"></i><div style="font-weight:600;">${L==='en'?'Click or drag & drop':'Klik atau drag & drop'}</div></div>
     <input type="file" id="attachInput" style="display:none;" multiple onchange="handleAttachFiles(this.files)">
     ${u.t4.attachments&&u.t4.attachments.length?`<div class="attach-list mt-4">${u.t4.attachments.map((f,i)=>`<div class="attach-item"><div class="icon"><i class="fa-solid ${fileIcon(f.name)}"></i></div><div class="info"><div class="name">${esc(f.name)}</div><div class="size">${formatBytes(f.size)}</div></div><a href="${f.data||f.url||'#'}" download="${esc(f.name)}" class="btn btn-ghost btn-sm"><i class="fa-solid fa-download"></i></a><button class="del" onclick="removeAttachment(${i})"><i class="fa-solid fa-trash"></i></button></div>`).join('')}</div>`:''}
   </div>`;
   if(tab==='peer') return `<div class="card mb-4">
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-star"></i> Peer Feedback</div>
-    ${u.t4.peerFeedback.length?u.t4.peerFeedback.map(f=>`<div class="card mb-3" style="background:var(--bg);border-style:dashed;"><div class="flex between center mb-2"><b>${esc(f.from||'Anonim')}</b></div><div class="mb-2"><b style="color:var(--success);">⭐ 2 Stars:</b><div class="text-sm">${esc(f.star1)}</div><div class="text-sm">${esc(f.star2)}</div></div><div><b style="color:var(--warning);">💭 1 Wish:</b><div class="text-sm">${esc(f.wish)}</div></div></div>`).join(''):`<div class="text-sm text-muted text-center mb-3" style="padding:20px;">Belum ada feedback</div>`}
-    <button class="btn btn-primary" onclick="openPeerForm()"><i class="fa-solid fa-plus"></i> Tambah Feedback</button>
+    ${u.t4.peerFeedback.length?u.t4.peerFeedback.map(f=>`<div class="card mb-3" style="background:var(--bg);border-style:dashed;"><div class="flex between center mb-2"><b>${esc(f.from||'Anonim')}</b></div><div class="mb-2"><b style="color:var(--success);">⭐ 2 Stars:</b><div class="text-sm">${esc(f.star1)}</div><div class="text-sm">${esc(f.star2)}</div></div><div><b style="color:var(--warning);">💭 1 Wish:</b><div class="text-sm">${esc(f.wish)}</div></div></div>`).join(''):`<div class="text-sm text-muted text-center mb-3" style="padding:20px;">${L==='en'?'No feedback yet':'Belum ada feedback'}</div>`}
+    <button class="btn btn-primary" onclick="openPeerForm()"><i class="fa-solid fa-plus"></i> ${L==='en'?'Add Feedback':'Tambah Feedback'}</button>
   </div>`;
   if(tab==='reflect'){ const r=u.t4.reflection; return `<div class="card mb-4">
-    <div class="badge badge-primary mb-3"><i class="fa-solid fa-sparkles"></i> Refleksi Akhir</div>
-    <div class="field"><label class="label">Apa yang kamu pelajari?</label><textarea class="textarea" oninput="saveReflect('learned',this.value)">${esc(r.learned)}</textarea></div>
-    <div class="field"><label class="label">Tantangan terbesar?</label><textarea class="textarea" oninput="saveReflect('challenge',this.value)">${esc(r.challenge)}</textarea></div>
-    <div class="field"><label class="label">Apa yang akan diperbaiki?</label><textarea class="textarea" oninput="saveReflect('improve',this.value)">${esc(r.improve)}</textarea></div>
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-sparkles"></i> ${L==='en'?'Final Reflection':'Refleksi Akhir'}</div>
+    <div class="field"><label class="label">${L==='en'?'What did you learn?':'Apa yang kamu pelajari?'}</label><textarea class="textarea" oninput="saveReflect('learned',this.value)">${esc(r.learned)}</textarea></div>
+    <div class="field"><label class="label">${L==='en'?'Biggest challenge?':'Tantangan terbesar?'}</label><textarea class="textarea" oninput="saveReflect('challenge',this.value)">${esc(r.challenge)}</textarea></div>
+    <div class="field"><label class="label">${L==='en'?'What will you improve?':'Apa yang akan diperbaiki?'}</label><textarea class="textarea" oninput="saveReflect('improve',this.value)">${esc(r.improve)}</textarea></div>
   </div>`; }
   if(tab==='gallery') return `<div class="card mb-4">
-    <div class="badge badge-primary mb-3"><i class="fa-solid fa-image"></i> Galeri</div>
-    <div class="gallery-grid"><div class="story-card"><h4>${esc((g.orientation||'').slice(0,40)||'Karyamu')}</h4><div class="meta"><span><i class="fa-solid fa-user"></i> ${esc(prof.name||'-')}</span><span><i class="fa-solid fa-calendar"></i> ${fmtDate()}</span></div><div class="excerpt">${esc(combined)}</div><div class="actions">${['clap','heart','fire','star'].map(k=>{const e={clap:'👏',heart:'❤️',fire:'🔥',star:'⭐'}[k];return `<button class="react-btn ${u.t4.reactions[k]>0?'active':''}" onclick="react('${k}')">${e} ${u.t4.reactions[k]||0}</button>`}).join('')}</div></div></div>
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-image"></i> ${L==='en'?'Gallery':'Galeri'}</div>
+    <div class="gallery-grid"><div class="story-card"><h4>${esc((g.orientation||'').slice(0,40)||(L==='en'?'Your Work':'Karyamu'))}</h4><div class="meta"><span><i class="fa-solid fa-user"></i> ${esc(prof.name||'-')}</span><span><i class="fa-solid fa-calendar"></i> ${fmtDate()}</span></div><div class="excerpt">${esc(combined)}</div><div class="actions">${['clap','heart','fire','star'].map(k=>{const e={clap:'👏',heart:'❤️',fire:'🔥',star:'⭐'}[k];return `<button class="react-btn ${u.t4.reactions[k]>0?'active':''}" onclick="react('${k}')">${e} ${u.t4.reactions[k]||0}</button>`}).join('')}</div></div></div>
   </div>`;
   return '';
 }
 
 function renderTabGuru(tab,stats){
-  const {users,totalStudents,avgProgress,publishedCount,totalBadgesCollected}=stats;
+  const L=State.lang;
+  const {users,studentUsers,totalStudents,avgProgress,publishedCount,totalBadgesCollected}=stats;
   if(tab==='overview') return `<div class="dash-grid">
-    <div class="stat-card"><div class="icon"><i class="fa-solid fa-users"></i></div><div class="num">${totalStudents}</div><div class="lbl">Total Siswa</div></div>
-    <div class="stat-card"><div class="icon"><i class="fa-solid fa-chart-simple"></i></div><div class="num">${avgProgress}%</div><div class="lbl">Rata-rata</div></div>
-    <div class="stat-card"><div class="icon"><i class="fa-solid fa-bullhorn"></i></div><div class="num">${publishedCount}</div><div class="lbl">Dipublikasikan</div></div>
-    <div class="stat-card"><div class="icon"><i class="fa-solid fa-award"></i></div><div class="num">${totalBadgesCollected}</div><div class="lbl">Total Badge</div></div>
+    <div class="stat-card"><div class="icon"><i class="fa-solid fa-users"></i></div><div class="num">${totalStudents}</div><div class="lbl">${L==='en'?'Total Students':'Total Siswa'}</div></div>
+    <div class="stat-card"><div class="icon"><i class="fa-solid fa-chart-simple"></i></div><div class="num">${avgProgress}%</div><div class="lbl">${L==='en'?'Average':'Rata-rata'}</div></div>
+    <div class="stat-card"><div class="icon"><i class="fa-solid fa-bullhorn"></i></div><div class="num">${publishedCount}</div><div class="lbl">${L==='en'?'Published':'Dipublikasikan'}</div></div>
+    <div class="stat-card"><div class="icon"><i class="fa-solid fa-award"></i></div><div class="num">${totalBadgesCollected}</div><div class="lbl">${L==='en'?'Total Badges':'Total Badge'}</div></div>
   </div>
-  <div class="card mb-4"><div style="font-weight:700;margin-bottom:12px;"><i class="fa-solid fa-chart-line"></i> Penyelesaian Tahap</div>
-    ${['temukan','bayangkan','lakukan','bagikan'].map((st,i)=>{const count=users.filter(u=>u.progress[st]).length;const pct=users.length?Math.round(count/users.length*100):0;return `<div class="mb-3"><div class="flex between center mb-2"><span class="text-sm"><b>${i+1}. ${t(st)}</b></span><span class="badge badge-primary">${count}/${users.length} (${pct}%)</span></div><div class="mini-progress" style="width:100%;height:8px;"><div style="width:${pct}%"></div></div></div>`}).join('')}
+  <div class="card mb-4"><div style="font-weight:700;margin-bottom:12px;"><i class="fa-solid fa-chart-line"></i> ${L==='en'?'Stage Completion':'Penyelesaian Tahap'}</div>
+    ${['temukan','bayangkan','lakukan','bagikan'].map((st,i)=>{const count=studentUsers.filter(u=>u.progress[st]).length;const pct=totalStudents?Math.round(count/totalStudents*100):0;return `<div class="mb-3"><div class="flex between center mb-2"><span class="text-sm"><b>${i+1}. ${t(st)}</b></span><span class="badge badge-primary">${count}/${totalStudents} (${pct}%)</span></div><div class="mini-progress" style="width:100%;height:8px;"><div style="width:${pct}%"></div></div></div>`}).join('')}
   </div>`;
   if(tab==='students') return `<div class="card" style="padding:0;overflow:hidden;">
-    <div class="flex between center" style="padding:14px 18px;border-bottom:1px solid var(--border);"><b>Siswa (${users.length})</b><button class="btn btn-primary btn-sm" onclick="addNewUser()"><i class="fa-solid fa-plus"></i> Tambah</button></div>
-    <div>${users.map(u=>{const done=Object.values(u.progress||{}).filter(Boolean).length;const pct=Math.round(done/4*100);return `<div class="student-row" onclick="viewStudent('${u.id}')"><div class="avatar">${u.profile.avatar||'👤'}</div><div class="info"><div class="name">${esc(u.profile.name||'Tanpa Nama')}</div><div class="meta">${u.profile.role==='student'?'Siswa':'Guru'} · ${esc(u.profile.classes||'-')} · ${(u.badges||[]).length} badge</div></div><div class="mini-progress"><div style="width:${pct}%"></div></div><div style="font-size:12px;font-weight:700;color:var(--primary);min-width:38px;text-align:right;">${pct}%</div></div>`}).join('')}</div>
+    <div class="flex between center" style="padding:14px 18px;border-bottom:1px solid var(--border);"><b>${L==='en'?'Students':'Siswa'} (${studentUsers.length})</b><button class="btn btn-primary btn-sm" onclick="openRegisterModal('student')"><i class="fa-solid fa-plus"></i> ${L==='en'?'Add':'Tambah'}</button></div>
+    <div>${studentUsers.length ? studentUsers.map(u=>{const done=Object.values(u.progress||{}).filter(Boolean).length;const pct=Math.round(done/4*100);return `<div class="student-row" onclick="viewStudent('${u.id}')"><div class="avatar">${u.profile.avatar||'👤'}</div><div class="info"><div class="name">${esc(u.profile.name||(L==='en'?'No Name':'Tanpa Nama'))}</div><div class="meta">${L==='en'?'Student':'Siswa'} · ${esc(u.profile.classes||'-')} · ${(u.badges||[]).length} ${L==='en'?'badges':'badge'} ${u.pin?'· 🔐':''}</div></div><div class="mini-progress"><div style="width:${pct}%"></div></div><div style="font-size:12px;font-weight:700;color:var(--primary);min-width:38px;text-align:right;">${pct}%</div></div>`}).join('') : `<div class="empty"><i class="fa-solid fa-user-slash"></i><div>${L==='en'?'No students yet':'Belum ada siswa'}</div></div>`}</div>
   </div>`;
   if(tab==='materials') return `<div class="card mb-4">
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-video"></i> Video Discovery</div>
     <div class="field"><label class="label">YouTube Embed URL</label><input class="input" id="matVideoUrl" value="${esc(State.materials.videoUrl)}"></div>
-    <div class="field"><label class="label">Judul</label><input class="input" id="matVideoTitle" value="${esc(State.materials.videoTitle)}"></div>
+    <div class="field"><label class="label">${L==='en'?'Title':'Judul'}</label><input class="input" id="matVideoTitle" value="${esc(State.materials.videoTitle)}"></div>
     <button class="btn btn-primary" onclick="saveMaterials()"><i class="fa-solid fa-save"></i> ${t('save')}</button>
   </div>
   <div class="card mb-4">
-    <div class="badge badge-primary mb-3"><i class="fa-solid fa-book"></i> Kamus Verb</div>
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-book"></i> ${L==='en'?'Verb Dictionary':'Kamus Verb'}</div>
     <div class="text-sm text-muted mb-3">${VERBS.length} verbs.</div>
     <div class="grid-3 mb-3"><input class="input" id="newVerbV1" placeholder="V1"><input class="input" id="newVerbV2" placeholder="V2"><input class="input" id="newVerbV3" placeholder="V3"></div>
     <select class="select mb-3" id="newVerbType"><option>Regular</option><option>Irregular</option></select>
-    <button class="btn btn-primary btn-sm" onclick="addManualVerb()"><i class="fa-solid fa-plus"></i> Tambah</button>
+    <button class="btn btn-primary btn-sm" onclick="addManualVerb()"><i class="fa-solid fa-plus"></i> ${L==='en'?'Add':'Tambah'}</button>
   </div>`;
   if(tab==='aigen'){
     const readingText=State.materials.readingText||'';
     const quizzes=State.aiGenerated&&State.aiGenerated.quizzes?State.aiGenerated.quizzes:[];
     const hasAI=!!sb;
-    return `<div class="card mb-4" style="background:var(--grad-soft);"><div class="flex center gap-3 mb-2"><i class="fa-solid fa-wand-magic-sparkles" style="font-size:24px;color:var(--primary);"></i><div><div style="font-weight:800;font-size:16px;">AI Content Generator</div><div class="text-sm text-muted">Generate bacaan, kuis, atau verb.</div></div></div></div>
+    return `<div class="card mb-4" style="background:var(--grad-soft);"><div class="flex center gap-3 mb-2"><i class="fa-solid fa-wand-magic-sparkles" style="font-size:24px;color:var(--primary);"></i><div><div style="font-weight:800;font-size:16px;">AI Content Generator</div><div class="text-sm text-muted">${L==='en'?'Generate reading, quiz, or verbs.':'Generate bacaan, kuis, atau verb.'}</div></div></div></div>
   <div class="card mb-4">
-    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-book-open"></i> Reading Text</div><div style="font-weight:700;">Generate Recount Text</div></div><span class="badge ${readingText?'badge-success':'badge-muted'}">${readingText?'Ada':'Kosong'}</span></div>
-    <div class="grid-2 mb-3"><select class="select" id="genTopic"><option value="holiday">Liburan</option><option value="school">Acara Sekolah</option><option value="family">Keluarga</option><option value="funny">Lucu</option><option value="competition">Lomba</option></select><select class="select" id="genWords"><option value="80">~80</option><option value="120" selected>~120</option><option value="180">~180</option></select></div>
-    <div class="flex gap-2 wrap mb-3"><button class="btn btn-primary" onclick="generateReading(event)" ${!hasAI?'disabled':''}><i class="fa-solid fa-wand-magic-sparkles"></i> Generate</button>${readingText?`<button class="btn btn-ghost" onclick="clearReading()" style="color:var(--danger);"><i class="fa-solid fa-trash"></i> Clear</button>`:''}</div>
-    <textarea class="textarea" id="genReadingText" style="min-height:200px;" placeholder="Hasil generate...">${esc(readingText)}</textarea>
+    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-book-open"></i> Reading Text</div><div style="font-weight:700;">${L==='en'?'Generate Recount Text':'Generate Recount Text'}</div></div><span class="badge ${readingText?'badge-success':'badge-muted'}">${readingText?(L==='en'?'Has content':'Ada'):(L==='en'?'Empty':'Kosong')}</span></div>
+    <div class="grid-2 mb-3"><select class="select" id="genTopic"><option value="holiday">${L==='en'?'Holiday':'Liburan'}</option><option value="school">${L==='en'?'School Event':'Acara Sekolah'}</option><option value="family">${L==='en'?'Family':'Keluarga'}</option><option value="funny">${L==='en'?'Funny':'Lucu'}</option><option value="competition">${L==='en'?'Competition':'Lomba'}</option></select><select class="select" id="genWords"><option value="80">~80</option><option value="120" selected>~120</option><option value="180">~180</option></select></div>
+    <div class="flex gap-2 wrap mb-3"><button class="btn btn-primary" onclick="generateReading(event)" ${!hasAI?'disabled':''}><i class="fa-solid fa-wand-magic-sparkles"></i> ${L==='en'?'Generate':'Generate'}</button>${readingText?`<button class="btn btn-ghost" onclick="clearReading()" style="color:var(--danger);"><i class="fa-solid fa-trash"></i> Clear</button>`:''}</div>
+    <textarea class="textarea" id="genReadingText" style="min-height:200px;" placeholder="${L==='en'?'Generated result...':'Hasil generate...'}">${esc(readingText)}</textarea>
     <button class="btn btn-primary mt-3" onclick="saveReading()"><i class="fa-solid fa-save"></i> ${t('save')}</button>
   </div>
   <div class="card mb-4">
-    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-question"></i> Quiz</div><div style="font-weight:700;">Generate Quiz</div></div><span class="badge ${quizzes.length?'badge-success':'badge-muted'}">${quizzes.length} soal</span></div>
-    <div class="flex gap-2 wrap mb-3"><button class="btn btn-primary" onclick="generateQuiz(event)" ${(!hasAI||!readingText)?'disabled':''}><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Quiz</button>${quizzes.length?`<button class="btn btn-ghost" onclick="clearQuiz()" style="color:var(--danger);"><i class="fa-solid fa-trash"></i> Clear</button>`:''}</div>
-    ${quizzes.length?quizzes.map((q,i)=>`<div class="card mb-3" style="background:var(--bg);border-style:dashed;"><div class="flex between center mb-2"><b>Q ${i+1}</b><button class="btn btn-ghost btn-sm" onclick="deleteGeneratedQuestion(${i})" style="color:var(--danger);"><i class="fa-solid fa-trash"></i></button></div><input class="input mb-2" value="${esc(q.q)}" oninput="updateGeneratedQuestion(${i},'q',this.value)">${q.opts.map((o,j)=>`<input class="input mb-2" value="${esc(o)}" oninput="updateGeneratedQuestion(${i},'opt${j}',this.value)" placeholder="${String.fromCharCode(65+j)}">`).join('')}<select class="select mt-2" onchange="updateGeneratedQuestion(${i},'a',parseInt(this.value))">${q.opts.map((_,j)=>`<option value="${j}" ${q.a===j?'selected':''}>Benar: ${String.fromCharCode(65+j)}</option>`).join('')}</select></div>`).join(''):''}
+    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-question"></i> Quiz</div><div style="font-weight:700;">${L==='en'?'Generate Quiz':'Generate Quiz'}</div></div><span class="badge ${quizzes.length?'badge-success':'badge-muted'}">${quizzes.length} ${L==='en'?'questions':'soal'}</span></div>
+    <div class="flex gap-2 wrap mb-3"><button class="btn btn-primary" onclick="generateQuiz(event)" ${(!hasAI||!readingText)?'disabled':''}><i class="fa-solid fa-wand-magic-sparkles"></i> ${L==='en'?'Generate Quiz':'Generate Quiz'}</button>${quizzes.length?`<button class="btn btn-ghost" onclick="clearQuiz()" style="color:var(--danger);"><i class="fa-solid fa-trash"></i> Clear</button>`:''}</div>
+    ${quizzes.length?quizzes.map((q,i)=>`<div class="card mb-3" style="background:var(--bg);border-style:dashed;"><div class="flex between center mb-2"><b>Q ${i+1}</b><button class="btn btn-ghost btn-sm" onclick="deleteGeneratedQuestion(${i})" style="color:var(--danger);"><i class="fa-solid fa-trash"></i></button></div><input class="input mb-2" value="${esc(q.q)}" oninput="updateGeneratedQuestion(${i},'q',this.value)">${q.opts.map((o,j)=>`<input class="input mb-2" value="${esc(o)}" oninput="updateGeneratedQuestion(${i},'opt${j}',this.value)" placeholder="${String.fromCharCode(65+j)}">`).join('')}<select class="select mt-2" onchange="updateGeneratedQuestion(${i},'a',parseInt(this.value))">${q.opts.map((_,j)=>`<option value="${j}" ${q.a===j?'selected':''}>${L==='en'?'Correct':'Benar'}: ${String.fromCharCode(65+j)}</option>`).join('')}</select></div>`).join(''):''}
   </div>
   <div class="card">
-    <div class="badge badge-primary mb-3"><i class="fa-solid fa-book-bookmark"></i> Generate Verbs</div>
-    <button class="btn btn-primary mb-3" onclick="generateVerbs(event)" ${!hasAI?'disabled':''}><i class="fa-solid fa-wand-magic-sparkles"></i> Generate 10 Verb</button>
+    <div class="badge badge-primary mb-3"><i class="fa-solid fa-book-bookmark"></i> ${L==='en'?'Generate Verbs':'Generate Verbs'}</div>
+    <button class="btn btn-primary mb-3" onclick="generateVerbs(event)" ${!hasAI?'disabled':''}><i class="fa-solid fa-wand-magic-sparkles"></i> ${L==='en'?'Generate 10 Verbs':'Generate 10 Verb'}</button>
     <div id="genVerbsResult"></div>
   </div>`;
   }
   if(tab==='reports'){
     return `<div class="card mb-4">
-    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-table"></i> Rekap Nilai</div><div style="font-weight:700;">Semua Pengguna</div></div><div class="flex gap-2 wrap"><button class="btn btn-ghost btn-sm" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> CSV</button><button class="btn btn-primary btn-sm" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button><button class="btn btn-ghost btn-sm" onclick="importExcelDialog()"><i class="fa-solid fa-upload"></i> Import</button><button class="btn btn-primary btn-sm" onclick="printReport()"><i class="fa-solid fa-print"></i> PDF</button></div></div>
-    <div class="dt-wrap"><table class="dt"><thead><tr><th>Nama</th><th>Role</th><th>Progress</th><th>Badges</th><th>Kata</th><th>V2</th><th>Status</th></tr></thead>
-    <tbody>${users.map(u=>{const g=u.t3?.guided||{orientation:'',events:[],reorientation:''};const combined=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();const a=analyzeText(combined);const done=Object.values(u.progress||{}).filter(Boolean).length;return `<tr><td><b>${esc(u.profile.name||'-')}</b></td><td>${u.profile.role==='student'?'Siswa':'Guru'}</td><td><span class="badge badge-primary">${done}/4</span></td><td><span class="badge badge-warning">${(u.badges||[]).length}</span></td><td>${a.words}</td><td>${a.v2Found.length}</td><td>${u.t4?.published?'<span class="badge badge-success">✓</span>':'-'}</td></tr>`}).join('')}</tbody></table></div>
+    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-table"></i> ${L==='en'?'Grade Report':'Rekap Nilai'}</div><div style="font-weight:700;">${L==='en'?'All Students':'Semua Siswa'}</div></div><div class="flex gap-2 wrap"><button class="btn btn-ghost btn-sm" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> CSV</button><button class="btn btn-primary btn-sm" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button><button class="btn btn-ghost btn-sm" onclick="importExcelDialog()"><i class="fa-solid fa-upload"></i> Import</button><button class="btn btn-primary btn-sm" onclick="printReport()"><i class="fa-solid fa-print"></i> PDF</button></div></div>
+    <div class="dt-wrap"><table class="dt"><thead><tr><th>${L==='en'?'Name':'Nama'}</th><th>${L==='en'?'Progress':'Progress'}</th><th>${L==='en'?'Badges':'Badge'}</th><th>${L==='en'?'Words':'Kata'}</th><th>V2</th><th>${L==='en'?'Status':'Status'}</th></tr></thead>
+    <tbody>${studentUsers.length ? studentUsers.map(u=>{const g=u.t3?.guided||{orientation:'',events:[],reorientation:''};const combined=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();const a=analyzeText(combined);const done=Object.values(u.progress||{}).filter(Boolean).length;return `<tr><td><b>${esc(u.profile.name||'-')}</b></td><td><span class="badge badge-primary">${done}/4</span></td><td><span class="badge badge-warning">${(u.badges||[]).length}</span></td><td>${a.words}</td><td>${a.v2Found.length}</td><td>${u.t4?.published?'<span class="badge badge-success">✓</span>':'-'}</td></tr>`}).join('') : `<tr><td colspan="6" class="text-center text-muted" style="padding:26px;">${L==='en'?'No students yet':'Belum ada siswa'}</td></tr>`}</tbody></table></div>
   </div>`;
   }
   return '';
@@ -1975,6 +2315,7 @@ const DD_POOL=[
   {v:'gave',t:'Irregular'}
 ];
 function renderDragDrop(t1){
+  const L=State.lang;
   if(!State._ddItems) State._ddItems=[...DD_POOL].sort(()=>Math.random()-.5);
   const items=State._ddItems;
   const placed=State._ddPlaced||{Regular:[],Irregular:[]};
@@ -1982,9 +2323,9 @@ function renderDragDrop(t1){
   return `<div class="card mb-4">
     <div class="flex between center mb-3 wrap gap-2">
       <div class="badge badge-primary"><i class="fa-solid fa-hand-pointer"></i> Drag & Drop</div>
-      ${t1.ddScore>0?`<span class="badge ${t1.ddScore>=80?'badge-success':'badge-warning'}">Skor: ${t1.ddScore}</span>`:''}
+      ${t1.ddScore>0?`<span class="badge ${t1.ddScore>=80?'badge-success':'badge-warning'}">Score: ${t1.ddScore}</span>`:''}
     </div>
-    <div class="section-sub">Klik kata, lalu klik kotak tujuan.</div>
+    <div class="section-sub">${L==='en'?'Click a word, then click the target box.':'Klik kata, lalu klik kotak tujuan.'}</div>
     <div class="dd-items" id="ddItems">${items.map(it=>`<div class="dd-item ${used.includes(it.v)?'used':''}" data-v="${it.v}" data-t="${it.t}" onclick="pickDD(this)">${it.v}</div>`).join('')}</div>
     <div class="dd-wrap">
       <div class="dd-zone regular" id="zoneRegular" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropDD(event,'Regular')" onclick="dropToZone('Regular')">
@@ -1997,8 +2338,8 @@ function renderDragDrop(t1){
       </div>
     </div>
     <div class="flex gap-2 mt-4 wrap">
-      <button class="btn btn-primary" onclick="checkDD()" ${used.length<items.length?'disabled':''}><i class="fa-solid fa-check"></i> Cek</button>
-      <button class="btn btn-ghost" onclick="resetDD()"><i class="fa-solid fa-rotate"></i> Ulangi</button>
+      <button class="btn btn-primary" onclick="checkDD()" ${used.length<items.length?'disabled':''}><i class="fa-solid fa-check"></i> ${L==='en'?'Check':'Cek'}</button>
+      <button class="btn btn-ghost" onclick="resetDD()"><i class="fa-solid fa-rotate"></i> ${L==='en'?'Retry':'Ulangi'}</button>
     </div>
   </div>`;
 }
@@ -2043,25 +2384,26 @@ const CONJ_Q=[
   {s:'He ___ (study) hard for the exam.',a:'studied'}
 ];
 function renderConjugation(t1){
+  const L=State.lang;
   if(State._conjIdx===undefined) State._conjIdx=0;
   const i=State._conjIdx;
   if(i>=CONJ_Q.length){
     return `<div class="card text-center">
       <div class="badge badge-primary mb-3"><i class="fa-solid fa-bolt"></i> Conjugation</div>
-      <h2 style="font-size:22px;margin:14px 0;">Selesai! 🎉</h2>
+      <h2 style="font-size:22px;margin:14px 0;">${L==='en'?'Finished! 🎉':'Selesai! 🎉'}</h2>
       <div style="font-size:44px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">${t1.conjScore}%</div>
-      <p class="text-sm text-muted mb-4">Skor tertinggi</p>
-      <button class="btn btn-primary" onclick="State._conjIdx=0;State._conjCorrect=0;render()"><i class="fa-solid fa-rotate"></i> Ulangi</button>
+      <p class="text-sm text-muted mb-4">${L==='en'?'Highest score':'Skor tertinggi'}</p>
+      <button class="btn btn-primary" onclick="State._conjIdx=0;State._conjCorrect=0;render()"><i class="fa-solid fa-rotate"></i> ${L==='en'?'Retry':'Ulangi'}</button>
     </div>`;
   }
   const q=CONJ_Q[i];
   return `<div class="card">
     <div class="flex between center mb-3"><div class="badge badge-primary"><i class="fa-solid fa-bolt"></i> Conjugation</div><span class="text-sm text-muted">${i+1}/${CONJ_Q.length}</span></div>
-    <div class="section-sub">Isi dengan V2 yang tepat.</div>
+    <div class="section-sub">${L==='en'?'Fill in the correct V2.':'Isi dengan V2 yang tepat.'}</div>
     <div class="quiz-text" style="font-size:15px;">${q.s}</div>
-    <input class="input mb-3" id="conjInput" placeholder="Tulis V2..." onkeydown="if(event.key==='Enter')checkConj()">
-    <button class="btn btn-primary" onclick="checkConj()"><i class="fa-solid fa-check"></i> Jawab</button>
-    <button class="btn btn-ghost" onclick="State._conjIdx++;render()"><i class="fa-solid fa-forward"></i> Lewati</button>
+    <input class="input mb-3" id="conjInput" placeholder="${L==='en'?'Type V2...':'Tulis V2...'}" onkeydown="if(event.key==='Enter')checkConj()">
+    <button class="btn btn-primary" onclick="checkConj()"><i class="fa-solid fa-check"></i> ${L==='en'?'Answer':'Jawab'}</button>
+    <button class="btn btn-ghost" onclick="State._conjIdx++;render()"><i class="fa-solid fa-forward"></i> ${L==='en'?'Skip':'Lewati'}</button>
   </div>`;
 }
 function checkConj(){
@@ -2112,19 +2454,20 @@ function answerQuiz(i,j){
   if(q.passed) U().progress.temukan=true;
   save(); checkBadges(); render();
 }
-function resetQuiz(){ setU(u=>{u.quiz={answers:[],passed:false,score:0};u.progress.temukan=u.t1.readingDone&&u.t1.grammarDone}); render(); toast('Reset','fa-rotate'); }
+function resetQuiz(){ setU(u=>{u.quiz={answers:[],passed:false,score:0};u.progress.temukan=u.t1.readingDone&&u.t1.grammarDone}); render(); toast(State.lang==='en'?'Reset':'Reset','fa-rotate'); }
 
 /* ============================================================
    GRAMMAR REPORT
 ============================================================ */
 function renderGrammarReport(a){
+  const L=State.lang;
   const v2=a.v2Found.slice(0,12), v1=a.v1Warnings.slice(0,10);
   return `<div class="card" style="background:var(--bg);border-style:dashed;">
     <div class="flex center gap-3 mb-3"><i class="fa-solid fa-spell-check" style="color:var(--primary);font-size:18px;"></i><div style="font-weight:700;font-size:14px;">Grammar Checker</div></div>
-    <div class="flex gap-2 wrap mb-3"><span class="badge badge-muted">${a.words} kata</span><span class="badge badge-success">${a.v2Found.length} V2</span>${a.v1Warnings.length?`<span class="badge badge-warning">${a.v1Warnings.length} ⚠</span>`:''}</div>
+    <div class="flex gap-2 wrap mb-3"><span class="badge badge-muted">${a.words} ${L==='en'?'words':'kata'}</span><span class="badge badge-success">${a.v2Found.length} V2</span>${a.v1Warnings.length?`<span class="badge badge-warning">${a.v1Warnings.length} ⚠</span>`:''}</div>
     ${v2.length?`<div class="mb-3"><div class="badge badge-success mb-2"><i class="fa-solid fa-check"></i> V2</div><div class="text-sm" style="color:var(--success);">${v2.map(v=>`<em style="font-style:normal;background:rgba(16,185,129,.15);padding:1px 6px;border-radius:5px;margin-right:4px;">${v}</em>`).join('')}</div></div>`:''}
-    ${v1.length?`<div class="mb-3"><div class="badge badge-warning mb-2"><i class="fa-solid fa-triangle-exclamation"></i> Cek V2</div><div class="text-sm" style="color:var(--warning);">${v1.map(v=>`<em style="font-style:normal;background:rgba(245,158,11,.15);padding:1px 6px;border-radius:5px;margin-right:4px;">${v}</em>`).join('')}</div></div>`:''}
-    ${(!v2.length&&!v1.length)?`<div class="text-sm text-muted">Belum ada kata kerja terdeteksi.</div>`:''}
+    ${v1.length?`<div class="mb-3"><div class="badge badge-warning mb-2"><i class="fa-solid fa-triangle-exclamation"></i> ${L==='en'?'Check V2':'Cek V2'}</div><div class="text-sm" style="color:var(--warning);">${v1.map(v=>`<em style="font-style:normal;background:rgba(245,158,11,.15);padding:1px 6px;border-radius:5px;margin-right:4px;">${v}</em>`).join('')}</div></div>`:''}
+    ${(!v2.length&&!v1.length)?`<div class="text-sm text-muted">${L==='en'?'No verbs detected yet.':'Belum ada kata kerja terdeteksi.'}</div>`:''}
   </div>`;
 }
 function refreshGrammarReport(){
@@ -2138,7 +2481,8 @@ function refreshGrammarReport(){
    AI CHAT
 ============================================================ */
 function renderChat(){
-  const c=State._chat||[{role:'sys',text:'Halo! Aku AI Writing Buddy. Tanya apa saja tentang Recount Text & Past Tense 📚'}];
+  const L=State.lang;
+  const c=State._chat||[{role:'sys',text:L==='en'?'Hi! I am your AI Writing Buddy. Ask me anything about Recount Text & Past Tense 📚':'Halo! Aku AI Writing Buddy. Tanya apa saja tentang Recount Text & Past Tense 📚'}];
   return c.map(m=>`<div class="msg ${m.role==='user'?'user':(m.role==='sys'?'sys':'ai')}">${esc(m.text)}</div>`).join('');
 }
 async function sendChat(){
@@ -2160,7 +2504,7 @@ async function sendChat(){
   document.getElementById('chatBody').innerHTML=renderChat();
   document.getElementById('chatBody').scrollTop=999999;
 }
-function clearChat(){ State._chat=[{role:'sys',text:'Chat direset.'}]; render(); }
+function clearChat(){ State._chat=[{role:'sys',text:State.lang==='en'?'Chat reset.':'Chat direset.'}]; render(); }
 
 /* ============================================================
    TEMUKAN HANDLERS
@@ -2174,7 +2518,7 @@ function markVideo(){
 function markGrammar(){ setU(u=>u.t1.grammarDone=true); toast('✓','fa-check'); render(); }
 function saveReflection(){
   const v=document.getElementById('reflectionInput').value;
-  setU(u=>u.t1.reflection=v); toast('Tersimpan ✓'); render();
+  setU(u=>u.t1.reflection=v); toast(State.lang==='en'?'Saved ✓':'Tersimpan ✓'); render();
 }
 function saveExperience(i,v){ setU(u=>u.t1.experiences[i]=v); }
 
@@ -2183,17 +2527,19 @@ function saveExperience(i,v){ setU(u=>u.t1.experiences[i]=v); }
 ============================================================ */
 function saveTimeline(k,v){ setU(u=>u.t2.timeline[k]=v); }
 function saveTimelineFinal(){
+  const L=State.lang;
   const tl=U().t2.timeline;
   if(tl.orientation.length>5&&tl.event1&&tl.event2&&tl.event3&&tl.reorientation){
     U().progress.bayangkan=true; save(); toast('✓','fa-check'); checkBadges();
-  } else toast('Lengkapi semua bagian','fa-triangle-exclamation');
+  } else toast(L==='en'?'Complete all sections':'Lengkapi semua bagian','fa-triangle-exclamation');
   render();
 }
 function addVocab(){
+  const L=State.lang;
   const v1=document.getElementById('vV1').value.trim();
   const v2=document.getElementById('vV2').value.trim();
   const type=document.getElementById('vType').value;
-  if(!v1||!v2) return toast('Isi V1 & V2','fa-triangle-exclamation');
+  if(!v1||!v2) return toast(L==='en'?'Fill V1 & V2':'Isi V1 & V2','fa-triangle-exclamation');
   setU(u=>u.t2.vocab.push({v1,v2,type}));
   checkBadges(); render(); toast('✓','fa-check');
 }
@@ -2210,9 +2556,10 @@ function removeStoryboard(i){ setU(u=>u.t2.storyboard.splice(i,1)); render(); }
 function updateStoryboardCaption(i,v){ setU(u=>u.t2.storyboard[i].caption=v); }
 function saveBrainstorm(v){ setU(u=>u.t2.brainstorm=v); }
 function copyBrainstorm(){
+  const L=State.lang;
   const txt=U().t2.brainstorm;
-  if(!txt) return toast('Empty','fa-info-circle');
-  navigator.clipboard?.writeText(txt); toast('Copied','fa-copy');
+  if(!txt) return toast(L==='en'?'Empty':'Kosong','fa-info-circle');
+  navigator.clipboard?.writeText(txt); toast(L==='en'?'Copied':'Tersalin','fa-copy');
 }
 
 /* ============================================================
@@ -2221,21 +2568,23 @@ function copyBrainstorm(){
 function saveGuided(k,v){ setU(u=>u.t3.guided[k]=v); refreshGrammarReport(); }
 function saveGuidedEvent(i,v){ setU(u=>u.t3.guided.events[i]=v); refreshGrammarReport(); }
 function finishGuided(){
+  const L=State.lang;
   const g=U().t3.guided;
   if(g.orientation.length<10||!g.events.filter(e=>e).length||g.reorientation.length<10){
-    toast('Lengkapi tulisanmu','fa-triangle-exclamation'); return;
+    toast(L==='en'?'Complete your writing':'Lengkapi tulisanmu','fa-triangle-exclamation'); return;
   }
   setU(u=>u.progress.lakukan=true);
   checkBadges(); render();
-  toast('Tahap 3 selesai! ✓');
+  toast(L==='en'?'Stage 3 complete! ✓':'Tahap 3 selesai! ✓');
 }
 function combinedDraft(){
   const g=U().t3.guided;
   return `${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
 }
 function saveCurrentDraft(){
+  const L=State.lang;
   const c=combinedDraft();
-  if(!c) return toast('Empty','fa-triangle-exclamation');
+  if(!c) return toast(L==='en'?'Empty':'Kosong','fa-triangle-exclamation');
   setU(u=>{u.t3.drafts.push({ts:Date.now(),content:c,words:analyzeText(c).words}); if(u.t3.drafts.length>10) u.t3.drafts.shift();});
   checkBadges(); render(); toast('💾','fa-save');
 }
@@ -2251,7 +2600,7 @@ function restoreDraft(i){
     u.t3.guided.events=[parts[1]||'',parts[2]||'',parts[3]||''];
     u.t3.guided.reorientation=parts[parts.length-1]||'';
   });
-  toast('Restored'); render();
+  toast(State.lang==='en'?'Restored':'Dipulihkan'); render();
 }
 function deleteDraft(i){ setU(u=>u.t3.drafts.splice(i,1)); render(); }
 function toggleSelfCheck(k,v){ setU(u=>u.t3.selfCheck[k]=v); checkBadges(); render(); }
@@ -2263,19 +2612,21 @@ function publishWork(){ setU(u=>{u.t4.published=true; u.progress.bagikan=true});
 function react(k){ setU(u=>u.t4.reactions[k]=(u.t4.reactions[k]||0)+1); render(); toast('❤️','fa-heart'); }
 function printStory(){ window.print(); }
 function openPeerForm(){
+  const L=State.lang;
   openModal('Peer Feedback',`
-    <div class="field"><label class="label">Nama Teman</label><input class="input" id="pfFrom" placeholder="Anonim"></div>
-    <div class="field"><label class="label">⭐ Pujian 1</label><input class="input" id="pfS1"></div>
-    <div class="field"><label class="label">⭐ Pujian 2</label><input class="input" id="pfS2"></div>
-    <div class="field"><label class="label">💭 Saran</label><textarea class="textarea" id="pfWish"></textarea></div>
-  `,`<button class="btn btn-ghost" onclick="closeModal()">Batal</button><button class="btn btn-primary" onclick="savePeerForm()">Simpan</button>`);
+    <div class="field"><label class="label">${L==='en'?'Friend Name':'Nama Teman'}</label><input class="input" id="pfFrom" placeholder="${L==='en'?'Anonymous':'Anonim'}"></div>
+    <div class="field"><label class="label">⭐ ${L==='en'?'Compliment 1':'Pujian 1'}</label><input class="input" id="pfS1"></div>
+    <div class="field"><label class="label">⭐ ${L==='en'?'Compliment 2':'Pujian 2'}</label><input class="input" id="pfS2"></div>
+    <div class="field"><label class="label">💭 ${L==='en'?'Suggestion':'Saran'}</label><textarea class="textarea" id="pfWish"></textarea></div>
+  `,`<button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Cancel':'Batal'}</button><button class="btn btn-primary" onclick="savePeerForm()">${L==='en'?'Save':'Simpan'}</button>`);
 }
 function savePeerForm(){
-  const from=document.getElementById('pfFrom').value||'Anonim';
+  const L=State.lang;
+  const from=document.getElementById('pfFrom').value||(L==='en'?'Anonymous':'Anonim');
   const star1=document.getElementById('pfS1').value;
   const star2=document.getElementById('pfS2').value;
   const wish=document.getElementById('pfWish').value;
-  if(!star1||!star2||!wish) return toast('Isi semua kolom','fa-triangle-exclamation');
+  if(!star1||!star2||!wish) return toast(L==='en'?'Fill all fields':'Isi semua kolom','fa-triangle-exclamation');
   setU(u=>u.t4.peerFeedback.push({from,star1,star2,wish,ts:Date.now()}));
   closeModal(); render(); toast('✓','fa-check');
 }
@@ -2286,6 +2637,7 @@ function saveReflect(k,v){ setU(u=>u.t4.reflection[k]=v); checkBadges(); }
 ============================================================ */
 let mediaRec,chunks=[],recTimer,recSec=0;
 async function toggleRecord(){
+  const L=State.lang;
   if(State._recording){ mediaRec.stop(); clearInterval(recTimer); State._recording=false; return; }
   try{
     const stream=await navigator.mediaDevices.getUserMedia({audio:true});
@@ -2303,7 +2655,7 @@ async function toggleRecord(){
       }
       if(url){
         setU(u=>{u.t4.audio=url; u.t4.audioDur=recSec});
-        render(); toast('🎙️ Uploaded','fa-cloud-arrow-up'); checkBadges();
+        render(); toast('🎙️ '+(L==='en'?'Uploaded':'Terupload'),'fa-cloud-arrow-up'); checkBadges();
       } else {
         const r=new FileReader();
         r.onload=e=>{ setU(u=>{u.t4.audio=e.target.result; u.t4.audioDur=recSec}); render(); toast('🎙️','fa-microphone'); checkBadges(); };
@@ -2318,7 +2670,7 @@ async function toggleRecord(){
       if(el) el.textContent=`${String(Math.floor(recSec/60)).padStart(2,'0')}:${String(recSec%60).padStart(2,'0')}`;
     },1000);
     render();
-  }catch(e){ toast('Mic denied','fa-microphone-slash'); }
+  }catch(e){ toast(L==='en'?'Mic denied':'Mic ditolak','fa-microphone-slash'); }
 }
 function deleteAudio(){ setU(u=>{u.t4.audio=''; u.t4.audioDur=0}); render(); }
 
@@ -2328,6 +2680,7 @@ function deleteAudio(){ setU(u=>{u.t4.audio=''; u.t4.audioDur=0}); render(); }
 function handleAttachFiles(files){ processAttach(Array.from(files)); }
 function handleAttachDrop(e){ e.preventDefault(); e.currentTarget.classList.remove('drag-over'); processAttach(Array.from(e.dataTransfer.files)); }
 async function processAttach(files){
+  const L=State.lang;
   const MAX=2*1024*1024, MAXF=3;
   const u=U();
   const existing=u.t4.attachments?u.t4.attachments.length:0;
@@ -2391,36 +2744,45 @@ function filterVerbs(q,type){
    KELAS HANDLERS
 ============================================================ */
 function saveTeacherPin(){
+  const L=State.lang;
   const np=document.getElementById('newPinInput').value.trim();
   const cp=document.getElementById('confirmPinInput').value.trim();
-  if(np.length<4||np.length>6) return toast('PIN 4-6 digit','fa-triangle-exclamation');
-  if(np!==cp) return toast('PIN tidak cocok','fa-triangle-exclamation');
-  State.settings.teacherPin=np; save();
+  if(np.length<4||np.length>6) return toast(L==='en'?'PIN must be 4-6 digits':'PIN 4-6 digit','fa-triangle-exclamation');
+  if(np!==cp) return toast(L==='en'?'PIN does not match':'PIN tidak cocok','fa-triangle-exclamation');
+  State.settings.teacherPin=np;
+  const u = U(); if(u) u.pin = np;
+  save();
   TeacherSession.login();
-  toast('🔐 PIN updated','fa-lock'); render();
+  toast('🔐 '+(L==='en'?'PIN updated':'PIN diperbarui'),'fa-lock'); render();
 }
 function showUserSwitcher(){
+  const L=State.lang;
   const users=Object.values(State.users);
-  openModal('Switch User',`
+  openModal(L==='en'?'Switch User':'Ganti Pengguna',`
     <div style="display:flex;flex-direction:column;gap:10px;">
       ${users.map(u=>`<div class="card" style="cursor:pointer;${u.id===State.activeUserId?'border-color:var(--primary);background:var(--primary-soft);':''}" onclick="switchUser('${u.id}')">
         <div class="flex center gap-3">
           <div style="font-size:32px;">${u.profile.avatar||'👤'}</div>
-          <div style="flex:1;"><div style="font-weight:700;">${esc(u.profile.name||'No Name')}</div><div class="text-sm text-muted">${u.profile.role==='student'?'Siswa':'Guru'} · ${u.badges.length} badges</div></div>
-          ${u.id===State.activeUserId?'<span class="badge badge-primary">Active</span>':''}
+          <div style="flex:1;"><div style="font-weight:700;">${esc(u.profile.name||(L==='en'?'No Name':'Tanpa Nama'))}</div><div class="text-sm text-muted">${u.profile.role==='student'?(L==='en'?'Student':'Siswa'):(L==='en'?'Teacher':'Guru')} · ${u.badges.length} ${L==='en'?'badges':'badge'} ${u.pin?'· 🔐':''}</div></div>
+          ${u.id===State.activeUserId?`<span class="badge badge-primary">${L==='en'?'Active':'Aktif'}</span>`:''}
         </div>
       </div>`).join('')}
     </div>
-  `,`<button class="btn btn-ghost" onclick="closeModal()">Batal</button><button class="btn btn-primary" onclick="addNewUser(true)"><i class="fa-solid fa-plus"></i> Baru</button>`);
+  `,`<button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Cancel':'Batal'}</button><button class="btn btn-primary" onclick="closeModal();openRegisterModal()"><i class="fa-solid fa-plus"></i> ${L==='en'?'New':'Baru'}</button>`);
 }
-function switchUser(id){ State.activeUserId=id; save(); closeModal(); render(); toast('Switched','fa-arrows-rotate'); }
-function addNewUser(fromModal){
-  const id=uid();
-  State.users[id]={...safeClone(DEFAULT_USER), id};
-  State.activeUserId=id; save();
-  if(fromModal) closeModal();
-  render(); toast('User baru','fa-user-plus');
-  Router.go('profil');
+function switchUser(id){
+  const L=State.lang;
+  const target = State.users[id];
+  if(!target) return;
+  /* ⭐ Jika target murid & punya PIN, minta PIN */
+  if(target.profile.role === 'student' && target.pin && !StudentSession.isActive(id)){
+    State.activeUserId = id;
+    save();
+    closeModal();
+    setTimeout(() => requireStudentPin(id, ()=>{ render(); }), 150);
+    return;
+  }
+  State.activeUserId=id; save(); closeModal(); render(); toast(L==='en'?'Switched':'Berpindah','fa-arrows-rotate');
 }
 
 /* ============================================================
@@ -2467,12 +2829,13 @@ async function autoLoadConfig(){
 }
 
 async function reloadUsersFromServer(){
-  if(!sb) return toast('Supabase belum siap','fa-triangle-exclamation');
-  toast('Memuat data dari server...','fa-spinner');
+  const L=State.lang;
+  if(!sb) return toast(L==='en'?'Supabase not ready':'Supabase belum siap','fa-triangle-exclamation');
+  toast(L==='en'?'Loading data from server...':'Memuat data dari server...','fa-spinner');
   try{
     const users = await Supabase.fetchAllUsers();
     if(!users || !users.length){
-      return toast('Belum ada user yang sync ke server','fa-info-circle');
+      return toast(L==='en'?'No users synced to server yet':'Belum ada user yang sync ke server','fa-info-circle');
     }
     let count = 0;
     users.forEach(u => {
@@ -2483,17 +2846,18 @@ async function reloadUsersFromServer(){
     });
     save();
     Router.render();
-    toast(`✓ ${count} user dimuat dari server`,'fa-check');
+    toast(`✓ ${count} ${L==='en'?'users loaded from server':'user dimuat dari server'}`,'fa-check');
   }catch(e){
     toast('Error: '+e.message,'fa-xmark');
   }
 }
 
 async function testAIConnection(){
+  const L=State.lang;
   try{
-    toast('Testing AI...','fa-spinner');
-    const res = await AI.chat('Halo, test 1+1 = ?');
-    toast('✓ AI aktif: '+(res||'').slice(0,40)+'...','fa-check');
+    toast(L==='en'?'Testing AI...':'Testing AI...','fa-spinner');
+    const res = await AI.chat('Hello, test 1+1 = ?');
+    toast('✓ '+(L==='en'?'AI active':'AI aktif')+': '+(res||'').slice(0,40)+'...','fa-check');
   }catch(e){ toast('AI error: '+e.message,'fa-xmark'); }
 }
 async function testBackend(){ await Supabase.test(); }
@@ -2503,6 +2867,7 @@ async function testBackend(){ await Supabase.test(); }
 ============================================================ */
 function setAvatar(a){ setU(u=>u.profile.avatar=a); save(); render(); }
 function saveProfile(){
+  const L=State.lang;
   setU(u=>{
     u.profile.name=document.getElementById('pfName').value;
     u.profile.role=document.getElementById('pfRole').value;
@@ -2538,14 +2903,17 @@ function printReport(){
   w.document.close(); setTimeout(()=>w.print(),400);
 }
 function resetAll(){
-  if(!confirm('Hapus SEMUA data lokal?')) return;
+  const L=State.lang;
+  if(!confirm(L==='en'?'Delete ALL local data?':'Hapus SEMUA data lokal?')) return;
   localStorage.removeItem(SK);
+  StudentSession.clearAll();
   State=safeClone(DEFAULT_STATE);
-  save(); Theme.apply(); toast('Reset','fa-trash');
+  save(); Theme.apply(); toast(L==='en'?'Reset':'Reset','fa-trash');
   Router.go('beranda');
 }
 
 async function saveMaterials(){
+  const L=State.lang;
   State.materials.videoUrl=document.getElementById('matVideoUrl').value;
   State.materials.videoTitle=document.getElementById('matVideoTitle').value;
   save();
@@ -2557,24 +2925,25 @@ async function saveMaterials(){
       videoTitle: State.materials.videoTitle
     });
     if(res.ok){
-      toast('✓ Tersimpan & tersinkron','fa-cloud-arrow-up');
+      toast('✓ '+(L==='en'?'Saved & synced':'Tersimpan & tersinkron'),'fa-cloud-arrow-up');
     } else {
-      toast('Tersimpan lokal, gagal sync: '+res.error,'fa-triangle-exclamation');
+      toast((L==='en'?'Saved locally, sync failed: ':'Tersimpan lokal, gagal sync: ')+res.error,'fa-triangle-exclamation');
     }
   } else {
-    toast('✓ Tersimpan (lokal)','fa-check');
+    toast('✓ '+(L==='en'?'Saved (local)':'Tersimpan (lokal)'),'fa-check');
   }
 }
 function addManualVerb(){
+  const L=State.lang;
   const v1=document.getElementById('newVerbV1').value.trim();
   const v2=document.getElementById('newVerbV2').value.trim();
   const v3=document.getElementById('newVerbV3').value.trim()||v2;
   const type=document.getElementById('newVerbType').value;
-  if(!v1||!v2) return toast('Isi V1 & V2','fa-triangle-exclamation');
-  if(VERBS.find(x=>x[0]===v1)) return toast('Verb exists','fa-info-circle');
+  if(!v1||!v2) return toast(L==='en'?'Fill V1 & V2':'Isi V1 & V2','fa-triangle-exclamation');
+  if(VERBS.find(x=>x[0]===v1)) return toast(L==='en'?'Verb exists':'Verb sudah ada','fa-info-circle');
   VERBS.push([v1,v2,v3,type]);
   V1_SET.add(v1); V2_SET.add(v2);
-  save(); toast('✓ Verb added','fa-check');
+  save(); toast('✓ '+(L==='en'?'Verb added':'Verb ditambahkan'),'fa-check');
   render();
 }
 
@@ -2582,14 +2951,15 @@ function addManualVerb(){
    EXPORT / IMPORT
 ============================================================ */
 function exportCSV(){
-  const users=Object.values(State.users);
-  const rows=[['Name','Role','Progress','Badges','Words','V2','Published']];
+  const L=State.lang;
+  const users=Object.values(State.users).filter(u=>u.profile.role==='student');
+  const rows=[[L==='en'?'Name':'Nama',L==='en'?'Progress':'Progress',L==='en'?'Badges':'Badge',L==='en'?'Words':'Kata','V2',L==='en'?'Published':'Dipublikasikan']];
   users.forEach(u=>{
     const g=u.t3?.guided||{orientation:'',events:[],reorientation:''};
     const c=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
     const a=analyzeText(c);
     const done=Object.values(u.progress||{}).filter(Boolean).length;
-    rows.push([u.profile.name||'-',u.profile.role||'-',done+'/4',(u.badges||[]).length,a.words,a.v2Found.length,u.t4?.published?'Yes':'No']);
+    rows.push([u.profile.name||'-',done+'/4',(u.badges||[]).length,a.words,a.v2Found.length,u.t4?.published?(L==='en'?'Yes':'Ya'):(L==='en'?'No':'Belum')]);
   });
   const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob=new Blob([csv],{type:'text/csv'});
@@ -2600,15 +2970,16 @@ function exportCSV(){
   toast('CSV downloaded','fa-file-csv');
 }
 function exportExcel(){
-  if(typeof XLSX==='undefined') return toast('Library XLSX belum load','fa-triangle-exclamation');
-  const users=Object.values(State.users);
+  const L=State.lang;
+  if(typeof XLSX==='undefined') return toast(L==='en'?'XLSX library not loaded':'Library XLSX belum load','fa-triangle-exclamation');
+  const users=Object.values(State.users).filter(u=>u.profile.role==='student');
   const rows=users.map(u=>{
     const g=u.t3?.guided||{orientation:'',events:['','',''],reorientation:''};
     const combined=`${g.orientation||''}\n\n${(g.events||[]).filter(e=>e).join('\n\n')}\n\n${g.reorientation||''}`.trim();
     const a=analyzeText(combined);
     const done=Object.values(u.progress||{}).filter(Boolean).length;
     return {
-      'Nama':u.profile.name||'-','Role':u.profile.role==='student'?'Siswa':'Guru',
+      'Nama':u.profile.name||'-','Role':L==='en'?'Student':'Siswa',
       'NIP/NIS':u.profile.nip||'-','Sekolah':u.profile.school||'-','Kelas':u.profile.classes||'-',
       'Avatar':u.profile.avatar||'','Progress':done+'/4',
       'Tahap_Temukan':u.progress?.temukan?'✓':'','Tahap_Bayangkan':u.progress?.bayangkan?'✓':'',
@@ -2626,13 +2997,14 @@ function exportExcel(){
   toast('✓ Excel downloaded','fa-file-excel');
 }
 function importExcelDialog(){
-  openModal('📥 Import Siswa',`
-    <div class="section-sub">Upload file Excel. Kolom: Nama, NIP/NIS, Kelas, Sekolah, Role.</div>
-    <div class="tense-alert mb-4"><b>📋 Format:</b><br>Kolom minimal: <b>Nama</b> · Baris 1 = header.</div>
+  const L=State.lang;
+  openModal('📥 '+(L==='en'?'Import Students':'Import Siswa'),`
+    <div class="section-sub">${L==='en'?'Upload Excel file. Columns: Name, ID, Class, School, Role.':'Upload file Excel. Kolom: Nama, NIP/NIS, Kelas, Sekolah, Role.'}</div>
+    <div class="tense-alert mb-4"><b>📋 ${L==='en'?'Format:':'Format:'}</b><br>${L==='en'?'Minimum column:':'Kolom minimal:'} <b>Nama</b> · ${L==='en'?'Row 1 = header':'Baris 1 = header'}.</div>
     <div class="flex gap-2 wrap mb-3"><button class="btn btn-ghost btn-sm" onclick="downloadTemplate()"><i class="fa-solid fa-download"></i> Template</button></div>
-    <div class="attach-zone" onclick="document.getElementById('excelInput').click()"><i class="fa-solid fa-file-excel"></i><div style="font-weight:600;">Klik untuk upload Excel</div></div>
+    <div class="attach-zone" onclick="document.getElementById('excelInput').click()"><i class="fa-solid fa-file-excel"></i><div style="font-weight:600;">${L==='en'?'Click to upload Excel':'Klik untuk upload Excel'}</div></div>
     <input type="file" id="excelInput" accept=".xlsx,.xls" style="display:none;" onchange="handleExcelImport(this.files[0])">
-  `,`<button class="btn btn-ghost" onclick="closeModal()">Batal</button>`);
+  `,`<button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Cancel':'Batal'}</button>`);
 }
 function downloadTemplate(){
   const data=[
@@ -2646,8 +3018,9 @@ function downloadTemplate(){
   toast('✓ Template downloaded','fa-file-excel');
 }
 function handleExcelImport(file){
+  const L=State.lang;
   if(!file) return;
-  if(typeof XLSX==='undefined') return toast('Library XLSX belum load','fa-triangle-exclamation');
+  if(typeof XLSX==='undefined') return toast(L==='en'?'XLSX library not loaded':'Library XLSX belum load','fa-triangle-exclamation');
   const reader=new FileReader();
   reader.onload=e=>{
     try{
@@ -2655,17 +3028,17 @@ function handleExcelImport(file){
       const wb=XLSX.read(data,{type:'array'});
       const ws=wb.Sheets[wb.SheetNames[0]];
       const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
-      if(!rows.length) throw new Error('File kosong');
+      if(!rows.length) throw new Error(L==='en'?'Empty file':'File kosong');
       const keys=Object.keys(rows[0]);
-      const hasNama=keys.some(k=>k.toLowerCase()==='nama');
-      if(!hasNama) throw new Error('Kolom "Nama" tidak ditemukan');
+      const hasNama=keys.some(k=>k.toLowerCase()==='nama'||k.toLowerCase()==='name');
+      if(!hasNama) throw new Error(L==='en'?'"Nama"/"Name" column not found':'"Nama" column tidak ditemukan');
       let added=0, updated=0;
       rows.forEach(r=>{
-        const name=(r['Nama']||r['nama']||'').toString().trim();
+        const name=(r['Nama']||r['nama']||r['Name']||r['name']||'').toString().trim();
         if(!name) return;
-        const nip=(r['NIP/NIS']||r['NIP']||r['NIS']||'').toString().trim();
-        const kelas=(r['Kelas']||r['kelas']||'').toString().trim();
-        const sekolah=(r['Sekolah']||r['sekolah']||'').toString().trim();
+        const nip=(r['NIP/NIS']||r['NIP']||r['NIS']||r['ID']||'').toString().trim();
+        const kelas=(r['Kelas']||r['kelas']||r['Class']||r['class']||'').toString().trim();
+        const sekolah=(r['Sekolah']||r['sekolah']||r['School']||r['school']||'').toString().trim();
         const role=(r['Role']||r['role']||'student').toString().trim().toLowerCase();
         const existing=Object.values(State.users).find(u=>u.profile.name.toLowerCase()===name.toLowerCase()&&(!nip||u.profile.nip===nip));
         if(existing){
@@ -2684,35 +3057,39 @@ function handleExcelImport(file){
           newUser.profile.school=sekolah;
           newUser.profile.role=(role==='teacher'||role==='guru')?'teacher':'student';
           newUser.profile.avatar=newUser.profile.role==='teacher'?'👨‍🏫':'🧑‍🎓';
+          newUser.pin=''; /* akan dibuat saat login pertama */
           State.users[id]=newUser;
           added++;
         }
       });
       save(); closeModal(); render();
-      toast(`✓ ${added} ditambahkan, ${updated} diupdate`,'fa-file-excel');
+      toast(`✓ ${added} ${L==='en'?'added':'ditambahkan'}, ${updated} ${L==='en'?'updated':'diupdate'}`,'fa-file-excel');
     }catch(err){ toast('Error: '+err.message,'fa-xmark'); }
   };
   reader.readAsArrayBuffer(file);
 }
 function viewStudent(id){
+  const L=State.lang;
   const u=State.users[id]; if(!u) return;
   const g=u.t3?.guided||{orientation:'',events:[],reorientation:''};
   const c=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
   const a=analyzeText(c);
   const done=Object.values(u.progress||{}).filter(Boolean).length;
-  openModal(`${u.profile.avatar||'👤'} ${esc(u.profile.name||'No Name')}`,`
-    <div class="flex between center mb-3"><span class="badge badge-primary">${done}/4</span><span class="badge badge-warning">${(u.badges||[]).length} badges</span></div>
-    <div class="text-sm mb-3"><b>Sekolah:</b> ${esc(u.profile.school||'-')}</div>
-    <div class="text-sm mb-3"><b>Kelas:</b> ${esc(u.profile.classes||'-')}</div>
-    <div class="text-sm mb-3"><b>Kata:</b> ${a.words} · <b>V2:</b> ${a.v2Found.length}</div>
-    <div style="background:var(--bg);padding:14px;border-radius:10px;font-size:13px;line-height:1.7;max-height:300px;overflow:auto;white-space:pre-wrap;">${esc(c||'(empty)')}</div>
-  `,`<button class="btn btn-ghost" onclick="closeModal()">Batal</button><button class="btn btn-primary" onclick="switchUser('${id}');closeModal()">Switch</button>`);
+  openModal(`${u.profile.avatar||'👤'} ${esc(u.profile.name||(L==='en'?'No Name':'Tanpa Nama'))}`,`
+    <div class="flex between center mb-3"><span class="badge badge-primary">${done}/4</span><span class="badge badge-warning">${(u.badges||[]).length} ${L==='en'?'badges':'badge'}</span></div>
+    <div class="text-sm mb-3"><b>${L==='en'?'School':'Sekolah'}:</b> ${esc(u.profile.school||'-')}</div>
+    <div class="text-sm mb-3"><b>${L==='en'?'Class':'Kelas'}:</b> ${esc(u.profile.classes||'-')}</div>
+    <div class="text-sm mb-3"><b>${L==='en'?'Words':'Kata'}:</b> ${a.words} · <b>V2:</b> ${a.v2Found.length}</div>
+    <div class="text-sm mb-3"><b>🔐 PIN:</b> ${u.pin?(L==='en'?'Set':'Sudah diatur'):(L==='en'?'Not set':'Belum diatur')}</div>
+    <div style="background:var(--bg);padding:14px;border-radius:10px;font-size:13px;line-height:1.7;max-height:300px;overflow:auto;white-space:pre-wrap;">${esc(c||(L==='en'?'(empty)':'(kosong)'))}</div>
+  `,`<button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Cancel':'Batal'}</button><button class="btn btn-primary" onclick="switchUser('${id}');closeModal()">Switch</button>`);
 }
 
 /* ============================================================
    AI GENERATOR HANDLERS
 ============================================================ */
 async function generateReading(ev){
+  const L=State.lang;
   const topic=document.getElementById('genTopic').value;
   const words=document.getElementById('genWords').value;
   const topicLabel={holiday:'holiday/vacation',school:'school event',family:'family moment',funny:'funny experience',competition:'competition'}[topic];
@@ -2721,13 +3098,14 @@ async function generateReading(ev){
     const prompt=`Write a Recount Text in English about "${topicLabel}" with approximately ${words} words. Structure: Orientation - Events (3+) - Re-orientation. Use SIMPLE PAST TENSE (V2) consistently. Return ONLY the recount text, no title, no markdown.`;
     const result=await AI.chat(prompt);
     document.getElementById('genReadingText').value=result.trim();
-    toast('✓ Generated','fa-check');
+    toast('✓ '+(L==='en'?'Generated':'Tergenerate'),'fa-check');
   }catch(e){ toast('Error: '+e.message,'fa-xmark'); }
   finally{ btn.disabled=false; btn.innerHTML=orig; }
 }
 async function saveReading(){
+  const L=State.lang;
   const text=document.getElementById('genReadingText').value.trim();
-  if(!text) return toast('Empty','fa-triangle-exclamation');
+  if(!text) return toast(L==='en'?'Empty':'Kosong','fa-triangle-exclamation');
   State.materials.readingText=text; save();
   if(sb){
     await Supabase.saveMaterials({
@@ -2737,16 +3115,18 @@ async function saveReading(){
       videoTitle: State.materials.videoTitle
     });
   }
-  toast('✓ Saved & synced','fa-cloud-arrow-up'); render();
+  toast('✓ '+(L==='en'?'Saved & synced':'Tersimpan & tersinkron'),'fa-cloud-arrow-up'); render();
 }
 function clearReading(){
-  if(!confirm('Hapus teks bacaan?')) return;
+  const L=State.lang;
+  if(!confirm(L==='en'?'Delete reading text?':'Hapus teks bacaan?')) return;
   State.materials.readingText=''; save(); render();
-  toast('Cleared','fa-trash');
+  toast(L==='en'?'Cleared':'Dihapus','fa-trash');
 }
 async function generateQuiz(ev){
+  const L=State.lang;
   const text=State.materials.readingText;
-  if(!text) return toast('No reading text','fa-triangle-exclamation');
+  if(!text) return toast(L==='en'?'No reading text':'Belum ada teks bacaan','fa-triangle-exclamation');
   const btn=ev.target; btn.disabled=true; const orig=btn.innerHTML; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> ...';
   try{
     const prompt=`Based on this Recount Text:\n\n${text}\n\nCreate exactly 5 multiple-choice questions in Indonesian about: (1) structure, (2) past tense verb, (3) comprehension, (4) vocabulary, (5) main idea. Each question 3 options (A/B/C). Return ONLY JSON: [{"q":"...","opts":["A","B","C"],"a":0},...]`;
@@ -2765,7 +3145,7 @@ async function generateQuiz(ev){
         videoTitle: State.materials.videoTitle
       });
     }
-    toast('✓ Quiz generated & synced','fa-check'); render();
+    toast('✓ '+(L==='en'?'Quiz generated & synced':'Kuis tergenerate & tersinkron'),'fa-check'); render();
   }catch(e){ toast('Error: '+e.message,'fa-xmark'); }
   finally{ btn.disabled=false; btn.innerHTML=orig; }
 }
@@ -2778,13 +3158,15 @@ function updateGeneratedQuestion(i,field,val){
 }
 function deleteGeneratedQuestion(i){ State.aiGenerated.quizzes.splice(i,1); save(); render(); }
 function clearQuiz(){
-  if(!confirm('Hapus kuis?')) return;
+  const L=State.lang;
+  if(!confirm(L==='en'?'Delete quiz?':'Hapus kuis?')) return;
   State.aiGenerated.quizzes=[]; save(); render();
-  toast('Cleared','fa-trash');
+  toast(L==='en'?'Cleared':'Dihapus','fa-trash');
 }
 async function generateVerbs(ev){
+  const L=State.lang;
   const btn=ev.target; btn.disabled=true; const orig=btn.innerHTML; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> ...';
-  document.getElementById('genVerbsResult').innerHTML='<div class="text-sm text-muted">⏳ Generating...</div>';
+  document.getElementById('genVerbsResult').innerHTML=`<div class="text-sm text-muted">⏳ ${L==='en'?'Generating...':'Memproses...'}</div>`;
   try{
     const prompt=`Give me 10 English verbs commonly used in Recount Text NOT in: go, eat, see, take, come, get, make, do, have, say. Mix 5 regular + 5 irregular. Return ONLY JSON: [{"v1":"base","v2":"past","v3":"participle","type":"Regular"},...]`;
     const result=await AI.chat(prompt);
@@ -2796,13 +3178,14 @@ async function generateVerbs(ev){
     document.getElementById('genVerbsResult').innerHTML=`
       <div class="mb-3"><span class="badge badge-success">${verbs.length} verbs</span></div>
       ${verbs.map(v=>`<div class="dd-chip" style="margin:4px;">${esc(v.v1)} → <b>${esc(v.v2)}</b> → ${esc(v.v3)}</div>`).join('')}
-      <div class="mt-3"><button class="btn btn-primary btn-sm" onclick="addGeneratedVerbs()"><i class="fa-solid fa-plus"></i> Tambah Semua</button></div>
+      <div class="mt-3"><button class="btn btn-primary btn-sm" onclick="addGeneratedVerbs()"><i class="fa-solid fa-plus"></i> ${L==='en'?'Add All':'Tambah Semua'}</button></div>
     `;
   }catch(e){
     document.getElementById('genVerbsResult').innerHTML=`<div class="tense-alert">Error: ${esc(e.message)}</div>`;
   }finally{ btn.disabled=false; btn.innerHTML=orig; }
 }
 function addGeneratedVerbs(){
+  const L=State.lang;
   const verbs=State._genVerbBuffer||[];
   let added=0;
   verbs.forEach(v=>{
@@ -2813,8 +3196,8 @@ function addGeneratedVerbs(){
     }
   });
   save();
-  toast(`✓ ${added} verbs added`,'fa-check');
-  document.getElementById('genVerbsResult').innerHTML=`<div class="tense-alert">✅ ${added} verbs ditambahkan.</div>`;
+  toast(`✓ ${added} verbs ${L==='en'?'added':'ditambahkan'}`,'fa-check');
+  document.getElementById('genVerbsResult').innerHTML=`<div class="tense-alert">✅ ${added} verbs ${L==='en'?'added.':'ditambahkan.'}</div>`;
 }
 
 /* ============================================================
