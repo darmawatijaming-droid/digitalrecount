@@ -380,6 +380,11 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
 .teacher-picker-empty .title{font-weight:700;font-size:15px;margin-bottom:4px;}
 .teacher-picker-empty .sub{font-size:12.5px;color:var(--text-muted);line-height:1.5;}
 
+.fb-star{font-size:26px;background:none;border:none;cursor:pointer;transition:all .2s;padding:0 2px;}
+.fb-star.on{filter:none;transform:scale(1.1);}
+.fb-star.off{filter:grayscale(1) opacity(.4);}
+.fb-panel{background:linear-gradient(135deg,#ede9fe,#f5f3ff);border-radius:14px;padding:16px;border:1.5px solid var(--primary-light);}
+
 @media(max-width:900px){
   .mobile-nav{display:block}
   main{padding:18px 14px 105px}
@@ -490,14 +495,24 @@ const SK='recounthub_v3_supabase';
 const DEFAULT_USER={
   id:'',
   profile:{name:'',nip:'',school:'',subject:'Bahasa Inggris',classes:'',avatar:'👨‍🏫',role:'teacher'},
-  pin:'',  /* ⭐ BARU: PIN per-user (murid & guru) */
+  pin:'',
   progress:{temukan:false,bayangkan:false,lakukan:false,bagikan:false},
   quiz:{answers:[],passed:false,score:0},
   t1:{readingDone:false,videoWatched:false,grammarDone:false,ddScore:0,conjScore:0,reflection:'',experiences:['','','','',''],_videoNote:''},
   t2:{timeline:{orientation:'',event1:'',event2:'',event3:'',reorientation:''},vocab:[],mindMap:{what:'',who:'',when:'',where:'',why:'',how:''},storyboard:[],brainstorm:''},
   t3:{guided:{orientation:'',events:['','',''],reorientation:''},drafts:[],selfCheck:{past:false,order:false,structure:false}},
   t4:{published:false,audio:'',audioDur:0,peerFeedback:[],reflection:{learned:'',challenge:'',improve:''},reactions:{clap:0,heart:0,fire:0,star:0},attachments:[]},
-  badges:[]
+  badges:[],
+  /* ⭐ BARU: feedback dari guru */
+  teacherFeedback:{
+    score:null,
+    stars:0,
+    comment:'',
+    strengths:'',
+    improvements:'',
+    updatedAt:null,
+    teacherName:''
+  }
 };
 const DEFAULT_STATE={
   theme:'light',lang:'id',classCode:'',
@@ -598,6 +613,7 @@ const Supabase={
         profile_avatar: u.profile.avatar || '',
         progress: u.progress, quiz: u.quiz, t1: u.t1, t2: u.t2, t3: u.t3, t4: u.t4,
         badges: u.badges,
+        teacher_feedback: u.teacherFeedback || {},
         updated_at: new Date().toISOString()
       };
       const { error } = await sb.from('users').upsert(payload, { onConflict: 'id' });
@@ -657,7 +673,9 @@ const Supabase={
         profile: {name:row.profile_name,role:row.profile_role,nip:row.profile_nip,school:row.profile_school,classes:row.profile_classes,avatar:row.profile_avatar,subject:'Bahasa Inggris'},
         progress: row.progress || {}, quiz: row.quiz || {},
         t1: row.t1 || {}, t2: row.t2 || {}, t3: row.t3 || {}, t4: row.t4 || {},
-        badges: row.badges || [], updated_at: row.updated_at
+        badges: row.badges || [],
+        teacherFeedback: row.teacher_feedback || {},
+        updated_at: row.updated_at
       }));
     }catch(e){ console.warn('[Supabase] fetchAllUsers:', e.message); return []; }
   },
@@ -797,7 +815,7 @@ function confirmLogoutUser(){
   const wasStudent = u && (u.profile.role === 'student');
   State.activeUserId = null;
   if(wasTeacher) TeacherSession.logout();
-  if(wasStudent) StudentSession.logout();  /* ⭐ Kunci sesi murid */
+  if(wasStudent) StudentSession.logout();
   save();
   closeModal();
   toast(L==='en'?'Logged out successfully 👋':'Berhasil keluar 👋','fa-right-from-bracket');
@@ -913,11 +931,10 @@ function selectTeacherAndLogin(userId){
 }
 
 /* ============================================================
-   ⭐ STUDENT SESSION (PIN per-akun murid)
+   STUDENT SESSION
 ============================================================ */
 const StudentSession={
   _key:'recounthub_student_session_sb',
-  /** Menyimpan map { userId: timestamp } untuk sesi aktif */
   _get(){
     try{ return JSON.parse(sessionStorage.getItem(this._key)||'{}'); }catch(e){ return {}; }
   },
@@ -927,7 +944,6 @@ const StudentSession={
     const map = this._get();
     const ts = map[userId];
     if(!ts) return false;
-    // Sesi murid berlaku 30 menit
     if(Date.now() - ts > 30*60*1000){
       delete map[userId];
       this._set(map);
@@ -956,7 +972,7 @@ const StudentSession={
 };
 
 /* ============================================================
-   ⭐ STUDENT LOGIN (dengan PIN)
+   STUDENT LOGIN
 ============================================================ */
 function openStudentLoginFromBeranda(){
   const u = U();
@@ -995,7 +1011,6 @@ function openStudentLoginFromBeranda(){
     return;
   }
 
-  /* User aktif adalah murid → cek PIN */
   if(StudentSession.isActive(u.id)){
     StudentSession.refresh(u.id);
     toast('✓ '+(L==='en'?'Student login successful':'Login Murid berhasil'),'fa-unlock');
@@ -1062,7 +1077,6 @@ function selectStudentAndLogin(userId){
   save();
   closeModal();
 
-  /* ⭐ Cek sesi murid & minta PIN */
   setTimeout(() => {
     if(StudentSession.isActive(userId)){
       StudentSession.refresh(userId);
@@ -1077,7 +1091,6 @@ function selectStudentAndLogin(userId){
   }, 150);
 }
 
-/* ⭐ FUNGSI: Minta PIN murid */
 function requireStudentPin(userId, callback){
   const L = State.lang;
   const student = State.users[userId];
@@ -1086,7 +1099,6 @@ function requireStudentPin(userId, callback){
     return;
   }
 
-  /* Murid belum punya PIN → minta buat PIN dulu */
   if(!student.pin || student.pin.length < 4){
     openModal('🔐 '+(L==='en'?'Create Student PIN':'Buat PIN Murid'),`
       <div class="section-sub">${L==='en'?`Hello <b>${esc(student.profile.name)}</b>! Create a 4-6 digit PIN to protect your account.`:`Halo <b>${esc(student.profile.name)}</b>! Buat PIN 4-6 digit untuk melindungi akunmu.`}</div>
@@ -1095,14 +1107,12 @@ function requireStudentPin(userId, callback){
       <div class="tense-alert"><b>💡 ${L==='en'?'Tip:':'Tips:'}</b> ${L==='en'?'Remember this PIN! It prevents other students from accessing your account.':'Ingat PIN ini! Untuk mencegah siswa lain mengakses akunmu.'}</div>
     `,`
       <button class="btn btn-ghost" onclick="closeModal();State.activeUserId=null;save();Router.render()">${t('cancel')}</button>
-      <button class="btn btn-primary" onclick="doSetupStudentPin('${userId}',()=>{${callback.toString().match(/\{([\s\S]*)\}/)?.[1]||''}})">${t('save')}</button>
+      <button class="btn btn-primary" onclick="doSetupStudentPin('${userId}')">${t('save')}</button>
     `);
-    /* Simpan callback global sementara karena string function */
     window._studentPinCallback = callback;
     return;
   }
 
-  /* Murid sudah punya PIN → verifikasi */
   openModal('🔐 '+(L==='en'?'Student PIN':'PIN Murid'),`
     <div class="section-sub">${L==='en'?`Enter PIN for <b>${esc(student.profile.name)}</b>:`:`Masukkan PIN untuk <b>${esc(student.profile.name)}</b>:`}</div>
     <input class="input" type="password" id="studentPinInput" inputmode="numeric" maxlength="6" placeholder="••••" autofocus onkeydown="if(event.key==='Enter')doVerifyStudentPin('${userId}')">
@@ -1111,8 +1121,7 @@ function requireStudentPin(userId, callback){
   setTimeout(()=>document.getElementById('studentPinInput')?.focus(),100);
 }
 
-/* ⭐ Simpan PIN murid baru */
-function doSetupStudentPin(userId, cbStr){
+function doSetupStudentPin(userId){
   const L = State.lang;
   const p1=(document.getElementById('studentPin1')?.value||'').trim();
   const p2=(document.getElementById('studentPin2')?.value||'').trim();
@@ -1129,7 +1138,6 @@ function doSetupStudentPin(userId, cbStr){
   else render();
 }
 
-/* ⭐ Verifikasi PIN murid */
 function doVerifyStudentPin(userId){
   const L = State.lang;
   const pin = (document.getElementById('studentPinInput')?.value||'').trim();
@@ -1319,7 +1327,7 @@ function submitRegister(){
   newUser.profile.classes = classes;
   newUser.profile.subject = subject || 'Bahasa Inggris';
   newUser.profile.avatar = avatar;
-  newUser.pin = ''; /* akan diisi di langkah berikut */
+  newUser.pin = '';
 
   State.users[id] = newUser;
   State.activeUserId = id;
@@ -1342,7 +1350,6 @@ function submitRegister(){
       `);
     }, 400);
   } else {
-    /* ⭐ MURID: langsung minta buat PIN */
     toast('✓ '+(L==='en'?'Student account created':'Akun Murid berhasil dibuat'),'fa-user-plus');
     setTimeout(()=>{
       openModal('🔐 '+(L==='en'?'Create Student PIN':'Buat PIN Murid'), `
@@ -1382,7 +1389,6 @@ function submitRegisterTeacherPin(){
   Router.go('guru');
 }
 
-/* ⭐ BARU: Simpan PIN murid setelah daftar */
 function submitRegisterStudentPin(){
   const L = State.lang;
   const p1 = (document.getElementById('studentRegPin1')?.value || '').trim();
@@ -1399,7 +1405,6 @@ function submitRegisterStudentPin(){
   if(!u) return;
   u.pin = p1;
   save();
-  /* ⭐ Aktifkan sesi murid agar tidak langsung diminta PIN saat login */
   StudentSession.login(u.id);
   closeModal();
   toast('✓ '+(L==='en'?'PIN saved, Student logged in!':'PIN tersimpan, Murid login!'),'fa-unlock');
@@ -1456,7 +1461,6 @@ function doSetupPin(){
 function doVerifyPin(){
   const L = State.lang;
   const pin = document.getElementById('pinInput').value.trim();
-  /* ⭐ Cek dari akun user aktif dulu, fallback ke settings.teacherPin */
   const u = U();
   const validPin = (u && u.pin) ? u.pin : State.settings.teacherPin;
   if(pin === validPin){
@@ -1470,7 +1474,6 @@ function doVerifyPin(){
 function logoutTeacher(){
   logoutUser();
 }
-function unlockTeacherConfig(){ requireTeacherPin(()=>{ render(); toast('✓ '+(State.lang==='en'?'Panel unlocked':'Panel terbuka'),'fa-unlock'); }); }
 
 /* ============================================================
    HELPERS
@@ -1943,7 +1946,15 @@ bagikan(){
   }
   if(!has) return `<div class="section-title">📤 ${t('stage4')}</div><div class="card"><div class="empty"><i class="fa-solid fa-inbox"></i><div style="font-weight:600;color:var(--text);">${State.lang==='en'?'No work yet':'Belum ada karya'}</div><p class="text-sm mt-3">${State.lang==='en'?'Finish Stage 3 first.':'Selesaikan Tahap 3.'}</p><button class="btn btn-primary mt-4" onclick="Router.go('lakukan')"><i class="fa-solid fa-pen"></i> ${State.lang==='en'?'Write Now':'Tulis'}</button></div></div>`;
   return `<div class="section-title">📤 ${t('stage4')}</div><div class="section-sub">${State.lang==='en'?'Publish, record, upload, feedback.':'Publikasikan, rekam, upload, feedback.'}</div>
-    <div class="tabs">${[['publish','📢 Publish'],['audio','🎙️ Audio'],['attach','📎 '+(State.lang==='en'?'Attachments':'Lampiran')],['peer','⭐ Peer'],['reflect','🌟 '+(State.lang==='en'?'Reflection':'Refleksi')],['gallery','🖼️ '+(State.lang==='en'?'Gallery':'Galeri')]].map(([k,l])=>`<div class="tab ${tab===k?'active':''}" onclick="setTab('bagikan','${k}')">${l}</div>`).join('')}</div>
+    <div class="tabs">${[
+      ['publish','📢 Publish'],
+      ['audio','🎙️ Audio'],
+      ['attach','📎 '+(State.lang==='en'?'Attachments':'Lampiran')],
+      ['teacherfb','👨‍🏫 '+(State.lang==='en'?'Teacher Feedback':'Feedback Guru')],
+      ['peer','⭐ Peer'],
+      ['reflect','🌟 '+(State.lang==='en'?'Reflection':'Refleksi')],
+      ['gallery','🖼️ '+(State.lang==='en'?'Gallery':'Galeri')]
+    ].map(([k,l])=>`<div class="tab ${tab===k?'active':''}" onclick="setTab('bagikan','${k}')">${l}</div>`).join('')}</div>
     <div id="tabContent">${renderTabBagikan(tab,u,combined)}</div>`;
 },
 
@@ -2046,7 +2057,7 @@ profil(){
 };
 
 /* ============================================================
-   TAB RENDERERS (dipersingkat - fungsi sama seperti versi sebelumnya)
+   TAB RENDERERS
 ============================================================ */
 function setTab(page,tab){ State['_tab'+page.charAt(0).toUpperCase()+page.slice(1)]=tab; render(); }
 
@@ -2225,6 +2236,52 @@ function renderTabBagikan(tab,u,combined){
     <input type="file" id="attachInput" style="display:none;" multiple onchange="handleAttachFiles(this.files)">
     ${u.t4.attachments&&u.t4.attachments.length?`<div class="attach-list mt-4">${u.t4.attachments.map((f,i)=>`<div class="attach-item"><div class="icon"><i class="fa-solid ${fileIcon(f.name)}"></i></div><div class="info"><div class="name">${esc(f.name)}</div><div class="size">${formatBytes(f.size)}</div></div><a href="${f.data||f.url||'#'}" download="${esc(f.name)}" class="btn btn-ghost btn-sm"><i class="fa-solid fa-download"></i></a><button class="del" onclick="removeAttachment(${i})"><i class="fa-solid fa-trash"></i></button></div>`).join('')}</div>`:''}
   </div>`;
+  if(tab==='teacherfb'){
+    const fb = u.teacherFeedback || {};
+    const hasFb = fb.comment || fb.score != null || fb.stars > 0;
+    return `<div class="card mb-4">
+      <div class="badge badge-primary mb-3"><i class="fa-solid fa-chalkboard-user"></i> ${L==='en'?'Teacher Feedback':'Feedback dari Guru'}</div>
+      ${!hasFb ? `
+        <div class="empty" style="padding:30px 20px;">
+          <i class="fa-solid fa-hourglass-half"></i>
+          <div style="font-weight:600;color:var(--text);margin-bottom:6px;">${L==='en'?'No feedback yet':'Belum ada feedback'}</div>
+          <div class="text-sm text-muted">${L==='en'?'Your teacher has not given feedback yet. Keep working hard!':'Guru kamu belum memberi feedback. Terus semangat mengerjakan!'}</div>
+        </div>
+      ` : `
+        <div class="grid-2 mb-4" style="gap:12px;">
+          ${fb.score != null ? `
+          <div class="card text-center" style="background:var(--grad-soft);">
+            <div style="font-size:38px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">${fb.score}</div>
+            <div class="text-xs text-muted">${L==='en'?'Score':'Nilai'}</div>
+          </div>` : ''}
+          ${fb.stars ? `
+          <div class="card text-center" style="background:var(--grad-soft);">
+            <div style="font-size:26px;">${'⭐'.repeat(fb.stars)}</div>
+            <div class="text-xs text-muted">${L==='en'?'Stars':'Bintang'}</div>
+          </div>` : ''}
+        </div>
+        ${fb.comment ? `
+        <div class="card mb-3" style="background:var(--bg);border-left:4px solid var(--primary);">
+          <div style="font-weight:700;font-size:13px;margin-bottom:6px;color:var(--primary);">💬 ${L==='en'?'Comment':'Komentar'}</div>
+          <div class="text-sm" style="line-height:1.7;">${esc(fb.comment)}</div>
+        </div>` : ''}
+        ${fb.strengths ? `
+        <div class="card mb-3" style="background:rgba(16,185,129,.08);border-left:4px solid var(--success);">
+          <div style="font-weight:700;font-size:13px;margin-bottom:6px;color:var(--success);">✅ ${L==='en'?'Strengths':'Kelebihan'}</div>
+          <div class="text-sm" style="line-height:1.7;">${esc(fb.strengths)}</div>
+        </div>` : ''}
+        ${fb.improvements ? `
+        <div class="card mb-3" style="background:rgba(245,158,11,.08);border-left:4px solid var(--warning);">
+          <div style="font-weight:700;font-size:13px;margin-bottom:6px;color:var(--warning);">🔧 ${L==='en'?'Improvements':'Saran Perbaikan'}</div>
+          <div class="text-sm" style="line-height:1.7;">${esc(fb.improvements)}</div>
+        </div>` : ''}
+        <div class="text-xs text-muted text-center mt-3">
+          ${fb.teacherName ? `${L==='en'?'By':'Oleh'}: <b>${esc(fb.teacherName)}</b>` : ''}
+          ${fb.updatedAt ? ` · ${new Date(fb.updatedAt).toLocaleString(L==='en'?'en-US':'id-ID')}` : ''}
+        </div>
+      `}
+    </div>`;
+  }
   if(tab==='peer') return `<div class="card mb-4">
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-star"></i> Peer Feedback</div>
     ${u.t4.peerFeedback.length?u.t4.peerFeedback.map(f=>`<div class="card mb-3" style="background:var(--bg);border-style:dashed;"><div class="flex between center mb-2"><b>${esc(f.from||'Anonim')}</b></div><div class="mb-2"><b style="color:var(--success);">⭐ 2 Stars:</b><div class="text-sm">${esc(f.star1)}</div><div class="text-sm">${esc(f.star2)}</div></div><div><b style="color:var(--warning);">💭 1 Wish:</b><div class="text-sm">${esc(f.wish)}</div></div></div>`).join(''):`<div class="text-sm text-muted text-center mb-3" style="padding:20px;">${L==='en'?'No feedback yet':'Belum ada feedback'}</div>`}
@@ -2298,8 +2355,41 @@ function renderTabGuru(tab,stats){
   if(tab==='reports'){
     return `<div class="card mb-4">
     <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-table"></i> ${L==='en'?'Grade Report':'Rekap Nilai'}</div><div style="font-weight:700;">${L==='en'?'All Students':'Semua Siswa'}</div></div><div class="flex gap-2 wrap"><button class="btn btn-ghost btn-sm" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> CSV</button><button class="btn btn-primary btn-sm" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button><button class="btn btn-ghost btn-sm" onclick="importExcelDialog()"><i class="fa-solid fa-upload"></i> Import</button><button class="btn btn-primary btn-sm" onclick="printReport()"><i class="fa-solid fa-print"></i> PDF</button></div></div>
-    <div class="dt-wrap"><table class="dt"><thead><tr><th>${L==='en'?'Name':'Nama'}</th><th>${L==='en'?'Progress':'Progress'}</th><th>${L==='en'?'Badges':'Badge'}</th><th>${L==='en'?'Words':'Kata'}</th><th>V2</th><th>${L==='en'?'Status':'Status'}</th></tr></thead>
-    <tbody>${studentUsers.length ? studentUsers.map(u=>{const g=u.t3?.guided||{orientation:'',events:[],reorientation:''};const combined=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();const a=analyzeText(combined);const done=Object.values(u.progress||{}).filter(Boolean).length;return `<tr><td><b>${esc(u.profile.name||'-')}</b></td><td><span class="badge badge-primary">${done}/4</span></td><td><span class="badge badge-warning">${(u.badges||[]).length}</span></td><td>${a.words}</td><td>${a.v2Found.length}</td><td>${u.t4?.published?'<span class="badge badge-success">✓</span>':'-'}</td></tr>`}).join('') : `<tr><td colspan="6" class="text-center text-muted" style="padding:26px;">${L==='en'?'No students yet':'Belum ada siswa'}</td></tr>`}</tbody></table></div>
+    <div class="dt-wrap"><table class="dt"><thead><tr>
+      <th>${L==='en'?'Name':'Nama'}</th>
+      <th>${L==='en'?'Progress':'Progress'}</th>
+      <th>${L==='en'?'Badges':'Badge'}</th>
+      <th>${L==='en'?'Words':'Kata'}</th>
+      <th>V2</th>
+      <th>${L==='en'?'Status':'Status'}</th>
+      <th>${L==='en'?'Score':'Nilai'}</th>
+      <th>${L==='en'?'Action':'Aksi'}</th>
+    </tr></thead>
+    <tbody>${studentUsers.length ? studentUsers.map(u=>{
+      const g=u.t3?.guided||{orientation:'',events:[],reorientation:''};
+      const combined=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
+      const a=analyzeText(combined);
+      const done=Object.values(u.progress||{}).filter(Boolean).length;
+      const fb = u.teacherFeedback || {};
+      const scoreBadge = fb.score!=null 
+        ? `<span class="badge ${fb.score>=75?'badge-success':fb.score>=60?'badge-warning':'badge-muted'}">${fb.score}</span>` 
+        : '<span class="badge badge-muted">-</span>';
+      return `<tr>
+        <td><b>${esc(u.profile.name||'-')}</b></td>
+        <td><span class="badge badge-primary">${done}/4</span></td>
+        <td><span class="badge badge-warning">${(u.badges||[]).length}</span></td>
+        <td>${a.words}</td>
+        <td>${a.v2Found.length}</td>
+        <td>${u.t4?.published?'<span class="badge badge-success">✓</span>':'-'}</td>
+        <td>${scoreBadge}</td>
+        <td>
+          <div class="flex gap-2">
+            <button class="btn btn-ghost btn-sm" onclick="viewStudentDetail('${u.id}')" title="Lihat Detail"><i class="fa-solid fa-eye"></i></button>
+            <button class="btn btn-primary btn-sm" onclick="openTeacherFeedback('${u.id}')" title="Beri Feedback"><i class="fa-solid fa-comment-dots"></i></button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('') : `<tr><td colspan="8" class="text-center text-muted" style="padding:26px;">${L==='en'?'No students yet':'Belum ada siswa'}</td></tr>`}</tbody></table></div>
   </div>`;
   }
   return '';
@@ -2774,7 +2864,6 @@ function switchUser(id){
   const L=State.lang;
   const target = State.users[id];
   if(!target) return;
-  /* ⭐ Jika target murid & punya PIN, minta PIN */
   if(target.profile.role === 'student' && target.pin && !StudentSession.isActive(id)){
     State.activeUserId = id;
     save();
@@ -2783,6 +2872,252 @@ function switchUser(id){
     return;
   }
   State.activeUserId=id; save(); closeModal(); render(); toast(L==='en'?'Switched':'Berpindah','fa-arrows-rotate');
+}
+
+/* ============================================================
+   ⭐ FITUR BARU: DETAIL HASIL KERJA SISWA (untuk Guru)
+============================================================ */
+function viewStudentDetail(id){
+  const L = State.lang;
+  const u = State.users[id];
+  if(!u) return;
+
+  const t1 = u.t1 || {};
+  const t4 = u.t4 || {};
+  const t3 = u.t3 || {guided:{orientation:'',events:[],reorientation:''}};
+  const g = t3.guided || {orientation:'',events:[],reorientation:''};
+  const combined = `${g.orientation||''}\n\n${(g.events||[]).filter(e=>e).join('\n\n')}\n\n${g.reorientation||''}`.trim();
+  const a = analyzeText(combined);
+  const done = Object.values(u.progress||{}).filter(Boolean).length;
+
+  const stageBadge = (ok) => ok 
+    ? '<span class="badge badge-success"><i class="fa-solid fa-check"></i></span>' 
+    : '<span class="badge badge-muted">-</span>';
+
+  const body = `
+    <div class="card mb-3" style="background:var(--grad-soft);">
+      <div class="flex center gap-3">
+        <div style="font-size:42px;">${u.profile.avatar||'👤'}</div>
+        <div style="flex:1;">
+          <div style="font-weight:800;font-size:16px;">${esc(u.profile.name||'-')}</div>
+          <div class="text-sm text-muted">${esc(u.profile.school||'-')} · ${L==='en'?'Class':'Kelas'}: ${esc(u.profile.classes||'-')}</div>
+        </div>
+        <div class="text-center">
+          <div style="font-size:22px;font-weight:800;color:var(--primary);">${done}/4</div>
+          <div class="text-xs text-muted">${L==='en'?'Stages':'Tahap'}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div style="font-weight:700;margin-bottom:10px;"><i class="fa-solid fa-route"></i> ${L==='en'?'Stage Progress':'Progress Tahap'}</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:center;">
+        <div><div class="text-xs text-muted mb-1">1. ${t('temukan')}</div>${stageBadge(u.progress?.temukan)}</div>
+        <div><div class="text-xs text-muted mb-1">2. ${t('bayangkan')}</div>${stageBadge(u.progress?.bayangkan)}</div>
+        <div><div class="text-xs text-muted mb-1">3. ${t('lakukan')}</div>${stageBadge(u.progress?.lakukan)}</div>
+        <div><div class="text-xs text-muted mb-1">4. ${t('bagikan')}</div>${stageBadge(u.progress?.bagikan)}</div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div style="font-weight:700;margin-bottom:10px;"><i class="fa-solid fa-chart-simple"></i> ${L==='en'?'Statistics':'Statistik'}</div>
+      <div class="grid-2" style="gap:8px;">
+        <div class="text-sm"><b>${L==='en'?'Words':'Kata'}:</b> ${a.words}</div>
+        <div class="text-sm"><b>V2:</b> ${a.v2Found.length}</div>
+        <div class="text-sm"><b>Quiz:</b> ${u.quiz?.score||0}/3</div>
+        <div class="text-sm"><b>DD Score:</b> ${t1.ddScore||0}</div>
+        <div class="text-sm"><b>Conjugation:</b> ${t1.conjScore||0}</div>
+        <div class="text-sm"><b>Badges:</b> ${(u.badges||[]).length}</div>
+      </div>
+    </div>
+
+    ${combined ? `
+    <div class="card mb-3">
+      <div class="flex between center mb-2">
+        <div style="font-weight:700;"><i class="fa-solid fa-pen-to-square"></i> ${L==='en'?'Recount Text':'Teks Recount'}</div>
+        <span class="badge badge-primary">${a.words} ${L==='en'?'words':'kata'}</span>
+      </div>
+      <div style="background:var(--bg);padding:14px;border-radius:10px;font-size:13.5px;line-height:1.8;max-height:280px;overflow:auto;white-space:pre-wrap;">${esc(combined)}</div>
+    </div>` : `<div class="card mb-3"><div class="empty" style="padding:20px;"><i class="fa-solid fa-inbox"></i><div class="text-sm">${L==='en'?'No work yet':'Belum ada karya'}</div></div></div>`}
+
+    ${t1.reflection ? `
+    <div class="card mb-3">
+      <div style="font-weight:700;margin-bottom:6px;"><i class="fa-solid fa-mirror"></i> ${L==='en'?'Stage 1 Reflection':'Refleksi Tahap 1'}</div>
+      <div class="text-sm" style="line-height:1.7;">${esc(t1.reflection)}</div>
+    </div>` : ''}
+
+    ${t4.audio ? `
+    <div class="card mb-3">
+      <div style="font-weight:700;margin-bottom:6px;"><i class="fa-solid fa-microphone"></i> ${L==='en'?'Audio Recording':'Rekaman Audio'}</div>
+      <audio controls src="${t4.audio}" style="width:100%;margin-top:6px;"></audio>
+    </div>` : ''}
+
+    ${(t4.attachments && t4.attachments.length) ? `
+    <div class="card mb-3">
+      <div style="font-weight:700;margin-bottom:8px;"><i class="fa-solid fa-paperclip"></i> ${L==='en'?'Attachments':'Lampiran'} (${t4.attachments.length})</div>
+      ${t4.attachments.map(f=>`<div class="attach-item"><div class="icon"><i class="fa-solid ${fileIcon(f.name)}"></i></div><div class="info"><div class="name">${esc(f.name)}</div><div class="size">${formatBytes(f.size)}</div></div>${(f.url||f.data)?`<a href="${f.url||f.data}" download="${esc(f.name)}" class="btn btn-ghost btn-sm"><i class="fa-solid fa-download"></i></a>`:''}</div>`).join('')}
+    </div>` : ''}
+
+    ${(t4.peerFeedback && t4.peerFeedback.length) ? `
+    <div class="card mb-3">
+      <div style="font-weight:700;margin-bottom:8px;"><i class="fa-solid fa-star"></i> Peer Feedback (${t4.peerFeedback.length})</div>
+      ${t4.peerFeedback.map(f=>`<div style="background:var(--bg);padding:10px;border-radius:8px;margin-bottom:8px;font-size:12.5px;"><b>${esc(f.from||'-')}</b><div>⭐ ${esc(f.star1)}</div><div>⭐ ${esc(f.star2)}</div><div>💭 ${esc(f.wish)}</div></div>`).join('')}
+    </div>` : ''}
+
+    ${(t4.reflection && (t4.reflection.learned||t4.reflection.challenge||t4.reflection.improve)) ? `
+    <div class="card mb-3">
+      <div style="font-weight:700;margin-bottom:8px;"><i class="fa-solid fa-sparkles"></i> ${L==='en'?'Final Reflection':'Refleksi Akhir'}</div>
+      ${t4.reflection.learned?`<div class="text-sm mb-2"><b>✓ ${L==='en'?'Learned':'Dipelajari'}:</b> ${esc(t4.reflection.learned)}</div>`:''}
+      ${t4.reflection.challenge?`<div class="text-sm mb-2"><b>⚠ ${L==='en'?'Challenge':'Tantangan'}:</b> ${esc(t4.reflection.challenge)}</div>`:''}
+      ${t4.reflection.improve?`<div class="text-sm"><b>→ ${L==='en'?'Improve':'Perbaikan'}:</b> ${esc(t4.reflection.improve)}</div>`:''}
+    </div>` : ''}
+
+    ${u.teacherFeedback && u.teacherFeedback.comment ? `
+    <div class="card mb-3" style="background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:#f59e0b;">
+      <div style="font-weight:700;margin-bottom:8px;color:#78350f;"><i class="fa-solid fa-comment-dots"></i> ${L==='en'?'Your Previous Feedback':'Feedback Sebelumnya'}</div>
+      <div class="text-sm" style="color:#78350f;line-height:1.7;">
+        ${u.teacherFeedback.score!=null?`<div><b>${L==='en'?'Score':'Nilai'}:</b> ${u.teacherFeedback.score}/100</div>`:''}
+        ${u.teacherFeedback.stars?`<div><b>${L==='en'?'Stars':'Bintang'}:</b> ${'⭐'.repeat(u.teacherFeedback.stars)}</div>`:''}
+        <div style="margin-top:6px;"><b>${L==='en'?'Comment':'Komentar'}:</b> ${esc(u.teacherFeedback.comment)}</div>
+        ${u.teacherFeedback.strengths?`<div><b>${L==='en'?'Strengths':'Kelebihan'}:</b> ${esc(u.teacherFeedback.strengths)}</div>`:''}
+        ${u.teacherFeedback.improvements?`<div><b>${L==='en'?'Improvements':'Saran'}:</b> ${esc(u.teacherFeedback.improvements)}</div>`:''}
+      </div>
+    </div>` : ''}
+  `;
+
+  openModal(`${u.profile.avatar||'👤'} ${L==='en'?'Student Detail':'Detail Siswa'}: ${esc(u.profile.name||'-')}`, body, `
+    <button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Close':'Tutup'}</button>
+    <button class="btn btn-primary" onclick="closeModal();openTeacherFeedback('${id}')">
+      <i class="fa-solid fa-comment-dots"></i> ${L==='en'?'Give Feedback':'Beri Feedback'}
+    </button>
+  `);
+}
+
+/* ============================================================
+   ⭐ FITUR BARU: FORM FEEDBACK GURU
+============================================================ */
+function openTeacherFeedback(id){
+  const L = State.lang;
+  const u = State.users[id];
+  if(!u) return;
+
+  const fb = u.teacherFeedback || {};
+  const g = u.t3?.guided || {orientation:'',events:[],reorientation:''};
+  const combined = `${g.orientation||''}\n\n${(g.events||[]).filter(e=>e).join('\n\n')}\n\n${g.reorientation||''}`.trim();
+  const a = analyzeText(combined);
+
+  const body = `
+    <div class="card mb-3" style="background:var(--grad-soft);">
+      <div class="flex center gap-3">
+        <div style="font-size:36px;">${u.profile.avatar||'👤'}</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;">${esc(u.profile.name||'-')}</div>
+          <div class="text-xs text-muted">${a.words} ${L==='en'?'words':'kata'} · ${a.v2Found.length} V2 · ${(u.badges||[]).length} badges</div>
+        </div>
+      </div>
+    </div>
+
+    ${combined ? `
+    <details class="card mb-3" style="background:var(--bg);">
+      <summary style="cursor:pointer;font-weight:700;font-size:13.5px;"><i class="fa-solid fa-eye"></i> ${L==='en'?'View Student Work':'Lihat Karya Siswa'}</summary>
+      <div style="margin-top:10px;font-size:13px;line-height:1.8;max-height:200px;overflow:auto;white-space:pre-wrap;">${esc(combined)}</div>
+    </details>` : ''}
+
+    <div class="field">
+      <label class="label">📊 ${L==='en'?'Score (0-100)':'Nilai (0-100)'}</label>
+      <input class="input" type="number" id="fbScore" min="0" max="100" value="${fb.score!=null?fb.score:''}" placeholder="0-100">
+    </div>
+
+    <div class="field">
+      <label class="label">⭐ ${L==='en'?'Stars (1-5)':'Bintang (1-5)'}</label>
+      <div class="flex gap-2" id="fbStarsWrap">
+        ${[1,2,3,4,5].map(n=>`<button type="button" onclick="setFbStars(${n})" data-star="${n}" class="fb-star ${(fb.stars||0)>=n?'on':'off'}">⭐</button>`).join('')}
+      </div>
+      <input type="hidden" id="fbStars" value="${fb.stars||0}">
+    </div>
+
+    <div class="field">
+      <label class="label">💬 ${L==='en'?'General Comment':'Komentar Umum'}</label>
+      <textarea class="textarea" id="fbComment" placeholder="${L==='en'?'Write your comment...':'Tulis komentar Anda...'}">${esc(fb.comment||'')}</textarea>
+    </div>
+
+    <div class="field">
+      <label class="label">✅ ${L==='en'?'Strengths':'Kelebihan'}</label>
+      <textarea class="textarea" id="fbStrengths" style="min-height:70px;" placeholder="${L==='en'?'What is good...':'Apa yang sudah bagus...'}">${esc(fb.strengths||'')}</textarea>
+    </div>
+
+    <div class="field">
+      <label class="label">🔧 ${L==='en'?'Improvements':'Saran Perbaikan'}</label>
+      <textarea class="textarea" id="fbImprovements" style="min-height:70px;" placeholder="${L==='en'?'What to improve...':'Apa yang perlu diperbaiki...'}">${esc(fb.improvements||'')}</textarea>
+    </div>
+
+    <div class="tense-alert">
+      <b>💡 ${L==='en'?'Tip:':'Tips:'}</b> ${L==='en'?'Give specific feedback about Simple Past Tense usage, structure (Orientation-Events-Reorientation), and vocabulary.':'Beri feedback spesifik tentang penggunaan Simple Past Tense, struktur (Orientation-Events-Reorientation), dan kosakata.'}
+    </div>
+  `;
+
+  openModal('💬 '+(L==='en'?'Give Feedback':'Beri Feedback'), body, `
+    <button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Cancel':'Batal'}</button>
+    <button class="btn btn-primary" onclick="saveTeacherFeedback('${id}')">
+      <i class="fa-solid fa-paper-plane"></i> ${L==='en'?'Send Feedback':'Kirim Feedback'}
+    </button>
+  `);
+}
+
+function setFbStars(n){
+  document.getElementById('fbStars').value = n;
+  document.querySelectorAll('#fbStarsWrap button').forEach(b=>{
+    const star = parseInt(b.dataset.star);
+    if(star <= n){ b.classList.add('on'); b.classList.remove('off'); }
+    else { b.classList.add('off'); b.classList.remove('on'); }
+  });
+}
+
+async function saveTeacherFeedback(id){
+  const L = State.lang;
+  const u = State.users[id];
+  if(!u) return;
+
+  const scoreRaw = document.getElementById('fbScore').value.trim();
+  const score = scoreRaw === '' ? null : Math.max(0, Math.min(100, parseInt(scoreRaw) || 0));
+  const stars = parseInt(document.getElementById('fbStars').value) || 0;
+  const comment = document.getElementById('fbComment').value.trim();
+  const strengths = document.getElementById('fbStrengths').value.trim();
+  const improvements = document.getElementById('fbImprovements').value.trim();
+
+  if(!comment && score === null && stars === 0){
+    return toast(L==='en'?'Please fill at least one field':'Isi minimal satu kolom','fa-triangle-exclamation');
+  }
+
+  const me = U();
+  u.teacherFeedback = {
+    score,
+    stars,
+    comment,
+    strengths,
+    improvements,
+    updatedAt: new Date().toISOString(),
+    teacherName: me?.profile?.name || (L==='en'?'Teacher':'Guru')
+  };
+
+  save();
+  closeModal();
+
+  if(sb){
+    try{
+      await sb.from('users').update({
+        teacher_feedback: u.teacherFeedback,
+        updated_at: new Date().toISOString()
+      }).eq('id', id);
+      toast('✓ '+(L==='en'?'Feedback saved & synced':'Feedback tersimpan & tersinkron'),'fa-check');
+    }catch(e){
+      toast('✓ '+(L==='en'?'Feedback saved (local)':'Feedback tersimpan (lokal)'),'fa-check');
+    }
+  } else {
+    toast('✓ '+(L==='en'?'Feedback saved':'Feedback tersimpan'),'fa-check');
+  }
+
+  render();
 }
 
 /* ============================================================
@@ -2851,16 +3186,6 @@ async function reloadUsersFromServer(){
     toast('Error: '+e.message,'fa-xmark');
   }
 }
-
-async function testAIConnection(){
-  const L=State.lang;
-  try{
-    toast(L==='en'?'Testing AI...':'Testing AI...','fa-spinner');
-    const res = await AI.chat('Hello, test 1+1 = ?');
-    toast('✓ '+(L==='en'?'AI active':'AI aktif')+': '+(res||'').slice(0,40)+'...','fa-check');
-  }catch(e){ toast('AI error: '+e.message,'fa-xmark'); }
-}
-async function testBackend(){ await Supabase.test(); }
 
 /* ============================================================
    PROFIL HANDLERS
@@ -2953,13 +3278,14 @@ function addManualVerb(){
 function exportCSV(){
   const L=State.lang;
   const users=Object.values(State.users).filter(u=>u.profile.role==='student');
-  const rows=[[L==='en'?'Name':'Nama',L==='en'?'Progress':'Progress',L==='en'?'Badges':'Badge',L==='en'?'Words':'Kata','V2',L==='en'?'Published':'Dipublikasikan']];
+  const rows=[[L==='en'?'Name':'Nama',L==='en'?'Progress':'Progress',L==='en'?'Badges':'Badge',L==='en'?'Words':'Kata','V2',L==='en'?'Published':'Dipublikasikan',L==='en'?'Score':'Nilai Guru']];
   users.forEach(u=>{
     const g=u.t3?.guided||{orientation:'',events:[],reorientation:''};
     const c=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
     const a=analyzeText(c);
     const done=Object.values(u.progress||{}).filter(Boolean).length;
-    rows.push([u.profile.name||'-',done+'/4',(u.badges||[]).length,a.words,a.v2Found.length,u.t4?.published?(L==='en'?'Yes':'Ya'):(L==='en'?'No':'Belum')]);
+    const score = u.teacherFeedback?.score != null ? u.teacherFeedback.score : '-';
+    rows.push([u.profile.name||'-',done+'/4',(u.badges||[]).length,a.words,a.v2Found.length,u.t4?.published?(L==='en'?'Yes':'Ya'):(L==='en'?'No':'Belum'), score]);
   });
   const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob=new Blob([csv],{type:'text/csv'});
@@ -2986,7 +3312,12 @@ function exportExcel(){
       'Tahap_Lakukan':u.progress?.lakukan?'✓':'','Tahap_Bagikan':u.progress?.bagikan?'✓':'',
       'Badges':(u.badges||[]).length,'Kata':a.words,'V2_Ditemukan':a.v2Found.length,
       'Dipublikasikan':u.t4?.published?'Ya':'Belum','Skor_Kuis':(u.quiz?.score)||0,
-      'Skor_DD':(u.t1?.ddScore)||0,'Skor_Conj':(u.t1?.conjScore)||0
+      'Skor_DD':(u.t1?.ddScore)||0,'Skor_Conj':(u.t1?.conjScore)||0,
+      'Nilai_Guru': u.teacherFeedback?.score != null ? u.teacherFeedback.score : '',
+      'Bintang': u.teacherFeedback?.stars || '',
+      'Feedback': u.teacherFeedback?.comment || '',
+      'Kelebihan': u.teacherFeedback?.strengths || '',
+      'Saran_Perbaikan': u.teacherFeedback?.improvements || ''
     };
   });
   const ws=XLSX.utils.json_to_sheet(rows);
@@ -3057,7 +3388,7 @@ function handleExcelImport(file){
           newUser.profile.school=sekolah;
           newUser.profile.role=(role==='teacher'||role==='guru')?'teacher':'student';
           newUser.profile.avatar=newUser.profile.role==='teacher'?'👨‍🏫':'🧑‍🎓';
-          newUser.pin=''; /* akan dibuat saat login pertama */
+          newUser.pin='';
           State.users[id]=newUser;
           added++;
         }
@@ -3069,20 +3400,7 @@ function handleExcelImport(file){
   reader.readAsArrayBuffer(file);
 }
 function viewStudent(id){
-  const L=State.lang;
-  const u=State.users[id]; if(!u) return;
-  const g=u.t3?.guided||{orientation:'',events:[],reorientation:''};
-  const c=`${g.orientation}\n\n${g.events.filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
-  const a=analyzeText(c);
-  const done=Object.values(u.progress||{}).filter(Boolean).length;
-  openModal(`${u.profile.avatar||'👤'} ${esc(u.profile.name||(L==='en'?'No Name':'Tanpa Nama'))}`,`
-    <div class="flex between center mb-3"><span class="badge badge-primary">${done}/4</span><span class="badge badge-warning">${(u.badges||[]).length} ${L==='en'?'badges':'badge'}</span></div>
-    <div class="text-sm mb-3"><b>${L==='en'?'School':'Sekolah'}:</b> ${esc(u.profile.school||'-')}</div>
-    <div class="text-sm mb-3"><b>${L==='en'?'Class':'Kelas'}:</b> ${esc(u.profile.classes||'-')}</div>
-    <div class="text-sm mb-3"><b>${L==='en'?'Words':'Kata'}:</b> ${a.words} · <b>V2:</b> ${a.v2Found.length}</div>
-    <div class="text-sm mb-3"><b>🔐 PIN:</b> ${u.pin?(L==='en'?'Set':'Sudah diatur'):(L==='en'?'Not set':'Belum diatur')}</div>
-    <div style="background:var(--bg);padding:14px;border-radius:10px;font-size:13px;line-height:1.7;max-height:300px;overflow:auto;white-space:pre-wrap;">${esc(c||(L==='en'?'(empty)':'(kosong)'))}</div>
-  `,`<button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Cancel':'Batal'}</button><button class="btn btn-primary" onclick="switchUser('${id}');closeModal()">Switch</button>`);
+  viewStudentDetail(id);
 }
 
 /* ============================================================
