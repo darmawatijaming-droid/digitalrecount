@@ -385,6 +385,44 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
 .fb-star.off{filter:grayscale(1) opacity(.4);}
 .fb-panel{background:linear-gradient(135deg,#ede9fe,#f5f3ff);border-radius:14px;padding:16px;border:1.5px solid var(--primary-light);}
 
+/* ============ INSTRUMEN ANALISIS TULISAN ============ */
+.analysis-section{margin-bottom:18px;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card);}
+.analysis-head{padding:14px 16px;background:var(--grad-soft);display:flex;align-items:center;gap:12px;border-bottom:1.5px solid var(--border);}
+.analysis-head .an-icon{width:38px;height:38px;border-radius:11px;background:var(--grad);color:#fff;display:grid;place-items:center;font-size:16px;flex-shrink:0;}
+.analysis-head .an-title{flex:1;font-weight:800;font-size:14.5px;}
+.analysis-head .an-score{font-weight:800;font-size:18px;color:var(--primary);}
+.analysis-head .an-max{font-size:11px;color:var(--text-muted);font-weight:600;}
+.analysis-body{padding:14px 16px;}
+.analysis-criteria{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--bg);border-radius:10px;margin-bottom:8px;border-left:3px solid var(--border);}
+.analysis-criteria.pass{border-left-color:var(--success);background:rgba(16,185,129,.06);}
+.analysis-criteria.warn{border-left-color:var(--warning);background:rgba(245,158,11,.06);}
+.analysis-criteria.fail{border-left-color:var(--danger);background:rgba(239,68,68,.06);}
+.analysis-criteria .ac-check{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;flex-shrink:0;color:#fff;font-weight:700;}
+.analysis-criteria.pass .ac-check{background:var(--success);}
+.analysis-criteria.warn .ac-check{background:var(--warning);}
+.analysis-criteria.fail .ac-check{background:var(--danger);}
+.analysis-criteria .ac-text{flex:1;font-size:12.5px;line-height:1.5;}
+.analysis-criteria .ac-text b{display:block;font-size:13px;margin-bottom:2px;}
+.analysis-criteria .ac-pts{font-weight:800;font-size:13px;flex-shrink:0;}
+.analysis-total{background:var(--grad);color:#fff;border-radius:14px;padding:18px;text-align:center;margin-top:14px;box-shadow:var(--shadow-lg);}
+.analysis-total .at-num{font-size:44px;font-weight:800;line-height:1;letter-spacing:-.03em;}
+.analysis-total .at-lbl{font-size:12px;text-transform:uppercase;letter-spacing:.08em;opacity:.9;margin-top:4px;font-weight:700;}
+.analysis-total .at-grade{display:inline-block;margin-top:10px;padding:5px 16px;border-radius:999px;font-weight:800;font-size:13px;background:rgba(255,255,255,.2);}
+.analysis-bar{height:8px;background:rgba(255,255,255,.25);border-radius:999px;overflow:hidden;margin-top:12px;}
+.analysis-bar > div{height:100%;background:#fff;border-radius:999px;transition:width .6s;}
+.analysis-verb-chip{display:inline-block;padding:3px 9px;border-radius:6px;font-size:11.5px;font-weight:600;margin:2px;font-family:'Courier New',monospace;}
+.analysis-verb-chip.ok{background:rgba(16,185,129,.15);color:var(--success);}
+.analysis-verb-chip.bad{background:rgba(245,158,11,.15);color:var(--warning);}
+.analysis-verb-chip.ideal{background:var(--primary-soft);color:var(--primary);}
+.analysis-note{font-size:11.5px;color:var(--text-muted);margin-top:6px;line-height:1.5;}
+.analysis-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:600px){.analysis-grid-2{grid-template-columns:1fr;}}
+.analysis-final-badge{display:flex;align-items:center;gap:14px;padding:16px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-radius:14px;margin-top:14px;box-shadow:var(--shadow-lg);}
+.analysis-final-badge .afb-num{font-size:38px;font-weight:800;line-height:1;}
+.analysis-final-badge .afb-info{flex:1;}
+.analysis-final-badge .afb-title{font-weight:800;font-size:14px;margin-bottom:2px;}
+.analysis-final-badge .afb-sub{font-size:11.5px;opacity:.9;line-height:1.4;}
+
 @media(max-width:900px){
   .mobile-nav{display:block}
   main{padding:18px 14px 105px}
@@ -503,7 +541,6 @@ const DEFAULT_USER={
   t3:{guided:{orientation:'',events:['','',''],reorientation:''},drafts:[],selfCheck:{past:false,order:false,structure:false}},
   t4:{published:false,audio:'',audioDur:0,peerFeedback:[],reflection:{learned:'',challenge:'',improve:''},reactions:{clap:0,heart:0,fire:0,star:0},attachments:[]},
   badges:[],
-  /* ⭐ BARU: feedback dari guru */
   teacherFeedback:{
     score:null,
     stars:0,
@@ -511,7 +548,8 @@ const DEFAULT_USER={
     strengths:'',
     improvements:'',
     updatedAt:null,
-    teacherName:''
+    teacherName:'',
+    analysis:null
   }
 };
 const DEFAULT_STATE={
@@ -2275,6 +2313,39 @@ function renderTabBagikan(tab,u,combined){
           <div style="font-weight:700;font-size:13px;margin-bottom:6px;color:var(--warning);">🔧 ${L==='en'?'Improvements':'Saran Perbaikan'}</div>
           <div class="text-sm" style="line-height:1.7;">${esc(fb.improvements)}</div>
         </div>` : ''}
+
+        ${fb.analysis ? `
+        <div class="card mb-3" style="background:linear-gradient(135deg,#dbeafe,#eff6ff);border:1.5px solid var(--info);">
+          <div class="flex between center mb-3 wrap gap-2">
+            <div style="font-weight:800;font-size:14px;color:var(--info);"><i class="fa-solid fa-clipboard-check"></i> ${L==='en'?'Writing Analysis Result':'Hasil Analisis Tulisan'}</div>
+            <span class="badge badge-info">${L==='en'?'Auto':'Otomatis'}</span>
+          </div>
+          <div class="grid-3 mb-3">
+            <div class="text-center" style="padding:10px;background:#fff;border-radius:10px;">
+              <div style="font-size:20px;font-weight:800;color:#3b82f6;">${fb.analysis.structure || 0}<span style="font-size:12px;color:var(--text-muted);">/30</span></div>
+              <div class="text-xs text-muted">${L==='en'?'Structure':'Struktur'}</div>
+            </div>
+            <div class="text-center" style="padding:10px;background:#fff;border-radius:10px;">
+              <div style="font-size:20px;font-weight:800;color:#8b5cf6;">${fb.analysis.grammar || 0}<span style="font-size:12px;color:var(--text-muted);">/40</span></div>
+              <div class="text-xs text-muted">Grammar</div>
+            </div>
+            <div class="text-center" style="padding:10px;background:#fff;border-radius:10px;">
+              <div style="font-size:20px;font-weight:800;color:#f59e0b;">${fb.analysis.vocabulary || 0}<span style="font-size:12px;color:var(--text-muted);">/30</span></div>
+              <div class="text-xs text-muted">${L==='en'?'Vocabulary':'Kosakata'}</div>
+            </div>
+          </div>
+          <div class="analysis-final-badge" style="margin-top:0;">
+            <div class="afb-num">${fb.analysis.total || 0}</div>
+            <div class="afb-info">
+              <div class="afb-title">${L==='en'?'Final Score':'Nilai Akhir'} · Grade ${fb.analysis.grade || '-'}</div>
+              <div class="afb-sub">${esc(fb.analysis.gradeLabel || '')} · ${L==='en'?'of':'dari'} ${fb.analysis.max || 100}</div>
+            </div>
+          </div>
+          <div class="analysis-note mt-2">
+            ${L==='en'?'This score is automatically generated based on text structure, grammar, and vocabulary analysis.':'Nilai ini dihasilkan otomatis berdasarkan analisis struktur teks, grammar, dan kosakata.'}
+          </div>
+        </div>` : ''}
+
         <div class="text-xs text-muted text-center mt-3">
           ${fb.teacherName ? `${L==='en'?'By':'Oleh'}: <b>${esc(fb.teacherName)}</b>` : ''}
           ${fb.updatedAt ? ` · ${new Date(fb.updatedAt).toLocaleString(L==='en'?'en-US':'id-ID')}` : ''}
@@ -2385,6 +2456,7 @@ function renderTabGuru(tab,stats){
         <td>
           <div class="flex gap-2">
             <button class="btn btn-ghost btn-sm" onclick="viewStudentDetail('${u.id}')" title="Lihat Detail"><i class="fa-solid fa-eye"></i></button>
+            <button class="btn btn-ghost btn-sm" onclick="openAnalysisModal('${u.id}')" title="Analisis Tulisan" style="color:var(--info);border-color:var(--info);"><i class="fa-solid fa-chart-simple"></i></button>
             <button class="btn btn-primary btn-sm" onclick="openTeacherFeedback('${u.id}')" title="Beri Feedback"><i class="fa-solid fa-comment-dots"></i></button>
           </div>
         </td>
@@ -2875,7 +2947,7 @@ function switchUser(id){
 }
 
 /* ============================================================
-   ⭐ FITUR BARU: DETAIL HASIL KERJA SISWA (untuk Guru)
+   DETAIL HASIL KERJA SISWA
 ============================================================ */
 function viewStudentDetail(id){
   const L = State.lang;
@@ -2994,7 +3066,7 @@ function viewStudentDetail(id){
 }
 
 /* ============================================================
-   ⭐ FITUR BARU: FORM FEEDBACK GURU
+   FORM FEEDBACK GURU
 ============================================================ */
 function openTeacherFeedback(id){
   const L = State.lang;
@@ -3090,15 +3162,14 @@ async function saveTeacherFeedback(id){
   }
 
   const me = U();
-  u.teacherFeedback = {
-    score,
-    stars,
-    comment,
-    strengths,
-    improvements,
-    updatedAt: new Date().toISOString(),
-    teacherName: me?.profile?.name || (L==='en'?'Teacher':'Guru')
-  };
+  u.teacherFeedback = u.teacherFeedback || {};
+  u.teacherFeedback.score = score;
+  u.teacherFeedback.stars = stars;
+  u.teacherFeedback.comment = comment;
+  u.teacherFeedback.strengths = strengths;
+  u.teacherFeedback.improvements = improvements;
+  u.teacherFeedback.updatedAt = new Date().toISOString();
+  u.teacherFeedback.teacherName = me?.profile?.name || (L==='en'?'Teacher':'Guru');
 
   save();
   closeModal();
@@ -3117,6 +3188,278 @@ async function saveTeacherFeedback(id){
     toast('✓ '+(L==='en'?'Feedback saved':'Feedback tersimpan'),'fa-check');
   }
 
+  render();
+}
+
+/* ============================================================
+   FITUR: ANALISIS TULISAN SISWA
+============================================================ */
+const WRITING_ANALYSIS = {
+  weights: { structure: 30, grammar: 40, vocabulary: 30 },
+
+  analyzeStructure(u) {
+    const g = u.t3?.guided || {orientation:'', events:[], reorientation:''};
+    const orientation = (g.orientation||'').trim();
+    const events = (g.events||[]).filter(e => e && e.trim().length > 0);
+    const reorientation = (g.reorientation||'').trim();
+    const L = State.lang;
+    const criteria = [];
+
+    const oriLen = orientation.split(/\s+/).filter(Boolean).length;
+    let oriScore = 0, oriStatus = 'fail', oriMsg = '';
+    if(oriLen >= 15){ oriScore = 10; oriStatus='pass'; oriMsg = L==='en'?'Very complete (who, when, where)':'Sangat lengkap (siapa, kapan, di mana)'; }
+    else if(oriLen >= 8){ oriScore = 7; oriStatus='warn'; oriMsg = L==='en'?'Fairly complete':'Cukup lengkap'; }
+    else if(oriLen >= 4){ oriScore = 4; oriStatus='warn'; oriMsg = L==='en'?'Too short':'Terlalu singkat'; }
+    else { oriScore = 0; oriStatus='fail'; oriMsg = L==='en'?'Missing/empty':'Belum ada/kosong'; }
+    criteria.push({ key:'orientation', label:L==='en'?'Orientation':'Orientasi', desc:L==='en'?'Opening: who, when, where':'Pembuka: siapa, kapan, di mana', score:oriScore, max:10, status:oriStatus, note:oriMsg });
+
+    const evtCount = events.length;
+    let evtScore = 0, evtStatus = 'fail', evtMsg = '';
+    if(evtCount >= 3){ evtScore = 12; evtStatus='pass'; evtMsg = `${evtCount} ${L==='en'?'events (ideal)':'kejadian (ideal)'}`; }
+    else if(evtCount === 2){ evtScore = 8; evtStatus='warn'; evtMsg = L==='en'?'Only 2 events':'Hanya 2 kejadian'; }
+    else if(evtCount === 1){ evtScore = 4; evtStatus='warn'; evtMsg = L==='en'?'Only 1 event':'Hanya 1 kejadian'; }
+    else { evtScore = 0; evtStatus='fail'; evtMsg = L==='en'?'No events':'Belum ada kejadian'; }
+    criteria.push({ key:'events', label:L==='en'?'Events':'Rangkaian Peristiwa', desc:L==='en'?'Sequential events (min 3)':'Peristiwa berurutan (min 3)', score:evtScore, max:12, status:evtStatus, note:evtMsg });
+
+    const reoLen = reorientation.split(/\s+/).filter(Boolean).length;
+    let reoScore = 0, reoStatus = 'fail', reoMsg = '';
+    if(reoLen >= 10){ reoScore = 8; reoStatus='pass'; reoMsg = L==='en'?'Good closing':'Penutup baik'; }
+    else if(reoLen >= 5){ reoScore = 5; reoStatus='warn'; reoMsg = L==='en'?'Fair closing':'Penutup cukup'; }
+    else if(reoLen >= 2){ reoScore = 2; reoStatus='warn'; reoMsg = L==='en'?'Too short':'Terlalu singkat'; }
+    else { reoScore = 0; reoStatus='fail'; reoMsg = L==='en'?'Missing':'Belum ada'; }
+    criteria.push({ key:'reorientation', label:L==='en'?'Re-orientation':'Re-orientasi', desc:L==='en'?'Closing: impression/message':'Penutup: kesan/pesan', score:reoScore, max:8, status:reoStatus, note:reoMsg });
+
+    const total = oriScore + evtScore + reoScore;
+    return { criteria, total, max: this.weights.structure };
+  },
+
+  analyzeGrammar(u) {
+    const g = u.t3?.guided || {orientation:'', events:[], reorientation:''};
+    const combined = `${g.orientation}\n\n${(g.events||[]).filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
+    const a = analyzeText(combined);
+    const L = State.lang;
+    const criteria = [];
+
+    const v2Count = a.v2Found.length;
+    let v2Score = 0, v2Status = 'fail', v2Msg = '';
+    if(v2Count >= 8){ v2Score = 20; v2Status='pass'; v2Msg = `${v2Count} V2 ${L==='en'?'used':'digunakan'}`; }
+    else if(v2Count >= 5){ v2Score = 15; v2Status='pass'; v2Msg = `${v2Count} V2 ${L==='en'?'used':'digunakan'}`; }
+    else if(v2Count >= 3){ v2Score = 10; v2Status='warn'; v2Msg = `${v2Count} V2 ${L==='en'?'used (add more)':'digunakan (tambah lagi)'}`; }
+    else if(v2Count >= 1){ v2Score = 5; v2Status='warn'; v2Msg = L==='en'?'Too few V2':'V2 terlalu sedikit'; }
+    else { v2Score = 0; v2Status='fail'; v2Msg = L==='en'?'No V2 found':'Belum ada V2'; }
+    criteria.push({ key:'v2_usage', label:L==='en'?'Past Tense (V2)':'Past Tense (V2)', desc:L==='en'?'Use of past verbs':'Penggunaan kata kerja lampau', score:v2Score, max:20, status:v2Status, note:v2Msg, chips: a.v2Found });
+
+    const v1Warn = a.v1Warnings.length;
+    let v1Score = 10, v1Status = 'pass', v1Msg = L==='en'?'No V1 errors':'Tidak ada V1 yang salah';
+    if(v1Warn === 0){ v1Score = 10; v1Status='pass'; v1Msg = L==='en'?'No V1 errors':'Tidak ada V1 yang salah'; }
+    else if(v1Warn <= 2){ v1Score = 7; v1Status='warn'; v1Msg = `${v1Warn} V1 ${L==='en'?'need review':'perlu dicek'}`; }
+    else if(v1Warn <= 5){ v1Score = 4; v1Status='warn'; v1Msg = `${v1Warn} V1 ${L==='en'?'errors':'kesalahan'}`; }
+    else { v1Score = 0; v1Status='fail'; v1Msg = `${v1Warn} V1 ${L==='en'?'errors (many)':'kesalahan (banyak)'}`; }
+    criteria.push({ key:'v1_errors', label:L==='en'?'Verb Consistency':'Konsistensi Kata Kerja', desc:L==='en'?'All verbs already V2':'Semua kata kerja sudah V2', score:v1Score, max:10, status:v1Status, note:v1Msg, chips: a.v1Warnings });
+
+    const wordCount = a.words;
+    let lenScore = 0, lenStatus = 'fail', lenMsg = '';
+    if(wordCount >= 80){ lenScore = 10; lenStatus='pass'; lenMsg = `${wordCount} ${L==='en'?'words':'kata'}`; }
+    else if(wordCount >= 50){ lenScore = 7; lenStatus='warn'; lenMsg = `${wordCount} ${L==='en'?'words':'kata'}`; }
+    else if(wordCount >= 25){ lenScore = 4; lenStatus='warn'; lenMsg = `${wordCount} ${L==='en'?'words':'kata'}`; }
+    else { lenScore = 0; lenStatus='fail'; lenMsg = L==='en'?'Too short':'Terlalu pendek'; }
+    criteria.push({ key:'length', label:L==='en'?'Text Length':'Panjang Teks', desc:L==='en'?'Adequate text length':'Panjang teks memadai', score:lenScore, max:10, status:lenStatus, note:lenMsg });
+
+    const total = v2Score + v1Score + lenScore;
+    return { criteria, total, max: this.weights.grammar, words: wordCount, v2Count, v1Count: v1Warn };
+  },
+
+  analyzeVocabulary(u) {
+    const g = u.t3?.guided || {orientation:'', events:[], reorientation:''};
+    const combined = `${g.orientation}\n\n${(g.events||[]).filter(e=>e).join('\n\n')}\n\n${g.reorientation}`.trim();
+    const words = (combined.toLowerCase().match(/[a-z']+/g)||[]);
+    const uniqueWords = new Set(words);
+    const L = State.lang;
+    const criteria = [];
+
+    const totalWords = words.length || 1;
+    const variety = uniqueWords.size / totalWords;
+    let varScore = 0, varStatus = 'fail', varMsg = '';
+    if(variety >= 0.6 && uniqueWords.size >= 40){ varScore = 12; varStatus='pass'; varMsg = `${uniqueWords.size} ${L==='en'?'unique words':'kata unik'}`; }
+    else if(variety >= 0.5 && uniqueWords.size >= 25){ varScore = 9; varStatus='pass'; varMsg = `${uniqueWords.size} ${L==='en'?'unique words':'kata unik'}`; }
+    else if(uniqueWords.size >= 15){ varScore = 6; varStatus='warn'; varMsg = `${uniqueWords.size} ${L==='en'?'unique words':'kata unik'}`; }
+    else { varScore = 2; varStatus='fail'; varMsg = L==='en'?'Very limited':'Sangat terbatas'; }
+    criteria.push({ key:'variety', label:L==='en'?'Vocabulary Variety':'Variasi Kosakata', desc:L==='en'?'Richness of word choice':'Kekayaan pilihan kata', score:varScore, max:12, status:varStatus, note:varMsg });
+
+    const savedVocab = (u.t2?.vocab || []).map(v => (v.v2||'').toLowerCase()).filter(Boolean);
+    const usedVocab = savedVocab.filter(v => words.includes(v));
+    let vocabScore = 0, vocabStatus = 'fail', vocabMsg = '';
+    if(savedVocab.length === 0){ vocabScore = 4; vocabStatus='warn'; vocabMsg = L==='en'?'No vocab saved yet':'Belum ada kosakata disimpan'; }
+    else if(usedVocab.length >= 5){ vocabScore = 8; vocabStatus='pass'; vocabMsg = `${usedVocab.length} ${L==='en'?'vocab used':'kosakata digunakan'}`; }
+    else if(usedVocab.length >= 3){ vocabScore = 6; vocabStatus='pass'; vocabMsg = `${usedVocab.length} ${L==='en'?'vocab used':'kosakata digunakan'}`; }
+    else if(usedVocab.length >= 1){ vocabScore = 3; vocabStatus='warn'; vocabMsg = `${usedVocab.length} ${L==='en'?'vocab used':'kosakata digunakan'}`; }
+    else { vocabScore = 1; vocabStatus='fail'; vocabMsg = L==='en'?'Saved vocab not used':'Kosakata belum dipakai'; }
+    criteria.push({ key:'vocab_use', label:L==='en'?'Vocabulary Application':'Penerapan Kosakata', desc:L==='en'?'Uses saved vocabulary':'Menggunakan kosakata yang disimpan', score:vocabScore, max:8, status:vocabStatus, note:vocabMsg, chips: usedVocab });
+
+    const descriptiveList = ['beautiful','wonderful','amazing','great','happy','sad','excited','tired','delicious','funny','interesting','special','memorable','unforgettable','lovely','nice','good','bad','big','small','hot','cold','busy','quiet','loud','bright','dark','clean','dirty','fresh','old','new','young','kind','friendly','brave','smart','proud','lucky','grateful','fantastic','awesome','terrible','excellent'];
+    const foundDesc = descriptiveList.filter(d => words.includes(d));
+    let descScore = 0, descStatus = 'fail', descMsg = '';
+    if(foundDesc.length >= 5){ descScore = 10; descStatus='pass'; descMsg = `${foundDesc.length} ${L==='en'?'descriptive words':'kata deskriptif'}`; }
+    else if(foundDesc.length >= 3){ descScore = 7; descStatus='pass'; descMsg = `${foundDesc.length} ${L==='en'?'descriptive words':'kata deskriptif'}`; }
+    else if(foundDesc.length >= 1){ descScore = 4; descStatus='warn'; descMsg = `${foundDesc.length} ${L==='en'?'descriptive words':'kata deskriptif'}`; }
+    else { descScore = 0; descStatus='fail'; descMsg = L==='en'?'No descriptive words':'Belum ada kata deskriptif'; }
+    criteria.push({ key:'descriptive', label:L==='en'?'Descriptive Words':'Kata Deskriptif', desc:L==='en'?'Adjectives for richness':'Kata sifat untuk memperkaya', score:descScore, max:10, status:descStatus, note:descMsg, chips: foundDesc });
+
+    const total = varScore + vocabScore + descScore;
+    return { criteria, total, max: this.weights.vocabulary, uniqueCount: uniqueWords.size };
+  },
+
+  analyze(u) {
+    const structure = this.analyzeStructure(u);
+    const grammar = this.analyzeGrammar(u);
+    const vocabulary = this.analyzeVocabulary(u);
+    const total = structure.total + grammar.total + vocabulary.total;
+    const max = this.weights.structure + this.weights.grammar + this.weights.vocabulary;
+    let grade = 'D', gradeLabel = State.lang==='en'?'Very Poor':'Sangat Kurang';
+    if(total >= 90){ grade='A'; gradeLabel = State.lang==='en'?'Excellent':'Sangat Baik'; }
+    else if(total >= 80){ grade='B'; gradeLabel = State.lang==='en'?'Good':'Baik'; }
+    else if(total >= 70){ grade='C'; gradeLabel = State.lang==='en'?'Fair':'Cukup'; }
+    else if(total >= 60){ grade='D'; gradeLabel = State.lang==='en'?'Poor':'Kurang'; }
+    return { structure, grammar, vocabulary, total, max, grade, gradeLabel };
+  }
+};
+
+function renderAnalysisInstrument(u, analysis) {
+  const L = State.lang;
+  const criteriaHTML = (section, sectionTitle, sectionIcon, sectionColor) => {
+    return `
+      <div class="analysis-section">
+        <div class="analysis-head">
+          <div class="an-icon" style="background:${sectionColor};"><i class="fa-solid ${sectionIcon}"></i></div>
+          <div class="an-title">${sectionTitle}</div>
+          <div style="text-align:right;">
+            <div class="an-score">${section.total}</div>
+            <div class="an-max">/ ${section.max}</div>
+          </div>
+        </div>
+        <div class="analysis-body">
+          ${section.criteria.map(c => {
+            let cls = 'analysis-criteria';
+            if(c.status === 'pass') cls += ' pass';
+            else if(c.status === 'warn') cls += ' warn';
+            else cls += ' fail';
+            const checkIcon = c.status==='pass' ? 'fa-check' : (c.status==='warn' ? 'fa-exclamation' : 'fa-xmark');
+            let chipsHTML = '';
+            if(c.chips && c.chips.length){
+              const chipCls = c.key === 'v2_usage' ? 'ok' : (c.key === 'v1_errors' ? 'bad' : (c.key === 'vocab_use' ? 'ideal' : 'ok'));
+              chipsHTML = `<div style="margin-top:6px;">${c.chips.slice(0,15).map(v => `<span class="analysis-verb-chip ${chipCls}">${esc(v)}</span>`).join('')}</div>`;
+            }
+            return `
+              <div class="${cls}">
+                <div class="ac-check"><i class="fa-solid ${checkIcon}"></i></div>
+                <div class="ac-text">
+                  <b>${c.label}</b>
+                  <div class="text-xs text-muted">${c.desc}</div>
+                  <div style="margin-top:4px;font-weight:600;">${c.note}</div>
+                  ${chipsHTML}
+                </div>
+                <div class="ac-pts">${c.score}<span class="text-xs text-muted">/${c.max}</span></div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  };
+
+  return `
+    <div style="margin-bottom:16px;">
+      <div class="badge badge-primary mb-2"><i class="fa-solid fa-clipboard-check"></i> ${L==='en'?'Writing Analysis Instrument':'Instrumen Analisis Tulisan'}</div>
+      <div class="text-xs text-muted" style="line-height:1.6;">
+        ${L==='en'?'Automatic assessment based on 3 aspects: Text Structure (30), Grammar (40), Vocabulary (30).':'Penilaian otomatis berdasarkan 3 aspek: Struktur Teks (30), Grammar (40), Kosakata (30).'}
+      </div>
+    </div>
+
+    ${criteriaHTML(analysis.structure, (L==='en'?'📐 Text Structure':'📐 Struktur Teks'), 'fa-sitemap', 'linear-gradient(135deg,#3b82f6,#6366f1)')}
+    ${criteriaHTML(analysis.grammar, (L==='en'?'📝 Grammar (Past Tense)':'📝 Grammar (Past Tense)'), 'fa-spell-check', 'linear-gradient(135deg,#8b5cf6,#a855f7)')}
+    ${criteriaHTML(analysis.vocabulary, (L==='en'?'📚 Vocabulary':'📚 Kosakata'), 'fa-book-bookmark', 'linear-gradient(135deg,#f59e0b,#f97316)')}
+
+    <div class="analysis-total">
+      <div class="at-lbl">${L==='en'?'FINAL SCORE':'NILAI AKHIR'}</div>
+      <div class="at-num">${analysis.total}</div>
+      <div style="font-size:12px;opacity:.85;">${L==='en'?'out of':'dari'} ${analysis.max}</div>
+      <div class="at-grade">${L==='en'?'Grade':'Grade'} ${analysis.grade} · ${analysis.gradeLabel}</div>
+      <div class="analysis-bar"><div style="width:${(analysis.total/analysis.max*100)}%;"></div></div>
+    </div>
+
+    <div class="tense-alert" style="margin-top:14px;">
+      <b>💡 ${L==='en'?'Auto-detected data:':'Data terdeteksi otomatis:'}</b><br>
+      ${L==='en'?'Words':'Kata'}: <b>${analysis.grammar.words}</b> · 
+      V2: <b>${analysis.grammar.v2Count}</b> · 
+      V1 (${L==='en'?'needs fix':'perlu diperbaiki'}): <b>${analysis.grammar.v1Count}</b> · 
+      ${L==='en'?'Unique words':'Kata unik'}: <b>${analysis.vocabulary.uniqueCount}</b>
+    </div>
+  `;
+}
+
+function openAnalysisModal(id){
+  const L = State.lang;
+  const u = State.users[id];
+  if(!u) return;
+  const analysis = WRITING_ANALYSIS.analyze(u);
+  const body = `
+    <div class="card mb-3" style="background:var(--grad-soft);">
+      <div class="flex center gap-3">
+        <div style="font-size:40px;">${u.profile.avatar||'👤'}</div>
+        <div style="flex:1;">
+          <div style="font-weight:800;font-size:16px;">${esc(u.profile.name||'-')}</div>
+          <div class="text-xs text-muted">${esc(u.profile.school||'-')} · ${L==='en'?'Class':'Kelas'}: ${esc(u.profile.classes||'-')}</div>
+        </div>
+      </div>
+    </div>
+    ${renderAnalysisInstrument(u, analysis)}
+  `;
+  openModal('📊 '+(L==='en'?'Writing Analysis':'Analisis Tulisan')+': '+esc(u.profile.name||'-'), body, `
+    <button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Close':'Tutup'}</button>
+    <button class="btn btn-primary" onclick="applyAnalysisScore('${id}')">
+      <i class="fa-solid fa-check-double"></i> ${L==='en'?'Apply to Feedback':'Terapkan ke Feedback'}
+    </button>
+  `);
+}
+
+function applyAnalysisScore(id){
+  const L = State.lang;
+  const u = State.users[id];
+  if(!u) return;
+  const analysis = WRITING_ANALYSIS.analyze(u);
+  const total = analysis.total;
+  u.teacherFeedback = u.teacherFeedback || {};
+  u.teacherFeedback.score = total;
+  u.teacherFeedback.stars = Math.max(1, Math.min(5, Math.round(total/20)));
+  u.teacherFeedback.analysis = {
+    structure: analysis.structure.total,
+    grammar: analysis.grammar.total,
+    vocabulary: analysis.vocabulary.total,
+    total: analysis.total,
+    max: analysis.max,
+    grade: analysis.grade,
+    gradeLabel: analysis.gradeLabel,
+    autoGenerated: true,
+    updatedAt: new Date().toISOString()
+  };
+  if(!u.teacherFeedback.comment){
+    u.teacherFeedback.comment = L==='en'
+      ? `Automatic analysis result: Score ${total}/${analysis.max} (Grade ${analysis.grade}). Structure: ${analysis.structure.total}/30, Grammar: ${analysis.grammar.total}/40, Vocabulary: ${analysis.vocabulary.total}/30.`
+      : `Hasil analisis otomatis: Nilai ${total}/${analysis.max} (Grade ${analysis.grade}). Struktur: ${analysis.structure.total}/30, Grammar: ${analysis.grammar.total}/40, Kosakata: ${analysis.vocabulary.total}/30.`;
+  }
+  u.teacherFeedback.updatedAt = new Date().toISOString();
+  u.teacherFeedback.teacherName = U()?.profile?.name || (L==='en'?'Teacher':'Guru');
+  save();
+  closeModal();
+  if(sb){
+    sb.from('users').update({
+      teacher_feedback: u.teacherFeedback,
+      updated_at: new Date().toISOString()
+    }).eq('id', id).then(({error}) => {
+      if(error) console.warn('[Analysis] Sync error:', error.message);
+    });
+  }
+  toast('✓ '+(L==='en'?'Analysis applied to feedback':'Analisis diterapkan ke feedback')+': '+total,'fa-check-double');
   render();
 }
 
