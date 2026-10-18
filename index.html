@@ -1389,8 +1389,8 @@ function openRegisterModal(defaultRole){
     </div>
 
     <div class="field">
-      <label class="label">${L==='en'?'ID Number':'NIP / NIS'}</label>
-      <input class="input" id="regNip" placeholder="${L==='en'?'ID number (optional)':'Nomor induk (opsional)'}">
+      <label class="label">${L==='en'?'NIP':'NIP'}</label>
+      <input class="input" id="regNip" placeholder="${L==='en'?'NIP (optional)':'NIP (opsional)'}">
     </div>
 
     <div class="field">
@@ -1398,7 +1398,7 @@ function openRegisterModal(defaultRole){
       <input class="input" id="regSchool" placeholder="${L==='en'?'Example: SMPN 1 Anggeraja':'Contoh: SMPN 1 Anggeraja'}">
     </div>
 
-    <div class="field">
+    <div class="field" id="regClassesField">
       <label class="label">${L==='en'?'Class':'Kelas'}</label>
       <input class="input" id="regClasses" placeholder="${L==='en'?'Example: 8A':'Contoh: 8A'}">
     </div>
@@ -1442,6 +1442,11 @@ function openRegisterModal(defaultRole){
         b.style.color = '#fff';
       }
     });
+    // Hide class field if teacher
+    if(role === 'teacher'){
+      const cf = document.getElementById('regClassesField');
+      if(cf) cf.style.display = 'none';
+    }
   }, 50);
 }
 
@@ -1486,6 +1491,12 @@ function selectRegisterRole(role){
       wrap.innerHTML = '';
     }
   }
+
+  // Hide class field if teacher
+  const cf = document.getElementById('regClassesField');
+  if(cf){
+    cf.style.display = (role === 'teacher') ? 'none' : 'block';
+  }
 }
 
 function selectRegisterAvatar(a){
@@ -1511,7 +1522,9 @@ function submitRegister(){
   const name = (document.getElementById('regName')?.value || '').trim();
   const nip = (document.getElementById('regNip')?.value || '').trim();
   const school = (document.getElementById('regSchool')?.value || '').trim();
-  const classes = (document.getElementById('regClasses')?.value || '').trim();
+  // Safely get classes (could be hidden)
+  const classesField = document.getElementById('regClassesField');
+  const classes = (classesField && classesField.style.display !== 'none' ? (document.getElementById('regClasses')?.value || '').trim() : '');
   const subject = (document.getElementById('regSubject')?.value || 'Bahasa Inggris').trim();
   const avatar = document.getElementById('regAvatar')?.value || (role==='teacher'?'👨‍🏫':'🎓');
   const teacherId = role === 'student' ? (document.getElementById('regTeacherId')?.value || '') : '';
@@ -1898,7 +1911,7 @@ function renderNav(cur){
 
   const guest = isGuest();
   const av = guest ? '👤' : (U().profile.avatar||'👨‍🏫');
-  const ab = document.getElementById('avatarBtn'); if(ab) textContentSafe = av, ab.textContent = av;
+  const ab = document.getElementById('avatarBtn'); if(ab) ab.textContent = av;
   const lbT = document.getElementById('logoutBtnTopbar');
   const lbS = document.getElementById('logoutBtnSidebar');
   if(lbT) lbT.style.display = guest ? 'none' : 'grid';
@@ -2306,7 +2319,7 @@ profil(){
       <div class="card">
         <div class="field"><label class="label">${L==='en'?'Full Name':'Nama Lengkap'}</label><input class="input" id="pfName" value="${esc(p.name)}" placeholder="${L==='en'?'Full name':'Nama lengkap'}"></div>
         <div class="field"><label class="label">Role</label><select class="select" id="pfRole"><option value="teacher" ${p.role==='teacher'?'selected':''}>${L==='en'?'Teacher':'Guru'}</option><option value="student" ${p.role==='student'?'selected':''}>${L==='en'?'Student':'Siswa'}</option></select></div>
-        <div class="field"><label class="label">${L==='en'?'ID Number':'NIP / NIS'}</label><input class="input" id="pfNip" value="${esc(p.nip)}" placeholder="${L==='en'?'ID number':'Nomor induk'}"></div>
+        <div class="field"><label class="label">${L==='en'?'NIP':'NIP'}</label><input class="input" id="pfNip" value="${esc(p.nip)}" placeholder="${L==='en'?'NIP':'Nomor Induk Pegawai'}"></div>
         <div class="field"><label class="label">${L==='en'?'School':'Sekolah'}</label><input class="input" id="pfSchool" value="${esc(p.school)}" placeholder="${L==='en'?'School name':'Nama sekolah'}"></div>
         <div class="field"><label class="label">${L==='en'?'Subject':'Mata Pelajaran'}</label><input class="input" id="pfSubject" value="${esc(p.subject)}" placeholder="${L==='en'?'English':'Bahasa Inggris'}"></div>
         <div class="field"><label class="label">${L==='en'?'Class':'Kelas'}</label><input class="input" id="pfClasses" value="${esc(p.classes)}" placeholder="${L==='en'?'Example: 8A, 8B, 8C':'Contoh: 8A, 8B, 8C'}"><div class="hint">${L==='en'?'Separate with comma for multiple classes':'Pisahkan dengan koma jika mengampu lebih dari 1 kelas'}</div></div>
@@ -3902,6 +3915,8 @@ function applyAnalysisScore(id){
 
 /* ============================================================
    AUTO-LOAD CONFIG
+   ============================================================
+   OPSI A: SERVER SELALU MENANG
 ============================================================ */
 async function autoLoadConfig(){
   if(!sb) return;
@@ -3927,16 +3942,27 @@ async function autoLoadConfig(){
       save();
       console.log('[Materials] Loaded:', mats.video_url);
     }
+
+    // ============ OPSI A: SERVER SELALU MENANG ============
     const users = await Supabase.fetchAllUsers();
     if(users && users.length){
-      users.forEach(u => {
-        if(u.id !== State.activeUserId){
-          State.users[u.id] = u;
-        }
-      });
+      const activeId = State.activeUserId;
+      const activeUser = activeId ? State.users[activeId] : null;
+      const serverUsers = {};
+      users.forEach(u => { serverUsers[u.id] = u; });
+
+      // Pertahankan user aktif HANYA jika belum ada di server (baru daftar, belum sync)
+      if(activeUser && !serverUsers[activeId]){
+        serverUsers[activeId] = activeUser;
+        console.log('[AutoLoad] Active user belum ada di server, dipertahankan lokal');
+      }
+
+      State.users = serverUsers;
       save();
-      console.log(`[Supabase] ${users.length} users loaded dari server`);
+      console.log(`[Supabase] ${users.length} users loaded from server (server wins)`);
     }
+    // =======================================================
+
     render();
   }catch(e){
     console.warn('[Config] Failed:', e.message);
@@ -3952,16 +3978,18 @@ async function reloadUsersFromServer(){
     if(!users || !users.length){
       return toast(L==='en'?'No users synced to server yet':'Belum ada user yang sync ke server','fa-info-circle');
     }
-    let count = 0;
-    users.forEach(u => {
-      if(u.id !== State.activeUserId){
-        State.users[u.id] = u;
-        count++;
-      }
-    });
+    // OPSI A: server selalu menang
+    const activeId = State.activeUserId;
+    const activeUser = activeId ? State.users[activeId] : null;
+    const serverUsers = {};
+    users.forEach(u => { serverUsers[u.id] = u; });
+    if(activeUser && !serverUsers[activeId]){
+      serverUsers[activeId] = activeUser;
+    }
+    State.users = serverUsers;
     save();
     Router.render();
-    toast(`✓ ${count} ${L==='en'?'users loaded from server':'user dimuat dari server'}`,'fa-check');
+    toast(`✓ ${users.length} ${L==='en'?'users loaded from server':'user dimuat dari server'}`,'fa-check');
   }catch(e){
     toast('Error: '+e.message,'fa-xmark');
   }
@@ -3994,7 +4022,7 @@ function printReport(){
   <h2>Identity</h2>
   <div class="row"><span class="label">Name</span><span>${esc(p.name||'-')}</span></div>
   <div class="row"><span class="label">Role</span><span>${p.role==='student'?'Siswa':'Guru'}</span></div>
-  <div class="row"><span class="label">NIP/NIS</span><span>${esc(p.nip||'-')}</span></div>
+  <div class="row"><span class="label">NIP</span><span>${esc(p.nip||'-')}</span></div>
   <div class="row"><span class="label">School</span><span>${esc(p.school||'-')}</span></div>
   <div class="row"><span class="label">Class</span><span>${esc(p.classes||'-')}</span></div>
   <h2>Statistics</h2>
@@ -4053,8 +4081,7 @@ function addManualVerb(){
 }
 
 /* ============================================================
-   EXPORT / IMPORT
-============================================================ */
+   EXPORT / IMPORT============================================================ */
 function exportCSV(){
   const L=State.lang;
   const me = U();
@@ -4088,7 +4115,7 @@ function exportExcel(){
     const done=Object.values(u.progress||{}).filter(Boolean).length;
     return {
       'Nama':u.profile.name||'-','Role':L==='en'?'Student':'Siswa',
-      'NIP/NIS':u.profile.nip||'-','Sekolah':u.profile.school||'-','Kelas':u.profile.classes||'-',
+      'NIP':u.profile.nip||'-','Sekolah':u.profile.school||'-','Kelas':u.profile.classes||'-',
       'Avatar':u.profile.avatar||'','Progress':done+'/4',
       'Tahap_Temukan':u.progress?.temukan?'✓':'','Tahap_Bayangkan':u.progress?.bayangkan?'✓':'',
       'Tahap_Lakukan':u.progress?.lakukan?'✓':'','Tahap_Bagikan':u.progress?.bagikan?'✓':'',
@@ -4112,7 +4139,7 @@ function exportExcel(){
 function importExcelDialog(){
   const L=State.lang;
   openModal('📥 '+(L==='en'?'Import Students':'Import Siswa'),`
-    <div class="section-sub">${L==='en'?'Upload Excel file. Columns: Name, ID, Class, School, Role.':'Upload file Excel. Kolom: Nama, NIP/NIS, Kelas, Sekolah, Role.'}</div>
+    <div class="section-sub">${L==='en'?'Upload Excel file. Columns: Name, ID, Class, School, Role.':'Upload file Excel. Kolom: Nama, NIP, Kelas, Sekolah, Role.'}</div>
     <div class="tense-alert mb-4"><b>📋 ${L==='en'?'Format:':'Format:'}</b><br>${L==='en'?'Minimum column:':'Kolom minimal:'} <b>Nama</b> · ${L==='en'?'Row 1 = header':'Baris 1 = header'}.</div>
     <div class="flex gap-2 wrap mb-3"><button class="btn btn-ghost btn-sm" onclick="downloadTemplate()"><i class="fa-solid fa-download"></i> Template</button></div>
     <div class="attach-zone" onclick="document.getElementById('excelInput').click()"><i class="fa-solid fa-file-excel"></i><div style="font-weight:600;">${L==='en'?'Click to upload Excel':'Klik untuk upload Excel'}</div></div>
@@ -4121,8 +4148,8 @@ function importExcelDialog(){
 }
 function downloadTemplate(){
   const data=[
-    {'Nama':'Ahmad Fauzi','NIP/NIS':'2024001','Kelas':'8A','Sekolah':'SMPN 1 Jakarta','Role':'student'},
-    {'Nama':'Siti Nurhaliza','NIP/NIS':'2024002','Kelas':'8A','Sekolah':'SMPN 1 Jakarta','Role':'student'}
+    {'Nama':'Ahmad Fauzi','NIP':'2024001','Kelas':'8A','Sekolah':'SMPN 1 Jakarta','Role':'student'},
+    {'Nama':'Siti Nurhaliza','NIP':'2024002','Kelas':'8A','Sekolah':'SMPN 1 Jakarta','Role':'student'}
   ];
   const ws=XLSX.utils.json_to_sheet(data);
   const wb=XLSX.utils.book_new();
@@ -4150,7 +4177,7 @@ function handleExcelImport(file){
       rows.forEach(r=>{
         const name=(r['Nama']||r['nama']||r['Name']||r['name']||'').toString().trim();
         if(!name) return;
-        const nip=(r['NIP/NIS']||r['NIP']||r['NIS']||r['ID']||'').toString().trim();
+        const nip=(r['NIP']||r['NIP/NIS']||r['NIS']||r['ID']||'').toString().trim();
         const kelas=(r['Kelas']||r['kelas']||r['Class']||r['class']||'').toString().trim();
         const sekolah=(r['Sekolah']||r['sekolah']||r['School']||r['school']||'').toString().trim();
         const role=(r['Role']||r['role']||'student').toString().trim().toLowerCase();
