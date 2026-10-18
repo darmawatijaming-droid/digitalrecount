@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DigitalRecount — PjBL Recount Text (Supabase)</title>
+<title>DigitalRecount — PjBL Recount Text (Supabase Multi-School)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -99,6 +99,7 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
 .badge-primary{background:var(--primary-soft);color:var(--primary)}
 .badge-muted{background:var(--bg);color:var(--text-muted);border:1px solid var(--border)}
 .badge-info{background:rgba(59,130,246,.15);color:var(--info)}
+.badge-danger{background:rgba(239,68,68,.15);color:var(--danger)}
 .section-title{font-size:21px;font-weight:800;letter-spacing:-.02em;margin-bottom:5px}
 .section-sub{color:var(--text-muted);font-size:14px;margin-bottom:18px}
 .input,.textarea,.select{width:100%;padding:11px 15px;background:var(--bg);border:1.5px solid var(--border);border-radius:11px;font-size:14px;transition:all .2s;color:var(--text)}
@@ -423,6 +424,27 @@ main{max-width:1280px;margin:0 auto;padding:22px 16px 110px;min-height:calc(100v
 .analysis-final-badge .afb-title{font-weight:800;font-size:14px;margin-bottom:2px;}
 .analysis-final-badge .afb-sub{font-size:11.5px;opacity:.9;line-height:1.4;}
 
+/* ============ KELOLA PENYIMPANAN ============ */
+.storage-bar{height:14px;background:var(--bg);border-radius:999px;overflow:hidden;border:1px solid var(--border);position:relative;}
+.storage-bar > div{height:100%;transition:width .5s;border-radius:999px;}
+.storage-bar .fill-safe{background:linear-gradient(90deg,#10b981,#34d399);}
+.storage-bar .fill-warn{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+.storage-bar .fill-danger{background:linear-gradient(90deg,#ef4444,#f87171);}
+.storage-metric{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
+.storage-metric:last-child{border-bottom:none;}
+.storage-metric .sm-label{font-size:13px;font-weight:600;}
+.storage-metric .sm-val{font-size:13px;color:var(--text-muted);font-weight:600;}
+.cleanup-option{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;margin-bottom:10px;cursor:pointer;transition:all .2s;}
+.cleanup-option:hover{border-color:var(--primary);background:var(--primary-soft);}
+.cleanup-option .co-icon{width:40px;height:40px;border-radius:10px;background:var(--grad-soft);color:var(--primary);display:grid;place-items:center;font-size:17px;flex-shrink:0;}
+.cleanup-option .co-body{flex:1;}
+.cleanup-option .co-title{font-weight:700;font-size:13.5px;margin-bottom:3px;}
+.cleanup-option .co-sub{font-size:12px;color:var(--text-muted);line-height:1.4;}
+.cleanup-option .co-cta{color:var(--primary);font-weight:700;font-size:12.5px;flex-shrink:0;align-self:center;}
+.storage-school-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border-radius:10px;margin-bottom:8px;font-size:13px;}
+.storage-school-row .ssr-name{flex:1;font-weight:600;}
+.storage-school-row .ssr-size{color:var(--text-muted);font-size:12px;}
+
 @media(max-width:900px){
   .mobile-nav{display:block}
   main{padding:18px 14px 105px}
@@ -527,12 +549,29 @@ if (SUPABASE_URL && SUPABASE_ANON_KEY && typeof supabase !== 'undefined') {
 }
 
 /* ============================================================
-   STATE DEFAULT
+   STORAGE LIMITS & COMPRESSION
 ============================================================ */
-const SK='recounthub_v3_supabase';
+const LIMITS = {
+  audioMaxSec: 60,
+  imageMaxBytes: 500 * 1024,
+  attachMaxBytes: 1 * 1024 * 1024,
+  maxAttachPerStudent: 2,
+  maxAudioPerStudent: 1,
+  freeDbBytes: 500 * 1024 * 1024,
+  freeStorageBytes: 1024 * 1024 * 1024,
+  keepAliveIntervalMs: 6 * 24 * 60 * 60 * 1000
+};
+
+const STORAGE_KEY_LAST_ACTIVE = 'recounthub_last_active';
+const STORAGE_KEY_KEEPALIVE = 'recounthub_keepalive';
+
+/* ============================================================
+   STATE DEFAULT (dengan teacher_id & multi-school)
+============================================================ */
+const SK='recounthub_v4_multischool';
 const DEFAULT_USER={
   id:'',
-  profile:{name:'',nip:'',school:'',subject:'Bahasa Inggris',classes:'',avatar:'👨‍🏫',role:'teacher'},
+  profile:{name:'',nip:'',school:'',subject:'Bahasa Inggris',classes:'',avatar:'👨‍🏫',role:'teacher',teacher_id:''},
   pin:'',
   progress:{temukan:false,bayangkan:false,lakukan:false,bagikan:false},
   quiz:{answers:[],passed:false,score:0},
@@ -550,7 +589,8 @@ const DEFAULT_USER={
     updatedAt:null,
     teacherName:'',
     analysis:null
-  }
+  },
+  _fileMeta: []
 };
 const DEFAULT_STATE={
   theme:'light',lang:'id',classCode:'',
@@ -561,7 +601,9 @@ const DEFAULT_STATE={
   },
   materials:{videoUrl:'https://www.youtube.com/embed/aqz-KE-bpKQ',videoTitle:'Video Discovery',readingText:''},
   aiGenerated:{quizzes:[]},
-  activeUserId:null,users:{}
+  activeUserId:null,users:{},
+  schools:[],
+  lastCleanup:null
 };
 
 let State=load();
@@ -581,7 +623,7 @@ const I18n={
       start:'Mulai Proyek',continue:'Lanjutkan',open:'Buka',view:'Lihat',fill:'Isi',save:'Simpan',cancel:'Batal',delete:'Hapus',add:'Tambah',more:'Lainnya',
       locked:'Terkunci',done:'Selesai',
       total_students:'Total Siswa',avg_progress:'Rata-rata',published_works:'Dipublikasikan',total_badges:'Total Badge',
-      students:'Daftar Siswa',materials_mgmt:'Kelola Materi',reports:'Rekap Nilai',
+      students:'Daftar Siswa',materials_mgmt:'Kelola Materi',reports:'Rekap Nilai',storage_mgmt:'Kelola Penyimpanan',
       greeting:'Hi',role_greeting:'Murid',welcome:'Selamat datang',
       stage1:'Temukan',stage2:'Bayangkan',stage3:'Lakukan',stage4:'Bagikan',
       section_stages:'Tahapan Proyek',section_tools:'Alat Bantu',section_account:'Akun',
@@ -596,12 +638,15 @@ const I18n={
       col_name:'Nama',col_role:'Role',col_progress:'Progress',col_badges:'Badge',col_words:'Kata',col_v2:'V2',col_status:'Status',
       no_students_yet:'Belum ada siswa',
       no_teachers_yet:'Belum ada akun guru',
-      no_students_registered:'Belum ada akun murid'},
+      no_students_registered:'Belum ada akun murid',
+      select_teacher:'Pilih Guru',
+      select_teacher_hint:'Pilih guru Anda agar dashboard guru otomatis terfilter',
+      my_teacher:'Guru Saya'},
     en:{beranda:'Home',temukan:'Discover',bayangkan:'Imagine',lakukan:'Do',bagikan:'Share',kamus:'Dictionary',badges:'Badges',ai:'AI Buddy',kelas:'Class',profil:'Profile',guru:'Dashboard',
       start:'Start',continue:'Continue',open:'Open',view:'View',fill:'Fill',save:'Save',cancel:'Cancel',delete:'Delete',add:'Add',more:'More',
       locked:'Locked',done:'Done',
       total_students:'Total Students',avg_progress:'Average',published_works:'Published',total_badges:'Total Badges',
-      students:'Students',materials_mgmt:'Materials',reports:'Grade Report',
+      students:'Students',materials_mgmt:'Materials',reports:'Grade Report',storage_mgmt:'Storage Manager',
       greeting:'Hi',role_greeting:'Student',welcome:'Welcome',
       stage1:'Discover',stage2:'Imagine',stage3:'Do',stage4:'Share',
       section_stages:'Project Stages',section_tools:'Tools',section_account:'Account',
@@ -616,7 +661,10 @@ const I18n={
       col_name:'Name',col_role:'Role',col_progress:'Progress',col_badges:'Badges',col_words:'Words',col_v2:'V2',col_status:'Status',
       no_students_yet:'No students yet',
       no_teachers_yet:'No teacher accounts yet',
-      no_students_registered:'No student accounts yet'}
+      no_students_registered:'No student accounts yet',
+      select_teacher:'Select Teacher',
+      select_teacher_hint:'Select your teacher so the dashboard is automatically filtered',
+      my_teacher:'My Teacher'}
   },
   t(k){const d=this.dict[State.lang||'id'];return d[k]||this.dict.id[k]||k},
   set(lang){State.lang=lang;save();this.applyButtons();render()},
@@ -625,7 +673,82 @@ const I18n={
 function t(k){return I18n.t(k)}
 
 /* ============================================================
-   SUPABASE LAYER
+   KEEP-ALIVE (mencegah Supabase dijeda 7 hari)
+============================================================ */
+const KeepAlive = {
+  shouldPing(){
+    try{
+      const last = parseInt(localStorage.getItem(STORAGE_KEY_KEEPALIVE)||'0');
+      return (Date.now() - last) > LIMITS.keepAliveIntervalMs;
+    }catch(e){ return true; }
+  },
+  markPinged(){
+    try{ localStorage.setItem(STORAGE_KEY_KEEPALIVE, Date.now().toString()); }catch(e){}
+  },
+  async ping(){
+    if(!sb || !this.shouldPing()) return;
+    try{
+      await sb.from('users').select('id').limit(1);
+      this.markPinged();
+      console.log('[KeepAlive] Ping OK');
+    }catch(e){
+      console.warn('[KeepAlive] Ping failed:', e.message);
+    }
+  },
+  init(){
+    this.ping();
+    setInterval(()=>this.ping(), 24 * 60 * 60 * 1000);
+    document.addEventListener('visibilitychange', ()=>{
+      if(!document.hidden) this.ping();
+    });
+  }
+};
+
+/* ============================================================
+   IMAGE COMPRESSION (to .webp)
+============================================================ */
+async function compressImage(file, maxBytes = LIMITS.imageMaxBytes){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let { width, height } = img;
+        const maxDim = 1200;
+        if(width > maxDim || height > maxDim){
+          if(width > height){ height = Math.round(height * maxDim / width); width = maxDim; }
+          else { width = Math.round(width * maxDim / height); height = maxDim; }
+        }
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        let quality = 0.85;
+        const tryCompress = (q) => {
+          canvas.toBlob((blob) => {
+            if(!blob) return reject(new Error('Compression failed'));
+            if(blob.size <= maxBytes || q <= 0.3){
+              const r = new FileReader();
+              r.onload = () => resolve({ dataUrl: r.result, size: blob.size, type: 'image/webp' });
+              r.readAsDataURL(blob);
+            } else {
+              tryCompress(q - 0.1);
+            }
+          }, 'image/webp', q);
+        };
+        tryCompress(quality);
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ============================================================
+   SUPABASE LAYER (dengan teacher_id)
 ============================================================ */
 const Supabase={
   queue:null,
@@ -640,6 +763,7 @@ const Supabase={
     if(!sb || isGuest()) return;
     try{
       const u = U();
+      if(!u) return;
       const payload = {
         id: u.id,
         class_code: State.classCode || 'default',
@@ -649,6 +773,7 @@ const Supabase={
         profile_school: u.profile.school || '',
         profile_classes: u.profile.classes || '',
         profile_avatar: u.profile.avatar || '',
+        profile_teacher_id: u.profile.teacher_id || '',
         progress: u.progress, quiz: u.quiz, t1: u.t1, t2: u.t2, t3: u.t3, t4: u.t4,
         badges: u.badges,
         teacher_feedback: u.teacherFeedback || {},
@@ -708,7 +833,7 @@ const Supabase={
       if(error) throw error;
       return (data||[]).map(row => ({
         id: row.id,
-        profile: {name:row.profile_name,role:row.profile_role,nip:row.profile_nip,school:row.profile_school,classes:row.profile_classes,avatar:row.profile_avatar,subject:'Bahasa Inggris'},
+        profile: {name:row.profile_name,role:row.profile_role,nip:row.profile_nip,school:row.profile_school,classes:row.profile_classes,avatar:row.profile_avatar,subject:'Bahasa Inggris',teacher_id:row.profile_teacher_id||''},
         progress: row.progress || {}, quiz: row.quiz || {},
         t1: row.t1 || {}, t2: row.t2 || {}, t3: row.t3 || {}, t4: row.t4 || {},
         badges: row.badges || [],
@@ -723,8 +848,24 @@ const Supabase={
       const { data, error } = await sb.storage.from(bucket).upload(path, file, { upsert: true });
       if(error) throw error;
       const { data: urlData } = sb.storage.from(bucket).getPublicUrl(path);
-      return { ok:true, url: urlData.publicUrl };
+      return { ok:true, url: urlData.publicUrl, path };
     }catch(e){ return { ok:false, error: e.message }; }
+  },
+  async deleteFile(bucket, path){
+    if(!sb) return { ok:false };
+    try{
+      const { error } = await sb.storage.from(bucket).remove([path]);
+      if(error) throw error;
+      return { ok:true };
+    }catch(e){ return { ok:false, error: e.message }; }
+  },
+  async listFiles(bucket, prefix){
+    if(!sb) return [];
+    try{
+      const { data, error } = await sb.storage.from(bucket).list(prefix, { limit: 1000 });
+      if(error) throw error;
+      return data || [];
+    }catch(e){ return []; }
   }
 };
 
@@ -1010,7 +1151,7 @@ const StudentSession={
 };
 
 /* ============================================================
-   STUDENT LOGIN
+   STUDENT LOGIN (dengan pemilihan guru)
 ============================================================ */
 function openStudentLoginFromBeranda(){
   const u = U();
@@ -1079,16 +1220,19 @@ function showStudentPickerModal(){
   } else {
     bodyHTML = `
       <div class="section-sub" style="margin-bottom:14px;">${L==='en'?'Select a student account to login:':'Pilih akun murid untuk login:'}</div>
-      ${validStudents.map(u => `
+      ${validStudents.map(u => {
+        const teacher = u.profile.teacher_id ? State.users[u.profile.teacher_id] : null;
+        const teacherLabel = teacher ? (L==='en'?'Teacher':'Guru')+': '+esc(teacher.profile.name) : (L==='en'?'No teacher':'Tanpa guru');
+        return `
         <div class="teacher-picker-item" onclick="selectStudentAndLogin('${u.id}')">
           <div class="tp-avatar">${u.profile.avatar||'🎓'}</div>
           <div class="tp-info">
             <div class="tp-name">${esc(u.profile.name)}</div>
-            <div class="tp-meta">${esc(u.profile.school||(L==='en'?'School not set':'Sekolah belum diisi'))} · ${L==='en'?'Class':'Kelas'}: ${esc(u.profile.classes||'-')} · 🔐 PIN</div>
+            <div class="tp-meta">${teacherLabel} · ${L==='en'?'Class':'Kelas'}: ${esc(u.profile.classes||'-')} · 🔐 PIN</div>
           </div>
           <div class="tp-cta">${L==='en'?'Select':'Pilih'} <i class="fa-solid fa-arrow-right"></i></div>
         </div>
-      `).join('')}
+      `}).join('')}
     `;
   }
 
@@ -1194,11 +1338,23 @@ function doVerifyStudentPin(userId){
 }
 
 /* ============================================================
-   REGISTER / DAFTAR AKUN BARU
+   REGISTER / DAFTAR AKUN BARU (dengan pemilihan guru utk siswa)
 ============================================================ */
 function openRegisterModal(defaultRole){
   const role = defaultRole || 'student';
   const L = State.lang;
+  const teachers = Object.values(State.users).filter(u => u.profile.role === 'teacher' && u.profile.name && u.profile.name.trim());
+
+  const teacherSelectHTML = role === 'student' ? `
+    <div class="field" id="teacherSelectField">
+      <label class="label">👨‍🏫 ${L==='en'?'Select Teacher *':'Pilih Guru *'}</label>
+      <select class="select" id="regTeacherId">
+        <option value="">${L==='en'?'-- Select Teacher --':'-- Pilih Guru --'}</option>
+        ${teachers.map(tt => `<option value="${tt.id}">${esc(tt.profile.name)} · ${esc(tt.profile.school||'-')}</option>`).join('')}
+      </select>
+      <div class="hint">${L==='en'?'Your work will appear on the selected teacher dashboard.':'Karyamu akan muncul di dashboard guru yang dipilih.'}</div>
+    </div>
+  ` : '';
 
   openModal('✨ '+(L==='en'?'Register New Account':'Daftar Akun Baru'), `
     <div class="section-sub mb-4">${L==='en'?'Fill in the data below to create a new account.':'Isi data di bawah untuk membuat akun baru.'}</div>
@@ -1224,6 +1380,8 @@ function openRegisterModal(defaultRole){
         </div>
       </div>
     </div>
+
+    <div id="teacherSelectWrap">${teacherSelectHTML}</div>
 
     <div class="field">
       <label class="label">${L==='en'?'Full Name *':'Nama Lengkap *'}</label>
@@ -1309,6 +1467,25 @@ function selectRegisterRole(role){
       ? (L==='en'?'Teacher accounts are protected by PIN. You will be asked to create a PIN on first login.':'Akun Guru akan dilindungi PIN. Kamu akan diminta membuat PIN saat pertama kali login.')
       : (L==='en'?'Student accounts are protected by PIN. You will be asked to create a PIN after registration.':'Akun Murid juga dilindungi PIN. Kamu akan diminta membuat PIN setelah mendaftar.')}`;
   }
+
+  const wrap = document.getElementById('teacherSelectWrap');
+  if(wrap){
+    if(role === 'student'){
+      const teachers = Object.values(State.users).filter(u => u.profile.role === 'teacher' && u.profile.name && u.profile.name.trim());
+      wrap.innerHTML = `
+        <div class="field" id="teacherSelectField">
+          <label class="label">👨‍🏫 ${L==='en'?'Select Teacher *':'Pilih Guru *'}</label>
+          <select class="select" id="regTeacherId">
+            <option value="">${L==='en'?'-- Select Teacher --':'-- Pilih Guru --'}</option>
+            ${teachers.map(tt => `<option value="${tt.id}">${esc(tt.profile.name)} · ${esc(tt.profile.school||'-')}</option>`).join('')}
+          </select>
+          <div class="hint">${L==='en'?'Your work will appear on the selected teacher dashboard.':'Karyamu akan muncul di dashboard guru yang dipilih.'}</div>
+        </div>
+      `;
+    } else {
+      wrap.innerHTML = '';
+    }
+  }
 }
 
 function selectRegisterAvatar(a){
@@ -1337,6 +1514,7 @@ function submitRegister(){
   const classes = (document.getElementById('regClasses')?.value || '').trim();
   const subject = (document.getElementById('regSubject')?.value || 'Bahasa Inggris').trim();
   const avatar = document.getElementById('regAvatar')?.value || (role==='teacher'?'👨‍🏫':'🎓');
+  const teacherId = role === 'student' ? (document.getElementById('regTeacherId')?.value || '') : '';
 
   if(!name){
     toast(L==='en'?'Name is required':'Nama wajib diisi','fa-triangle-exclamation');
@@ -1346,9 +1524,14 @@ function submitRegister(){
     toast(L==='en'?'Name must be at least 3 characters':'Nama minimal 3 karakter','fa-triangle-exclamation');
     return;
   }
+  if(role === 'student' && !teacherId){
+    toast(L==='en'?'Please select your teacher':'Silakan pilih guru Anda','fa-triangle-exclamation');
+    return;
+  }
 
   const exists = Object.values(State.users).some(u =>
-    u.profile.name && u.profile.name.toLowerCase() === name.toLowerCase()
+    u.profile.name && u.profile.name.toLowerCase() === name.toLowerCase() &&
+    u.profile.role === role
   );
   if(exists){
     toast(L==='en'?'Name already registered, use another name':'Nama sudah terdaftar, gunakan nama lain','fa-triangle-exclamation');
@@ -1365,9 +1548,13 @@ function submitRegister(){
   newUser.profile.classes = classes;
   newUser.profile.subject = subject || 'Bahasa Inggris';
   newUser.profile.avatar = avatar;
+  newUser.profile.teacher_id = teacherId;
   newUser.pin = '';
 
   State.users[id] = newUser;
+
+  if(school && !State.schools.includes(school)) State.schools.push(school);
+
   State.activeUserId = id;
   save();
   closeModal();
@@ -1519,7 +1706,7 @@ function logoutTeacher(){
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function uid(){return 'u'+Date.now()+Math.random().toString(36).slice(2,6)}
 function fmtDate(d=new Date()){return d.toLocaleDateString(State.lang==='en'?'en-US':'id-ID',{day:'numeric',month:'long',year:'numeric'})}
-function formatBytes(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';return (b/1048576).toFixed(2)+' MB'}
+function formatBytes(b){if(!b) return '0 B';if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';if(b<1073741824)return (b/1048576).toFixed(2)+' MB';return (b/1073741824).toFixed(2)+' GB'}
 function fileIcon(name){
   const e=(name.split('.').pop()||'').toLowerCase();
   if(e==='pdf') return 'fa-file-pdf';
@@ -1528,6 +1715,7 @@ function fileIcon(name){
   if(['xls','xlsx'].includes(e)) return 'fa-file-excel';
   if(['ppt','pptx'].includes(e)) return 'fa-file-powerpoint';
   if(e==='epub') return 'fa-book';
+  if(['mp3','wav','webm','opus','ogg','m4a'].includes(e)) return 'fa-file-audio';
   return 'fa-file';
 }
 function isStageUnlocked(stage){
@@ -1546,6 +1734,52 @@ function lockInfo(stage){
   const label=t(need);
   return State.lang==='en'?`Finish "${label}" first`:`Selesaikan tahap "${label}" dulu`;
 }
+
+/* ============================================================
+   FILE SIZE CALCULATION
+============================================================ */
+function estimateDataUrlSize(dataUrl){
+  if(!dataUrl || typeof dataUrl !== 'string') return 0;
+  const idx = dataUrl.indexOf(',');
+  if(idx < 0) return 0;
+  const b64 = dataUrl.slice(idx+1);
+  const padding = (b64.match(/=+$/)||[''])[0].length;
+  return Math.floor(b64.length * 3 / 4) - padding;
+}
+function calculateUserStorage(u){
+  if(!u) return { bytes:0, files:0, audio:0, images:0, attach:0, text:0 };
+  let bytes = 0, audio = 0, images = 0, attach = 0, text = 0;
+  const t4 = u.t4 || {};
+  if(t4.audio){ const sz = estimateDataUrlSize(t4.audio); audio += sz; bytes += sz; }
+  (t4.attachments || []).forEach(f => {
+    if(f.data){ const sz = estimateDataUrlSize(f.data); attach += sz; bytes += sz; }
+    else if(f.size){ attach += f.size; bytes += f.size; }
+  });
+  (u.t2 && u.t2.storyboard || []).forEach(s => {
+    if(s.img && s.img.startsWith('data:')){ const sz = estimateDataUrlSize(s.img); images += sz; bytes += sz; }
+  });
+  const g = (u.t3 && u.t3.guided) || {orientation:'',events:[],reorientation:''};
+  const combinedText = `${g.orientation||''}${(g.events||[]).join('')}${g.reorientation||''}${(u.t1&&u.t1.reflection)||''}${(u.t2&&u.t2.brainstorm)||''}`;
+  text = new Blob([combinedText]).size;
+  bytes += text;
+  return { bytes, files: (t4.attachments||[]).length + (t4.audio?1:0), audio, images, attach, text };
+}
+function calculateTeacherStorage(teacherId){
+  const L = State.lang;
+  let total = { bytes:0, files:0, audio:0, images:0, attach:0, text:0 };
+  const students = Object.values(State.users).filter(u => u.profile.role === 'student' && u.profile.teacher_id === teacherId);
+  students.forEach(s => {
+    const us = calculateUserStorage(s);
+    total.bytes += us.bytes;
+    total.files += us.files;
+    total.audio += us.audio;
+    total.images += us.images;
+    total.attach += us.attach;
+    total.text += us.text;
+  });
+  return { total, students };
+}
+
 const VERBS=[
 ['play','played','played','Regular'],['walk','walked','walked','Regular'],['talk','talked','talked','Regular'],['watch','watched','watched','Regular'],['cook','cooked','cooked','Regular'],['visit','visited','visited','Regular'],['study','studied','studied','Regular'],['clean','cleaned','cleaned','Regular'],['help','helped','helped','Regular'],['call','called','called','Regular'],['jump','jumped','jumped','Regular'],['dance','danced','danced','Regular'],['listen','listened','listened','Regular'],['wait','waited','waited','Regular'],['want','wanted','wanted','Regular'],['need','needed','needed','Regular'],['like','liked','liked','Regular'],['love','loved','loved','Regular'],['try','tried','tried','Regular'],['enjoy','enjoyed','enjoyed','Regular'],['arrive','arrived','arrived','Regular'],['travel','traveled','traveled','Regular'],['stay','stayed','stayed','Regular'],['open','opened','opened','Regular'],['close','closed','closed','Regular'],['finish','finished','finished','Regular'],['start','started','started','Regular'],['stop','stopped','stopped','Regular'],['laugh','laughed','laughed','Regular'],['smile','smiled','smiled','Regular'],
 ['go','went','gone','Irregular'],['eat','ate','eaten','Irregular'],['see','saw','seen','Irregular'],['take','took','taken','Irregular'],['come','came','come','Irregular'],['get','got','got','Irregular'],['make','made','made','Irregular'],['do','did','done','Irregular'],['have','had','had','Irregular'],['say','said','said','Irregular'],['give','gave','given','Irregular'],['find','found','found','Irregular'],['think','thought','thought','Irregular'],['tell','told','told','Irregular'],['become','became','become','Irregular'],['leave','left','left','Irregular'],['feel','felt','felt','Irregular'],['bring','brought','brought','Irregular'],['begin','began','begun','Irregular'],['keep','kept','kept','Irregular'],['hold','held','held','Irregular'],['write','wrote','written','Irregular'],['stand','stood','stood','Irregular'],['hear','heard','heard','Irregular'],['meet','met','met','Irregular'],['run','ran','run','Irregular'],['pay','paid','paid','Irregular'],['sit','sat','sat','Irregular'],['speak','spoke','spoken','Irregular'],['read','read','read','Irregular'],['grow','grew','grown','Irregular'],['lose','lost','lost','Irregular'],['fall','fell','fallen','Irregular'],['send','sent','sent','Irregular'],['build','built','built','Irregular'],['draw','drew','drawn','Irregular'],['break','broke','broken','Irregular'],['spend','spent','spent','Irregular'],['cut','cut','cut','Irregular'],['drive','drove','driven','Irregular'],['buy','bought','bought','Irregular'],['wear','wore','worn','Irregular'],['choose','chose','chosen','Irregular'],['swim','swam','swum','Irregular'],['fly','flew','flown','Irregular'],['sing','sang','sung','Irregular'],['drink','drank','drunk','Irregular'],['ride','rode','ridden','Irregular'],['forget','forgot','forgotten','Irregular'],['sleep','slept','slept','Irregular'],['wake','woke','woken','Irregular'],['win','won','won','Irregular'],['teach','taught','taught','Irregular'],['catch','caught','caught','Irregular']
@@ -1664,7 +1898,7 @@ function renderNav(cur){
 
   const guest = isGuest();
   const av = guest ? '👤' : (U().profile.avatar||'👨‍🏫');
-  const ab = document.getElementById('avatarBtn'); if(ab) ab.textContent = av;
+  const ab = document.getElementById('avatarBtn'); if(ab) textContentSafe = av, ab.textContent = av;
   const lbT = document.getElementById('logoutBtnTopbar');
   const lbS = document.getElementById('logoutBtnSidebar');
   if(lbT) lbT.style.display = guest ? 'none' : 'grid';
@@ -1850,6 +2084,8 @@ beranda(){
     `;
   } else if(isStudentRole){
     const studentLoggedIn = StudentSession.isActive(u.id);
+    const teacher = u.profile.teacher_id ? State.users[u.profile.teacher_id] : null;
+    const teacherInfo = teacher ? `<div class="text-xs mt-2" style="opacity:.85;">👨‍🏫 ${L==='en'?'Teacher':'Guru'}: <b>${esc(teacher.profile.name)}</b></div>` : '';
     if(studentLoggedIn){
       teacherCard = `
         <div class="teacher-login-card" style="background:linear-gradient(135deg,#0ea5e9 0%,#3b82f6 50%,#6366f1 100%);">
@@ -1860,6 +2096,7 @@ beranda(){
               <span class="tlc-status active"><i class="fa-solid fa-circle-check"></i> Logged In</span>
             </div>
             <div class="tlc-sub">${L==='en'?'You are logged in as':'Kamu login sebagai'} <b>${esc(u.profile.name||(L==='en'?'Student':'Murid'))}</b>. ${L==='en'?'Happy working on the project!':'Selamat mengerjakan proyek!'}</div>
+            ${teacherInfo}
           </div>
           <div class="tlc-actions">
             <button class="btn-white" onclick="Router.go('temukan')"><i class="fa-solid fa-play"></i> ${L==='en'?'Start':'Mulai'}</button>
@@ -1876,6 +2113,7 @@ beranda(){
               <span class="tlc-status"><i class="fa-solid fa-lock"></i> PIN Required</span>
             </div>
             <div class="tlc-sub">${L==='en'?'Enter your PIN to continue.':'Masukkan PIN kamu untuk melanjutkan.'}</div>
+            ${teacherInfo}
           </div>
           <div class="tlc-actions">
             <button class="btn-white" onclick="openStudentLoginFromBeranda()"><i class="fa-solid fa-unlock"></i> ${L==='en'?'Student Login':'Login Murid'}</button>
@@ -2031,8 +2269,10 @@ ai(){
 },
 
 guru(){
-  const users=Object.values(State.users);
-  const studentUsers = users.filter(u=>u.profile.role==='student');
+  const me = U();
+  if(!me) return `<div class="empty">Login dulu</div>`;
+  const allUsers=Object.values(State.users);
+  const studentUsers = allUsers.filter(u=>u.profile.role==='student' && u.profile.teacher_id === me.id);
   const totalStudents=studentUsers.length;
   const totalProgress=studentUsers.reduce((s,u)=>s+Object.values(u.progress).filter(Boolean).length,0);
   const avgProgress=totalStudents?Math.round(totalProgress/(totalStudents*4)*100):0;
@@ -2040,15 +2280,17 @@ guru(){
   const totalBadgesCollected=studentUsers.reduce((s,u)=>s+u.badges.length,0);
   const tab=State._tabGuru||'overview';
   const L=State.lang;
-  return `<div class="flex between center mb-3 wrap gap-2"><div><div class="section-title">📊 ${t('guru')}</div><div class="section-sub" style="margin-bottom:0;">${L==='en'?'Monitor students.':'Pantau siswa.'}</div></div><div class="flex gap-2 wrap"><button class="btn btn-primary btn-sm" onclick="reloadUsersFromServer()"><i class="fa-solid fa-cloud-arrow-down"></i> ${L==='en'?'Load from Server':'Muat dari Server'}</button><button class="btn btn-ghost btn-sm" onclick="logoutTeacher()" style="color:var(--danger);border-color:var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Logout</button></div></div>
-    <div class="tabs">${[['overview','📊 '+t('overview')],['students','👥 '+t('students')],['materials','🎬 '+t('materials_mgmt')],['aigen','✨ AI Generator'],['reports','📈 '+t('reports')]].map(([k,l])=>`<div class="tab ${tab===k?'active':''}" onclick="setTab('guru','${k}')">${l}</div>`).join('')}</div>
-    <div id="tabContent">${renderTabGuru(tab,{users,studentUsers,totalStudents,avgProgress,publishedCount,totalBadgesCollected})}</div>`;
+  const storageInfo = calculateTeacherStorage(me.id);
+  return `<div class="flex between center mb-3 wrap gap-2"><div><div class="section-title">📊 ${t('guru')}</div><div class="section-sub" style="margin-bottom:0;">${L==='en'?'Monitor your students.':'Pantau siswa Anda.'}</div></div><div class="flex gap-2 wrap"><button class="btn btn-primary btn-sm" onclick="reloadUsersFromServer()"><i class="fa-solid fa-cloud-arrow-down"></i> ${L==='en'?'Load from Server':'Muat dari Server'}</button><button class="btn btn-ghost btn-sm" onclick="logoutTeacher()" style="color:var(--danger);border-color:var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Logout</button></div></div>
+    <div class="tabs">${[['overview','📊 '+t('overview')],['students','👥 '+t('students')],['materials','🎬 '+t('materials_mgmt')],['aigen','✨ AI Generator'],['reports','📈 '+t('reports')],['storage','💾 '+t('storage_mgmt')]].map(([k,l])=>`<div class="tab ${tab===k?'active':''}" onclick="setTab('guru','${k}')">${l}</div>`).join('')}</div>
+    <div id="tabContent">${renderTabGuru(tab,{users:allUsers,studentUsers,totalStudents,avgProgress,publishedCount,totalBadgesCollected,storageInfo,me})}</div>`;
 },
 
 profil(){
   const L=State.lang;
   const p=U().profile;
   const avatars=['👨‍🏫','👩‍🏫','🧑‍🏫','👨‍💼','👩‍💼','🧑‍💻','📚','🎓','✨','🌟','🧑‍🎓','👨‍🎓','👩‍🎓'];
+  const teacher = p.teacher_id ? State.users[p.teacher_id] : null;
   return `<div class="section-title">👤 ${t('profil')}</div><div class="section-sub">${L==='en'?'Complete your data.':'Lengkapi data.'}</div>
     <div class="grid-2">
       <div class="card">
@@ -2056,6 +2298,7 @@ profil(){
           <div style="width:100px;height:100px;border-radius:24px;margin:0 auto 12px;background:var(--grad);display:grid;place-items:center;font-size:46px;box-shadow:var(--shadow-lg);">${p.avatar||'👨‍🏫'}</div>
           <div style="font-weight:700;font-size:17px;">${esc(p.name||'-')}</div>
           <div class="text-sm text-muted">${esc(p.subject||'-')} · ${esc(p.school||'-')}</div>
+          ${teacher?`<div class="text-xs mt-2" style="color:var(--primary);">👨‍🏫 ${L==='en'?'Teacher':'Guru'}: <b>${esc(teacher.profile.name)}</b></div>`:''}
         </div>
         <div class="label mb-3">${L==='en'?'Avatar':'Avatar'}</div>
         <div class="flex gap-2 wrap">${avatars.map(a=>`<button onclick="setAvatar('${a}')" style="width:42px;height:42px;border-radius:11px;font-size:20px;background:${p.avatar===a?'var(--grad)':'var(--bg)'};border:1.5px solid ${p.avatar===a?'transparent':'var(--border)'};display:grid;place-items:center;">${a}</button>`).join('')}</div>
@@ -2191,6 +2434,7 @@ function renderTabBayangkan(tab,t2){
   </div>`; }
   if(tab==='storyboard') return `<div class="card mb-4">
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-images"></i> Storyboard Creator</div>
+    <div class="text-xs text-muted mb-3">${L==='en'?'Max image size 500 KB (auto-compressed to WebP).':'Ukuran gambar maksimal 500 KB (otomatis dikompres ke WebP).'}</div>
     <div class="grid-2 mb-3"><div><label class="label">${L==='en'?'Upload Image':'Upload Gambar'}</label><input type="file" accept="image/*" class="input" onchange="uploadStoryboard(this)"></div>
     <div><label class="label">${L==='en'?'Or emoji':'Atau emoji'}</label><div class="flex gap-2 wrap">${['🏖️','🏔️','🏫','🏠','🚗','✈️','🎉','😄','😢','🌅','🍽️','⚽'].map(e=>`<button class="btn btn-ghost btn-sm" style="font-size:20px;padding:6px 10px;" onclick="addStoryboardEmoji('${e}')">${e}</button>`).join('')}</div></div></div>
     <div class="storyboard-grid">${t2.storyboard.map((s,i)=>`<div class="sb-card"><div class="sb-del" onclick="removeStoryboard(${i})"><i class="fa-solid fa-xmark"></i></div><div class="sb-thumb">${s.img.startsWith('data:')?`<img src="${s.img}">`:s.img}</div><div class="sb-cap"><input class="input" value="${esc(s.caption)}" placeholder="Caption..." style="padding:6px 8px;font-size:12px;" oninput="updateStoryboardCaption(${i},this.value)"></div></div>`).join('')}</div>
@@ -2263,13 +2507,14 @@ function renderTabBagikan(tab,u,combined){
   </div>`;
   if(tab==='audio') return `<div class="card mb-4">
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-microphone"></i> Audio Recording</div>
+    <div class="text-xs text-muted mb-3">${L==='en'?'Max 1 minute. Auto-stops.':'Maksimal 1 menit. Otomatis berhenti.'}</div>
     <div class="audio-rec"><button class="rec-btn ${State._recording?'recording':''}" id="recBtn" onclick="toggleRecord()"><i class="fa-solid ${State._recording?'fa-stop':'fa-microphone'}"></i></button>
-    <div class="rec-info"><div class="title">${State._recording?(L==='en'?'🔴 Recording...':'🔴 Merekam...'):(u.t4.audio?(L==='en'?'Saved':'Tersimpan'):(L==='en'?'Click to record':'Klik merekam'))}</div><div class="sub" id="recTime">${State._recording?'00:00':(u.t4.audio?'Duration: '+(u.t4.audioDur||'-')+'s':'Max 3 min')}</div></div></div>
+    <div class="rec-info"><div class="title">${State._recording?(L==='en'?'🔴 Recording...':'🔴 Merekam...'):(u.t4.audio?(L==='en'?'Saved':'Tersimpan'):(L==='en'?'Click to record':'Klik merekam'))}</div><div class="sub" id="recTime">${State._recording?'00:00':(u.t4.audio?'Duration: '+(u.t4.audioDur||'-')+'s':'Max 60s')}</div></div></div>
     ${u.t4.audio?`<audio controls src="${u.t4.audio}" style="width:100%;margin-top:14px;"></audio><button class="btn btn-danger btn-sm mt-3" onclick="deleteAudio()"><i class="fa-solid fa-trash"></i> ${L==='en'?'Delete':'Hapus'}</button>`:''}
   </div>`;
   if(tab==='attach') return `<div class="card mb-4">
     <div class="badge badge-primary mb-3"><i class="fa-solid fa-paperclip"></i> ${L==='en'?'Attachments':'Lampiran'}</div>
-    <div class="section-sub">${L==='en'?'Max 3 files, 2MB each.':'Max 3 file, 2MB tiap file.'}</div>
+    <div class="section-sub">${L==='en'?'Max 2 files, 1 MB each.':'Max 2 file, 1 MB tiap file.'}</div>
     <div class="attach-zone" onclick="document.getElementById('attachInput').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleAttachDrop(event)"><i class="fa-solid fa-cloud-arrow-up"></i><div style="font-weight:600;">${L==='en'?'Click or drag & drop':'Klik atau drag & drop'}</div></div>
     <input type="file" id="attachInput" style="display:none;" multiple onchange="handleAttachFiles(this.files)">
     ${u.t4.attachments&&u.t4.attachments.length?`<div class="attach-list mt-4">${u.t4.attachments.map((f,i)=>`<div class="attach-item"><div class="icon"><i class="fa-solid ${fileIcon(f.name)}"></i></div><div class="info"><div class="name">${esc(f.name)}</div><div class="size">${formatBytes(f.size)}</div></div><a href="${f.data||f.url||'#'}" download="${esc(f.name)}" class="btn btn-ghost btn-sm"><i class="fa-solid fa-download"></i></a><button class="del" onclick="removeAttachment(${i})"><i class="fa-solid fa-trash"></i></button></div>`).join('')}</div>`:''}
@@ -2373,18 +2618,27 @@ function renderTabBagikan(tab,u,combined){
 
 function renderTabGuru(tab,stats){
   const L=State.lang;
-  const {users,studentUsers,totalStudents,avgProgress,publishedCount,totalBadgesCollected}=stats;
+  const {users,studentUsers,totalStudents,avgProgress,publishedCount,totalBadgesCollected,storageInfo,me}=stats;
   if(tab==='overview') return `<div class="dash-grid">
-    <div class="stat-card"><div class="icon"><i class="fa-solid fa-users"></i></div><div class="num">${totalStudents}</div><div class="lbl">${L==='en'?'Total Students':'Total Siswa'}</div></div>
+    <div class="stat-card"><div class="icon"><i class="fa-solid fa-users"></i></div><div class="num">${totalStudents}</div><div class="lbl">${L==='en'?'My Students':'Siswa Saya'}</div></div>
     <div class="stat-card"><div class="icon"><i class="fa-solid fa-chart-simple"></i></div><div class="num">${avgProgress}%</div><div class="lbl">${L==='en'?'Average':'Rata-rata'}</div></div>
     <div class="stat-card"><div class="icon"><i class="fa-solid fa-bullhorn"></i></div><div class="num">${publishedCount}</div><div class="lbl">${L==='en'?'Published':'Dipublikasikan'}</div></div>
     <div class="stat-card"><div class="icon"><i class="fa-solid fa-award"></i></div><div class="num">${totalBadgesCollected}</div><div class="lbl">${L==='en'?'Total Badges':'Total Badge'}</div></div>
   </div>
   <div class="card mb-4"><div style="font-weight:700;margin-bottom:12px;"><i class="fa-solid fa-chart-line"></i> ${L==='en'?'Stage Completion':'Penyelesaian Tahap'}</div>
     ${['temukan','bayangkan','lakukan','bagikan'].map((st,i)=>{const count=studentUsers.filter(u=>u.progress[st]).length;const pct=totalStudents?Math.round(count/totalStudents*100):0;return `<div class="mb-3"><div class="flex between center mb-2"><span class="text-sm"><b>${i+1}. ${t(st)}</b></span><span class="badge badge-primary">${count}/${totalStudents} (${pct}%)</span></div><div class="mini-progress" style="width:100%;height:8px;"><div style="width:${pct}%"></div></div></div>`}).join('')}
+  </div>
+  <div class="card" style="background:var(--grad-soft);border-color:var(--primary-light);">
+    <div class="flex between center wrap gap-3">
+      <div>
+        <div style="font-weight:700;font-size:14px;"><i class="fa-solid fa-school"></i> ${L==='en'?'My Profile':'Profil Saya'}</div>
+        <div class="text-sm text-muted mt-1">${esc(me.profile.name||'-')} · ${esc(me.profile.school||'-')} · ${L==='en'?'Class':'Kelas'}: ${esc(me.profile.classes||'-')}</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="Router.go('profil')"><i class="fa-solid fa-edit"></i> ${L==='en'?'Edit Profile':'Edit Profil'}</button>
+    </div>
   </div>`;
   if(tab==='students') return `<div class="card" style="padding:0;overflow:hidden;">
-    <div class="flex between center" style="padding:14px 18px;border-bottom:1px solid var(--border);"><b>${L==='en'?'Students':'Siswa'} (${studentUsers.length})</b><button class="btn btn-primary btn-sm" onclick="openRegisterModal('student')"><i class="fa-solid fa-plus"></i> ${L==='en'?'Add':'Tambah'}</button></div>
+    <div class="flex between center" style="padding:14px 18px;border-bottom:1px solid var(--border);"><b>${L==='en'?'My Students':'Siswa Saya'} (${studentUsers.length})</b><button class="btn btn-primary btn-sm" onclick="openRegisterModal('student')"><i class="fa-solid fa-plus"></i> ${L==='en'?'Add':'Tambah'}</button></div>
     <div>${studentUsers.length ? studentUsers.map(u=>{const done=Object.values(u.progress||{}).filter(Boolean).length;const pct=Math.round(done/4*100);return `<div class="student-row" onclick="viewStudent('${u.id}')"><div class="avatar">${u.profile.avatar||'👤'}</div><div class="info"><div class="name">${esc(u.profile.name||(L==='en'?'No Name':'Tanpa Nama'))}</div><div class="meta">${L==='en'?'Student':'Siswa'} · ${esc(u.profile.classes||'-')} · ${(u.badges||[]).length} ${L==='en'?'badges':'badge'} ${u.pin?'· 🔐':''}</div></div><div class="mini-progress"><div style="width:${pct}%"></div></div><div style="font-size:12px;font-weight:700;color:var(--primary);min-width:38px;text-align:right;">${pct}%</div></div>`}).join('') : `<div class="empty"><i class="fa-solid fa-user-slash"></i><div>${L==='en'?'No students yet':'Belum ada siswa'}</div></div>`}</div>
   </div>`;
   if(tab==='materials') return `<div class="card mb-4">
@@ -2425,7 +2679,7 @@ function renderTabGuru(tab,stats){
   }
   if(tab==='reports'){
     return `<div class="card mb-4">
-    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-table"></i> ${L==='en'?'Grade Report':'Rekap Nilai'}</div><div style="font-weight:700;">${L==='en'?'All Students':'Semua Siswa'}</div></div><div class="flex gap-2 wrap"><button class="btn btn-ghost btn-sm" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> CSV</button><button class="btn btn-primary btn-sm" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button><button class="btn btn-ghost btn-sm" onclick="importExcelDialog()"><i class="fa-solid fa-upload"></i> Import</button><button class="btn btn-primary btn-sm" onclick="printReport()"><i class="fa-solid fa-print"></i> PDF</button></div></div>
+    <div class="flex between center mb-3 wrap gap-2"><div><div class="badge badge-primary mb-2"><i class="fa-solid fa-table"></i> ${L==='en'?'Grade Report':'Rekap Nilai'}</div><div style="font-weight:700;">${L==='en'?'My Students':'Siswa Saya'}</div></div><div class="flex gap-2 wrap"><button class="btn btn-ghost btn-sm" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> CSV</button><button class="btn btn-primary btn-sm" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button><button class="btn btn-ghost btn-sm" onclick="importExcelDialog()"><i class="fa-solid fa-upload"></i> Import</button><button class="btn btn-primary btn-sm" onclick="printReport()"><i class="fa-solid fa-print"></i> PDF</button></div></div>
     <div class="dt-wrap"><table class="dt"><thead><tr>
       <th>${L==='en'?'Name':'Nama'}</th>
       <th>${L==='en'?'Progress':'Progress'}</th>
@@ -2464,7 +2718,174 @@ function renderTabGuru(tab,stats){
     }).join('') : `<tr><td colspan="8" class="text-center text-muted" style="padding:26px;">${L==='en'?'No students yet':'Belum ada siswa'}</td></tr>`}</tbody></table></div>
   </div>`;
   }
+  if(tab==='storage'){
+    const totalBytes = storageInfo.total.bytes;
+    const dbPct = Math.min(100, Math.round(totalBytes / LIMITS.freeDbBytes * 100));
+    const storagePct = Math.min(100, Math.round(totalBytes / LIMITS.freeStorageBytes * 100));
+    const fillClass = storagePct < 50 ? 'fill-safe' : (storagePct < 80 ? 'fill-warn' : 'fill-danger');
+    return `<div class="card mb-4">
+      <div class="badge badge-primary mb-3"><i class="fa-solid fa-database"></i> ${L==='en'?'Storage Usage':'Penggunaan Penyimpanan'}</div>
+      <div class="section-sub">${L==='en'?'Estimated usage from your students. Data stored locally + Supabase.':'Estimasi penggunaan dari siswa Anda. Data tersimpan lokal + Supabase.'}</div>
+      
+      <div class="storage-bar mb-2"><div class="${fillClass}" style="width:${storagePct}%"></div></div>
+      <div class="flex between center mb-4">
+        <span class="text-xs text-muted">${formatBytes(totalBytes)}</span>
+        <span class="text-xs text-muted">${L==='en'?'Limit':'Limit'}: ${formatBytes(LIMITS.freeStorageBytes)}</span>
+      </div>
+
+      <div class="storage-metric"><span class="sm-label"><i class="fa-solid fa-microphone" style="color:var(--primary);"></i> Audio</span><span class="sm-val">${formatBytes(storageInfo.total.audio)}</span></div>
+      <div class="storage-metric"><span class="sm-label"><i class="fa-solid fa-image" style="color:var(--success);"></i> ${L==='en'?'Images (Storyboard)':'Gambar (Storyboard)'}</span><span class="sm-val">${formatBytes(storageInfo.total.images)}</span></div>
+      <div class="storage-metric"><span class="sm-label"><i class="fa-solid fa-paperclip" style="color:var(--warning);"></i> ${L==='en'?'Attachments':'Lampiran'}</span><span class="sm-val">${formatBytes(storageInfo.total.attach)}</span></div>
+      <div class="storage-metric"><span class="sm-label"><i class="fa-solid fa-file-lines" style="color:var(--info);"></i> ${L==='en'?'Text (tiny)':'Teks (kecil)'}</span><span class="sm-val">${formatBytes(storageInfo.total.text)}</span></div>
+      <div class="storage-metric"><span class="sm-label"><i class="fa-solid fa-hashtag"></i> ${L==='en'?'Total Files':'Total File'}</span><span class="sm-val">${storageInfo.total.files}</span></div>
+
+      <div class="tense-alert" style="margin-top:16px;">
+        <b>💡 ${L==='en'?'Tip:':'Tips:'}</b> ${L==='en'?'Supabase free tier = 500 MB DB + 1 GB storage. Delete old files every semester to keep space.':'Supabase gratis = 500 MB DB + 1 GB storage. Hapus file lama setiap semester agar tidak penuh.'}
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="badge badge-primary mb-3"><i class="fa-solid fa-broom"></i> ${L==='en'?'Cleanup Options':'Opsi Pembersihan'}</div>
+      <div class="cleanup-option" onclick="confirmCleanupFiles('audio')">
+        <div class="co-icon"><i class="fa-solid fa-microphone-slash"></i></div>
+        <div class="co-body">
+          <div class="co-title">${L==='en'?'Delete All Audio Files':'Hapus Semua File Audio'}</div>
+          <div class="co-sub">${L==='en'?'Remove all student audio recordings. Text remains safe.':'Hapus semua rekaman audio siswa. Teks tetap aman.'}</div>
+        </div>
+        <div class="co-cta">${L==='en'?'Clean':'Bersihkan'} →</div>
+      </div>
+      <div class="cleanup-option" onclick="confirmCleanupFiles('images')">
+        <div class="co-icon"><i class="fa-solid fa-image"></i></div>
+        <div class="co-body">
+          <div class="co-title">${L==='en'?'Delete All Storyboard Images':'Hapus Semua Gambar Storyboard'}</div>
+          <div class="co-sub">${L==='en'?'Remove all student storyboard images.':'Hapus semua gambar storyboard siswa.'}</div>
+        </div>
+        <div class="co-cta">${L==='en'?'Clean':'Bersihkan'} →</div>
+      </div>
+      <div class="cleanup-option" onclick="confirmCleanupFiles('attachments')">
+        <div class="co-icon"><i class="fa-solid fa-paperclip"></i></div>
+        <div class="co-body">
+          <div class="co-title">${L==='en'?'Delete All Attachments':'Hapus Semua Lampiran'}</div>
+          <div class="co-sub">${L==='en'?'Remove all student attachments.':'Hapus semua lampiran siswa.'}</div>
+        </div>
+        <div class="co-cta">${L==='en'?'Clean':'Bersihkan'} →</div>
+      </div>
+      <div class="cleanup-option" onclick="exportAndConfirmCleanup()">
+        <div class="co-icon" style="background:rgba(239,68,68,.15);color:var(--danger);"><i class="fa-solid fa-trash-can"></i></div>
+        <div class="co-body">
+          <div class="co-title">${L==='en'?'Export Scores Then Clean All Files':'Export Nilai Lalu Bersihkan Semua File'}</div>
+          <div class="co-sub">${L==='en'?'Recommended before mass deletion.':'Disarankan sebelum hapus massal.'}</div>
+        </div>
+        <div class="co-cta" style="color:var(--danger);">${L==='en'?'Export & Clean':'Export & Bersihkan'} →</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="badge badge-primary mb-3"><i class="fa-solid fa-users"></i> ${L==='en'?'Per-Student Storage':'Penyimpanan Per Siswa'}</div>
+      ${storageInfo.students.length ? storageInfo.students.map(s=>{
+        const us = calculateUserStorage(s);
+        return `<div class="storage-school-row">
+          <span class="ssr-name">${s.profile.avatar||'👤'} ${esc(s.profile.name||'-')}</span>
+          <span class="ssr-size">${formatBytes(us.bytes)} · ${us.files} ${L==='en'?'files':'file'}</span>
+        </div>`;
+      }).join('') : `<div class="empty" style="padding:20px;"><div>${L==='en'?'No students':'Belum ada siswa'}</div></div>`}
+    </div>`;
+  }
   return '';
+}
+
+/* ============================================================
+   CLEANUP HANDLERS
+============================================================ */
+function confirmCleanupFiles(type){
+  const L = State.lang;
+  const me = U();
+  if(!me) return;
+  const myStudents = Object.values(State.users).filter(u => u.profile.role === 'student' && u.profile.teacher_id === me.id);
+  if(!myStudents.length) return toast(L==='en'?'No students':'Belum ada siswa','fa-info-circle');
+
+  const labels = {
+    audio: L==='en'?'audio recordings':'rekaman audio',
+    images: L==='en'?'storyboard images':'gambar storyboard',
+    attachments: L==='en'?'attachments':'lampiran'
+  };
+
+  openModal('⚠️ '+(L==='en'?'Confirm Delete':'Konfirmasi Hapus'), `
+    <div class="tense-alert mb-3">
+      <b>${L==='en'?'You are about to delete ALL':'Anda akan menghapus SEMUA'} ${labels[type]} ${L==='en'?'from':'dari'} ${myStudents.length} ${L==='en'?'students.':'siswa.'}</b><br>
+      ${L==='en'?'This cannot be undone. Text/essay will remain safe.':'Tindakan ini tidak bisa dibatalkan. Teks/karangan tetap aman.'}
+    </div>
+    <div class="card" style="background:var(--bg);">
+      <div class="text-sm" style="line-height:1.7;">
+        <b>${L==='en'?'Recommendation:':'Saran:'}</b><br>
+        1. ${L==='en'?'Export scores to Excel first':'Export nilai ke Excel dulu'}<br>
+        2. ${L==='en'?'Make sure all work has been graded':'Pastikan semua karya sudah dinilai'}<br>
+        3. ${L==='en'?'Then delete files':'Baru hapus file'}
+      </div>
+    </div>
+  `, `
+    <button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Cancel':'Batal'}</button>
+    <button class="btn btn-ghost" onclick="closeModal();exportExcel()"><i class="fa-solid fa-file-excel"></i> ${L==='en'?'Export First':'Export Dulu'}</button>
+    <button class="btn btn-danger" onclick="doCleanupFiles('${type}')"><i class="fa-solid fa-trash"></i> ${L==='en'?'Yes, Delete':'Ya, Hapus'}</button>
+  `);
+}
+
+function doCleanupFiles(type){
+  const L = State.lang;
+  const me = U();
+  if(!me) return;
+  let cleaned = 0, bytesFreed = 0;
+  Object.values(State.users).forEach(u => {
+    if(u.profile.role !== 'student') return;
+    if(u.profile.teacher_id !== me.id) return;
+    if(type === 'audio'){
+      if(u.t4.audio){
+        bytesFreed += estimateDataUrlSize(u.t4.audio);
+        u.t4.audio = ''; u.t4.audioDur = 0;
+        cleaned++;
+      }
+    } else if(type === 'images'){
+      if(u.t2 && u.t2.storyboard && u.t2.storyboard.length){
+        u.t2.storyboard.forEach(s => {
+          if(s.img && s.img.startsWith('data:')) bytesFreed += estimateDataUrlSize(s.img);
+        });
+        cleaned += u.t2.storyboard.length;
+        u.t2.storyboard = [];
+      }
+    } else if(type === 'attachments'){
+      if(u.t4.attachments && u.t4.attachments.length){
+        u.t4.attachments.forEach(f => {
+          if(f.data) bytesFreed += estimateDataUrlSize(f.data);
+          else if(f.size) bytesFreed += f.size;
+        });
+        cleaned += u.t4.attachments.length;
+        u.t4.attachments = [];
+      }
+    }
+  });
+  State.lastCleanup = new Date().toISOString();
+  save();
+  closeModal();
+  render();
+  toast(`✓ ${cleaned} ${L==='en'?'files deleted':'file dihapus'} · ${formatBytes(bytesFreed)} ${L==='en'?'freed':'dibebaskan'}`,'fa-broom');
+}
+
+function exportAndConfirmCleanup(){
+  const L = State.lang;
+  openModal('📊 '+(L==='en'?'Export & Clean':'Export & Bersihkan'), `
+    <div class="section-sub">${L==='en'?'This will export scores to Excel, then delete all files (audio, images, attachments) from your students.':'Ini akan export nilai ke Excel, lalu hapus semua file (audio, gambar, lampiran) dari siswa Anda.'}</div>
+    <div class="tense-alert">
+      <b>📋 ${L==='en'?'Flow:':'Alur:'}</b><br>
+      1. Excel ${L==='en'?'file will download automatically':'file akan otomatis terdownload'}<br>
+      2. ${L==='en'?'After export, files will be deleted':'Setelah export, file akan dihapus'}<br>
+      3. ${L==='en'?'Text essays remain safe':'Teks karangan tetap aman'}
+    </div>
+  `, `
+    <button class="btn btn-ghost" onclick="closeModal()">${L==='en'?'Cancel':'Batal'}</button>
+    <button class="btn btn-primary" onclick="closeModal();exportExcel();setTimeout(()=>{doCleanupFiles('audio');doCleanupFiles('images');doCleanupFiles('attachments');},800)">
+      <i class="fa-solid fa-check"></i> ${L==='en'?'Continue':'Lanjutkan'}
+    </button>
+  `);
 }
 
 /* ============================================================
@@ -2707,11 +3128,21 @@ function addVocab(){
 }
 function removeVocab(i){ setU(u=>u.t2.vocab.splice(i,1)); render(); }
 function saveMindMap(k,v){ setU(u=>u.t2.mindMap[k]=v); }
-function uploadStoryboard(inp){
-  const f=inp.files[0]; if(!f) return;
-  const r=new FileReader();
-  r.onload=e=>{ setU(u=>u.t2.storyboard.push({img:e.target.result,caption:''})); render(); };
-  r.readAsDataURL(f);
+
+async function uploadStoryboard(inp){
+  const L = State.lang;
+  const f = inp.files[0]; if(!f) return;
+  if(!f.type.startsWith('image/')) return toast(L==='en'?'Not an image':'Bukan gambar','fa-triangle-exclamation');
+  try{
+    toast(L==='en'?'Compressing image...':'Mengompres gambar...','fa-spinner');
+    const result = await compressImage(f, LIMITS.imageMaxBytes);
+    setU(u=>u.t2.storyboard.push({img:result.dataUrl,caption:''}));
+    render();
+    toast(`✓ ${formatBytes(result.size)}`,'fa-image');
+    checkBadges();
+  }catch(e){
+    toast('Error: '+e.message,'fa-xmark');
+  }
 }
 function addStoryboardEmoji(e){ setU(u=>u.t2.storyboard.push({img:e,caption:''})); render(); }
 function removeStoryboard(i){ setU(u=>u.t2.storyboard.splice(i,1)); render(); }
@@ -2795,7 +3226,7 @@ function savePeerForm(){
 function saveReflect(k,v){ setU(u=>u.t4.reflection[k]=v); checkBadges(); }
 
 /* ============================================================
-   AUDIO RECORDING
+   AUDIO RECORDING (max 60s, auto-stop)
 ============================================================ */
 let mediaRec,chunks=[],recTimer,recSec=0;
 async function toggleRecord(){
@@ -2830,6 +3261,10 @@ async function toggleRecord(){
       recSec++;
       const el=document.getElementById('recTime');
       if(el) el.textContent=`${String(Math.floor(recSec/60)).padStart(2,'0')}:${String(recSec%60).padStart(2,'0')}`;
+      if(recSec >= LIMITS.audioMaxSec){
+        mediaRec.stop(); clearInterval(recTimer); State._recording=false;
+        toast(L==='en'?'Max 60s reached':'Maksimal 60 detik','fa-stop');
+      }
     },1000);
     render();
   }catch(e){ toast(L==='en'?'Mic denied':'Mic ditolak','fa-microphone-slash'); }
@@ -2837,19 +3272,19 @@ async function toggleRecord(){
 function deleteAudio(){ setU(u=>{u.t4.audio=''; u.t4.audioDur=0}); render(); }
 
 /* ============================================================
-   ATTACHMENT
+   ATTACHMENT (max 2 files, 1MB each)
 ============================================================ */
 function handleAttachFiles(files){ processAttach(Array.from(files)); }
 function handleAttachDrop(e){ e.preventDefault(); e.currentTarget.classList.remove('drag-over'); processAttach(Array.from(e.dataTransfer.files)); }
 async function processAttach(files){
   const L=State.lang;
-  const MAX=2*1024*1024, MAXF=3;
+  const MAX=LIMITS.attachMaxBytes, MAXF=LIMITS.maxAttachPerStudent;
   const u=U();
   const existing=u.t4.attachments?u.t4.attachments.length:0;
   for(let i=0;i<files.length;i++){
     const f=files[i];
     if(existing+i>=MAXF){ toast(`Max ${MAXF} files`,'fa-triangle-exclamation'); continue; }
-    if(f.size>MAX){ toast(`${f.name} >2MB`,'fa-triangle-exclamation'); continue; }
+    if(f.size>MAX){ toast(`${f.name} >${formatBytes(MAX)}`,'fa-triangle-exclamation'); continue; }
     let url=null;
     if(sb){
       try{
@@ -2961,6 +3396,7 @@ function viewStudentDetail(id){
   const combined = `${g.orientation||''}\n\n${(g.events||[]).filter(e=>e).join('\n\n')}\n\n${g.reorientation||''}`.trim();
   const a = analyzeText(combined);
   const done = Object.values(u.progress||{}).filter(Boolean).length;
+  const teacher = u.profile.teacher_id ? State.users[u.profile.teacher_id] : null;
 
   const stageBadge = (ok) => ok 
     ? '<span class="badge badge-success"><i class="fa-solid fa-check"></i></span>' 
@@ -2973,6 +3409,7 @@ function viewStudentDetail(id){
         <div style="flex:1;">
           <div style="font-weight:800;font-size:16px;">${esc(u.profile.name||'-')}</div>
           <div class="text-sm text-muted">${esc(u.profile.school||'-')} · ${L==='en'?'Class':'Kelas'}: ${esc(u.profile.classes||'-')}</div>
+          ${teacher?`<div class="text-xs mt-1" style="color:var(--primary);">👨‍🏫 ${L==='en'?'Teacher':'Guru'}: <b>${esc(teacher.profile.name)}</b></div>`:''}
         </div>
         <div class="text-center">
           <div style="font-size:22px;font-weight:800;color:var(--primary);">${done}/4</div>
@@ -3620,7 +4057,8 @@ function addManualVerb(){
 ============================================================ */
 function exportCSV(){
   const L=State.lang;
-  const users=Object.values(State.users).filter(u=>u.profile.role==='student');
+  const me = U();
+  const users=Object.values(State.users).filter(u=>u.profile.role==='student' && u.profile.teacher_id === (me?me.id:''));
   const rows=[[L==='en'?'Name':'Nama',L==='en'?'Progress':'Progress',L==='en'?'Badges':'Badge',L==='en'?'Words':'Kata','V2',L==='en'?'Published':'Dipublikasikan',L==='en'?'Score':'Nilai Guru']];
   users.forEach(u=>{
     const g=u.t3?.guided||{orientation:'',events:[],reorientation:''};
@@ -3641,7 +4079,8 @@ function exportCSV(){
 function exportExcel(){
   const L=State.lang;
   if(typeof XLSX==='undefined') return toast(L==='en'?'XLSX library not loaded':'Library XLSX belum load','fa-triangle-exclamation');
-  const users=Object.values(State.users).filter(u=>u.profile.role==='student');
+  const me = U();
+  const users=Object.values(State.users).filter(u=>u.profile.role==='student' && u.profile.teacher_id === (me?me.id:''));
   const rows=users.map(u=>{
     const g=u.t3?.guided||{orientation:'',events:['','',''],reorientation:''};
     const combined=`${g.orientation||''}\n\n${(g.events||[]).filter(e=>e).join('\n\n')}\n\n${g.reorientation||''}`.trim();
@@ -3695,6 +4134,7 @@ function handleExcelImport(file){
   const L=State.lang;
   if(!file) return;
   if(typeof XLSX==='undefined') return toast(L==='en'?'XLSX library not loaded':'Library XLSX belum load','fa-triangle-exclamation');
+  const me = U();
   const reader=new FileReader();
   reader.onload=e=>{
     try{
@@ -3730,6 +4170,7 @@ function handleExcelImport(file){
           newUser.profile.classes=kelas;
           newUser.profile.school=sekolah;
           newUser.profile.role=(role==='teacher'||role==='guru')?'teacher':'student';
+          newUser.profile.teacher_id = me ? me.id : '';
           newUser.profile.avatar=newUser.profile.role==='teacher'?'👨‍🏫':'🧑‍🎓';
           newUser.pin='';
           State.users[id]=newUser;
@@ -3881,6 +4322,7 @@ const Binders={
 Theme.apply();
 Router.init();
 setTimeout(()=>{ autoLoadConfig(); }, 1000);
+setTimeout(()=>{ KeepAlive.init(); }, 2000);
 </script>
 </body>
 </html>
